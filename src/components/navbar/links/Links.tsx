@@ -1,4 +1,5 @@
 import Link from "next/link"
+import NavLink from "./navLink/navLink"
 
 const Links : React.FC = () => {
 
@@ -19,9 +20,9 @@ const Links : React.FC = () => {
         path:"/calculator",
     }]
 
-    return  <div>
+    return  <div className="flex align-item-center justify-between gap-5 ">
                 {links.map((link => (
-                    <Link href={link.path} key={link.title}>{link.title}</Link>
+                    <NavLink item={link} key={link.title} />
                 )))}
             </div>
 }
