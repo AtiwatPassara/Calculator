@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default function Page() {
   return (
@@ -17,7 +18,7 @@ export default function Page() {
             You can calculate the positive effects your biking has on the environment.
           </div>
           <button className="flex items-center border-4 border-white rounded-lg p-5 text-[28px] hover:bg-black hover:border-yellow-500 hover:text-yellow-500 transition-all hover:scale-110 duration-300 ease-in-out">
-            Calculate
+            <Link href="/calculator">Calculate</Link>
           </button>
         </div>
       </div>
