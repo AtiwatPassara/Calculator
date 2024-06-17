@@ -6,7 +6,7 @@ export default function Page() {
     <div className="flex flex-col lg:flex-row items-center justify-around p-8">
       <div className="text-white max-w-lg mb-8 lg:mb-0">
         <div className="text-5xl font-bold leading-tight text-center lg:text-left">
-          This website is for calculating
+          Calculating tool for
           <div>
             <span className="text-green-500">Environmental Impact</span> of
             <span className="text-yellow-500"> Biking</span>
@@ -14,8 +14,9 @@ export default function Page() {
         </div>
         <div className="flex flex-col lg:flex-row items-center justify-between gap-8 mt-8">
           <div className="text-[15px] leading-relaxed text-center lg:text-left">
-            This website is designed to help you understand the environmental impact of biking. 
-            You can calculate the positive effects your biking has on the environment.
+            Discover how your biking habits positively impact the environment. 
+            Use our calculator to assess the impact of your Biking. 
+            Start calculating now to see the difference you make!
           </div>
           <button className="flex items-center border-4 border-white rounded-lg p-5 text-[28px] hover:bg-black hover:border-yellow-500 hover:text-yellow-500 transition-all hover:scale-110 duration-300 ease-in-out">
             <Link href="/calculator">Calculate</Link>
