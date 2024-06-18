@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import React, { useState } from "react";
 
-const InputModal: React.FC = () => {
+const BikeModal: React.FC = () => {
     const searchParams = useSearchParams();
     const modal = searchParams.get("bikemodal");
     const pathname = usePathname();
@@ -14,8 +14,20 @@ const InputModal: React.FC = () => {
     const handleBikeSelection = (bikeType: string) => {
         if(selectedBike === bikeType){
             setSelectedBike(null)
+            
         }
-        else{ setSelectedBike(bikeType)}
+        else{ setSelectedBike(bikeType) 
+            var bike = selectedBike
+            return bike 
+        }
+        }
+
+        const handleBikeSubmit = () => {
+            if (selectedBike) {
+                console.log(selectedBike);
+            } else {
+                console.log("No bike selected");
+            }
         }
 
     return (
@@ -56,7 +68,7 @@ const InputModal: React.FC = () => {
                                 </button>
 
                             </div>
-                            <button className="mt-6 bg-blue-500 p-2 rounded text-white">
+                            <button className="mt-6 bg-blue-500 p-2 rounded text-white" onClick={() => handleBikeSubmit()} >
                                 <Link href={pathname}>
                                     Choose the bike
                                 </Link>
@@ -69,4 +81,4 @@ const InputModal: React.FC = () => {
     );
 }
 
-export default InputModal;
+export default BikeModal;

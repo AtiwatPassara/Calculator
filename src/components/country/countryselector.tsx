@@ -1,4 +1,5 @@
 export const countries = [
+    { name: "-", code: "-" },
     { name: "Afghanistan", code: "AF" },
     { name: "Albania", code: "AL" },
     { name: "Algeria", code: "DZ" },
