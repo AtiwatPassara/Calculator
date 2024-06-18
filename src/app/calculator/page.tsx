@@ -1,3 +1,4 @@
+'use client'
 import Link from "next/link";
 import { useState } from "react";
 import { countries } from "@/components/country/countryselector";
@@ -6,9 +7,19 @@ import { MdOutlinePedalBike } from "react-icons/md";
 
 const Calculator: React.FC = () => {
   const selectGender = [
-    { title: "Male", value: "a" },
-    { title: "Female", value: "b" },
+    { title: "Male", value: "male" },
+    { title: "Female", value: "female" },
   ];
+
+const [selectedGender,setSelectedGender] = useState<string>("male")
+const [selectedCountry,setSelectedCountry] = useState<string>("-")
+
+const handleSubmit = () => {
+  const userSelection = {
+    gender : selectedGender,
+    country : selectedCountry
+}
+return console.log(userSelection)}
 
   return (
     <div className="flex justify-center items-center min-h-screen">
@@ -18,7 +29,8 @@ const Calculator: React.FC = () => {
           <div className="flex flex-row place-items-center gap-4 ">
             <div className="p-2 ">
               Select Gender
-              <select className="bg-black text-white p-2 mx-2 border-2 border-white rounded-md">
+              <select className="bg-black text-white p-2 mx-2 border-2 border-white rounded-md"
+                value={selectedGender} onChange={(e) => setSelectedGender(e.target.value)}>
                 {selectGender.map((option) => (
                   <option value={option.value} key={option.value}>
                     {option.title}
@@ -28,7 +40,8 @@ const Calculator: React.FC = () => {
             </div>
             <div>
                 Select Country
-              <select className="bg-black text-white p-2 mx-2 border-2 border-white rounded-md">
+              <select className="bg-black text-white p-2 mx-2 border-2 border-white rounded-md"
+                value={selectedCountry} onChange={(e) => setSelectedCountry(e.target.value)}>
                 {countries.map((option) => (
                   <option value={option.code} key={option.name}>
                     {option.name}
@@ -50,7 +63,11 @@ const Calculator: React.FC = () => {
         <div>
           Input 2
         </div>
+        <div>
+          <button onClick={handleSubmit}>Submit</button>
+        </div>
       </div>
+      
     </div>
   );
 };
