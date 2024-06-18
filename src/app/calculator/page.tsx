@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { countries } from "@/components/country/countryselector";
+import { MdOutlinePedalBike } from "react-icons/md";
 
 
 const Calculator: React.FC = () => {
@@ -39,7 +40,7 @@ const Calculator: React.FC = () => {
               <label>Select your bike : </label>
               <Link href="?bikemodal=true">
                 <button type="button" className="bg-white text-black p-2 rounded-md ">
-                  Select your Bike
+                <MdOutlinePedalBike />
                 </button>
               </Link>
             </div>
