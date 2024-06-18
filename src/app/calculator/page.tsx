@@ -35,11 +35,14 @@ const Calculator: React.FC = () => {
                 ))}
               </select>
             </div>
-            <Link href="?bikemodal=true">
-              <button type="button" className="bg-blue-500 text-white p-2">
-                Select your Bike
-              </button>
-            </Link>
+            <div>
+              <label>Select your bike : </label>
+              <Link href="?bikemodal=true">
+                <button type="button" className="bg-white text-black p-2 rounded-md ">
+                  Select your Bike
+                </button>
+              </Link>
+            </div>
           </div>
         </div>
         

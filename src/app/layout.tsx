@@ -5,6 +5,7 @@ import Navbar from "@/components/navbar/Navbar";
 import Footer from "@/components/footer/Footer";
 import InputModal from "@/components/modal/InputModal";
 
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
