@@ -8,8 +8,9 @@ import PhysicalInput from "@/components/Input/physicalInput";
 const Calculator: React.FC = () => {
   const [selectedGender, setSelectedGender] = useState<string>("-");
   const [selectedCountry, setSelectedCountry] = useState<string>("-");
+  const [selectedEating, setSelectedEating] = useState<string>("-");
   const [selectedBike, setSelectedBike] = useState<string | null>(null);
-  const [inputSteepness, setInputSteepness] = useState<number>(0)
+  const [inputSteepness, setInputSteepness] = useState<number>(0);
   const [showModal, setShowModal] = useState<boolean>(false);
   
 
@@ -39,6 +40,7 @@ const Calculator: React.FC = () => {
       gender: selectedGender,
       country: selectedCountry,
       bike: selectedBike,
+      eating: selectedEating,
       // steepness: inputSteepness
     };
 
@@ -50,7 +52,9 @@ const Calculator: React.FC = () => {
       <div className="flex flex-col justify-center gap-5">
         <DietInput 
           selectedCountry={selectedCountry}
-          setSelectedCountry={setSelectedCountry}/>
+          setSelectedCountry={setSelectedCountry}
+          selectedEating={selectedEating}
+          setSelectedEating={setSelectedEating}/>
         <CyclingInput 
           selectedBike={selectedBike}
           setSelectedBike={setSelectedBike}
