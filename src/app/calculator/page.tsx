@@ -4,6 +4,7 @@ import { useState } from "react";
 import { countries } from "@/components/country/countryselector";
 import { MdOutlinePedalBike } from "react-icons/md";
 import BikeModal from "@/components/modal/bikeModal";
+import { error } from "console";
 
 const Calculator: React.FC = () => {
   const selectGender = [
@@ -11,7 +12,7 @@ const Calculator: React.FC = () => {
     { title: "Female", value: "female" },
   ];
 
-  const [selectedGender, setSelectedGender] = useState<string>("male");
+  const [selectedGender, setSelectedGender] = useState<string>("-");
   const [selectedCountry, setSelectedCountry] = useState<string>("-");
   const [selectedBike, setSelectedBike] = useState<string | null>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -38,6 +39,7 @@ const Calculator: React.FC = () => {
       country: selectedCountry,
       bike: selectedBike,
     };
+
     console.log(userSelection);
   };
 
@@ -76,14 +78,16 @@ const Calculator: React.FC = () => {
               </select>
             </div>
             <div>
-              <label>Select your bike: </label>
-              <button
-                type="button"
-                className="bg-white text-black p-2 rounded-md"
-                onClick={handleOpenModal}
-              >
-                <MdOutlinePedalBike />
-              </button>
+              <label>Select your bike{" "}</label>
+             
+                <button
+                  type="button"
+                  className="bg-white text-black p-2 rounded-md"
+                  onClick={handleOpenModal}    >
+                  <MdOutlinePedalBike />
+                </button>
+                {" "} : {selectedBike}
+              
             </div>
           </div>
         </div>
