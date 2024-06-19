@@ -1,10 +1,10 @@
 'use client'
-import Link from "next/link";
 import { useState } from "react";
 import { countries } from "@/components/country/countryselector";
 import { MdOutlinePedalBike } from "react-icons/md";
 import BikeModal from "@/components/modal/bikeModal";
-import { error } from "console";
+import { useForm } from "react-hook-form";
+import { register } from "module";
 
 const Calculator: React.FC = () => {
   const selectGender = [
