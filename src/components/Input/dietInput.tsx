@@ -24,7 +24,7 @@ const DietInput:React.FC<DietInputprops> = ({
                         <div className="p-2">
                             Select Region
                                 <select
-                                className="bg-black text-white p-2 mx-2 border border-white rounded-md"
+                                className="bg-black text-white p-2 mx-2 border border-white rounded-md focus:border-orange-400"
                                 value={selectedCountry}
                                 onChange={(e) => setSelectedCountry(e.target.value)}
                                 >
@@ -38,7 +38,7 @@ const DietInput:React.FC<DietInputprops> = ({
                         <div className="p-2">
                             Eating Behaviour
                                 <select
-                                className="bg-black text-white p-2 mx-2 border border-white rounded-md"
+                                className="bg-black text-white p-2 mx-2 border border-white rounded-md focus:border-[#42ddf5]"
                                 value={selectedEating}
                                 onChange={(e) => setSelectedEating(e.target.value)}
                                 >
