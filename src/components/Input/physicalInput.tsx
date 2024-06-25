@@ -11,6 +11,8 @@ interface PhysicalInputProps {
   setSelectedWeight: (value: number) => void;
   selectedFitness: number;
   setSelectedFitness: (value: number) => void;
+  setTemperature: (value: number | null) => void; 
+  setPressure: (value: number | null) => void;
 }
 
 const PhysicalInput: React.FC<PhysicalInputProps> = ({
@@ -22,6 +24,8 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
   setSelectedWeight,
   selectedFitness,
   setSelectedFitness,
+  setTemperature,
+  setPressure,
 }) => {
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
@@ -29,23 +33,29 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    if (latitude !== null && longitude !== null) {
-      setLoading(true); // Start loading
-      fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&units=metric&appid=46424be8ea5885c20fbde4a9795aa9ec`)
-        .then(response => response.json())
-        .then((data: WeatherData) => {
+    const fetchWeatherData = async () => {
+      if (latitude !== null && longitude !== null) {
+        setLoading(true); 
+        try {
+          const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&units=metric&appid=46424be8ea5885c20fbde4a9795aa9ec`);
+          const data: WeatherData = await response.json();
           setWeatherData(data);
-          setLoading(false); // End loading
-        })
-        .catch(error => {
+          setTemperature(data.main.temp); 
+          setPressure(data.main.pressure);
+        } catch (error) {
           console.error('Error fetching data:', error);
-          setLoading(false); // End loading on error
-        });
-    }
-  }, [latitude, longitude]);
+        } finally {
+          setLoading(false); 
+        }
+      }
+    };
+  
+    fetchWeatherData();
+  }, [latitude, longitude, setTemperature, setPressure]);
 
   const getUserLocation = () => {
     if (navigator.geolocation) {
+      setLoading(true); // Start loading when the button is clicked
       navigator.geolocation.getCurrentPosition(
         (position) => {
           setLatitude(position.coords.latitude);
@@ -53,6 +63,7 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
         },
         (error) => {
           console.error('Error fetching location:', error);
+          setLoading(false); // Stop loading if there is an error
         }
       );
     } else {
@@ -148,8 +159,7 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
             <button>
               <IoIosInformationCircleOutline size={25} style={{ opacity: 0.7 }} />
             </button>
-</div>
-
+          </div>
         </div>
         <div className="flex flex-row justify-between mt-5">
           <div className="p-2">

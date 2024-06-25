@@ -14,6 +14,8 @@ const Calculator: React.FC = () => {
   const [selectedWeight, setSelectedWeight] = useState<number>(0);
   const [selectedFitness, setSelectedFitness] = useState<number>(0);
   const [inputSteepness, setInputSteepness] = useState<number>(0);
+  const [temperature, setTemperature] = useState<number | null>(null);
+  const [pressure, setPressure] = useState<number | null>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
 
   const handleOpenModal = () => {
@@ -45,6 +47,8 @@ const Calculator: React.FC = () => {
       age: selectedAge,
       weight: selectedWeight,
       fitness: selectedFitness,
+      temperature: temperature,
+      pressure: pressure,
       // steepness: inputSteepness
     };
 
@@ -80,6 +84,8 @@ const Calculator: React.FC = () => {
           setSelectedWeight={setSelectedWeight}
           selectedFitness={selectedFitness}
           setSelectedFitness={setSelectedFitness}
+          setTemperature={setTemperature} 
+          setPressure={setPressure}
         />
         <div className="flex justify-center">
           <button onClick={handleSubmit} className='border rounded py-2 px-4'>Submit</button>
