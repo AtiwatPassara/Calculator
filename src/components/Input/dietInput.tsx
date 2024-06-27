@@ -19,10 +19,10 @@ const DietInput:React.FC<DietInputprops> = ({
 
     return <div >
                 <div className="p-2">
-                    <h2 className="text-lg font-bold mb-4">Diet Info</h2>
-                    <div className="flex flex-row">
+                    <h2 className="text-lg font-bold mb-4">Diet Information</h2>
+                    <div className="flex flex-row justify-between">
                         <div className="p-2">
-                            Select Region
+                            Select Your Region
                                 <select
                                 className="bg-black text-white p-2 mx-2 border border-white rounded-md focus:border-orange-400"
                                 value={selectedCountry}
@@ -36,7 +36,7 @@ const DietInput:React.FC<DietInputprops> = ({
                                 </select>
                         </div>
                         <div className="p-2">
-                            Eating Behaviour
+                            Eating Habits
                                 <select
                                 className="bg-black text-white p-2 mx-2 border border-white rounded-md focus:border-[#42ddf5]"
                                 value={selectedEating}

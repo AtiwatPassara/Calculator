@@ -23,7 +23,7 @@ const CyclingInput: React.FC<CyclingInputProps> = ({
   return (
     <div>
       <div className="p-2">
-        <h2 className="text-lg font-bold mb-4">Cycling Info</h2>
+        <h2 className="text-lg font-bold mb-4">Cycling Information</h2>
         <div className="flex items-center space-x-2">
           <label>Select your bike </label>
           <button

@@ -31,16 +31,16 @@ const BikeModal: React.FC<BikeModalProps> = ({
         <div className="flex flex-col items-center mt-5">
           <p className="text-center text-xl border-b-2 pb-2 text-white border-red-500">Select your bike</p>
           <div className="h-full flex justify-center items-center mt-5 p-5 gap-5 rounded-md">
-            <button onClick={() => handleBikeSelection("Mechanical")}>
-              <div className={`transition-all duration-300 relative w-64 h-64 border p-5 rounded-md ${selectedBike === "Mechanical" ? "bg-white" : "bg-black"} hover:border-yellow-500`}>
-                <Image src="/asset/mechanic.png" alt="bike" layout="fill" objectFit="contain" />
-                <div className={`transition-all duration-300 ${selectedBike === "Mechanical" ? "text-black" : "text-white"} hover:text-black`}>Mechanical</div>
+            <button onClick={() => handleBikeSelection("Classic")}>
+              <div className={`transition-all duration-300 relative w-64 h-64 border p-5 rounded-md ${selectedBike === "Classic" ? "bg-white" : "bg-black"} hover:border-yellow-500`}>
+                <Image src="/asset/classic.png" alt="bike" layout="fill" objectFit="contain" />
+                <div className={`transition-all duration-300 ${selectedBike === "Classic" ? "text-black" : "text-white"} hover:text-black`}>Mechanical</div>
               </div>
             </button>
-            <button onClick={() => handleBikeSelection("Electrical")}>
-              <div className={`transition-all duration-300 relative w-64 h-64 border p-5 rounded-md ${selectedBike === "Electrical" ? "bg-white" : "bg-black"} hover:border-yellow-500`}>
-                <Image src="/asset/electric1.png" alt="bike" layout="fill" objectFit="contain" />
-                <div className={`transition-all duration-300 ${selectedBike === "Electrical" ? "text-black" : "text-white"} hover:text-black`}>Electrical</div>
+            <button onClick={() => handleBikeSelection("Mountain")}>
+              <div className={`transition-all duration-300 relative w-64 h-64 border p-5 rounded-md ${selectedBike === "Mountain" ? "bg-white" : "bg-black"} hover:border-yellow-500`}>
+                <Image src="/asset/mountain.png" alt="bike" layout="fill" objectFit="contain" />
+                <div className={`transition-all duration-300 ${selectedBike === "Mountain" ? "text-black" : "text-white"} hover:text-black`}>Electrical</div>
               </div>
             </button>
             <button onClick={() => handleBikeSelection("Cargo")}>

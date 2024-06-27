@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { WeatherData } from "@/app/type/weatherData"; 
 import { IoIosInformationCircleOutline } from "react-icons/io";
+import { AiOutlineLoading3Quarters } from "react-icons/ai"; // Import spinner icon
+import FitnessTable from "../modal/fitnessModal";
 
 interface PhysicalInputProps {
   selectedGender: string;
@@ -13,6 +15,9 @@ interface PhysicalInputProps {
   setSelectedFitness: (value: number) => void;
   setTemperature: (value: number | null) => void; 
   setPressure: (value: number | null) => void;
+  handleOpenTableModal: () => void;
+  handleCloseTableModal: () => void;
+  showTableModal: boolean;
 }
 
 const PhysicalInput: React.FC<PhysicalInputProps> = ({
@@ -26,6 +31,9 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
   setSelectedFitness,
   setTemperature,
   setPressure,
+  handleCloseTableModal,
+  handleOpenTableModal,
+  showTableModal,
 }) => {
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
@@ -105,7 +113,7 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
   return (
     <div>
       <div className="p-2">
-        <h2 className="text-lg font-bold mb-4">Physical Info</h2>
+        <h2 className="text-lg font-bold mb-4">Physical Information</h2>
         <div className="flex flex-row">
           <div className="p-2">
             Select Gender
@@ -156,7 +164,7 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
                 </option>
               ))}
             </select>
-            <button>
+            <button onClick={handleOpenTableModal} >
               <IoIosInformationCircleOutline size={25} style={{ opacity: 0.7 }} />
             </button>
           </div>
@@ -169,7 +177,7 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
           <div className="p-2 flex items-center">
             <span>Outside Temperature :</span>
               {loading ? (
-                <p className="ml-2">Loading...</p>
+                <AiOutlineLoading3Quarters className="animate-spin ml-2" size={24} />
               ) : (
               weatherData && weatherData.main && (
               <p className="ml-2">{weatherData.main.temp}{" "}°C</p>
@@ -180,13 +188,16 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
           <div className="p-2 flex items-center">
               <span>Atmospheric Pressure :</span>
               {loading ? (
-                <p className="ml-2">Loading....</p>
+                <AiOutlineLoading3Quarters className="animate-spin ml-2" size={24} />
               ) : (weatherData && weatherData.main &&(
               <p className="ml-2">{weatherData.main.pressure}{" "}hPa</p>))
               }
           </div>
         </div>
       </div>
+      <FitnessTable 
+      handleCloseTableModal={handleCloseTableModal}
+      showTableModal={showTableModal}/>
     </div>
   );
 };
