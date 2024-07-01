@@ -1,11 +1,22 @@
 'use client'
-import { useState } from "react";
-import BehaviorInput from "@/components/Input/behaviourInput";
+import { useEffect, useState } from "react";
 import DietInput from "@/components/Input/dietInput";
 import CyclingInput from "@/components/Input/cyclingInput";
 import PhysicalInput from "@/components/Input/physicalInput";
 
-const Calculator: React.FC = () => {
+
+interface EatingHabit {
+  id:number;
+  Region: string;
+  Habit: string;
+  Impact: number;
+}
+
+interface PageProps {
+  eatingData: EatingHabit[];
+}
+
+const Calculator: React.FC<PageProps> = ({eatingData}) => {
   const [selectedGender, setSelectedGender] = useState<string>("-");
   const [selectedRegion, setSelectedRegion] = useState<string>("-");
   const [selectedEating, setSelectedEating] = useState<string>("-");
@@ -18,6 +29,29 @@ const Calculator: React.FC = () => {
   const [pressure, setPressure] = useState<number | null>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showTableModal, setShowTableModal] = useState<boolean>(false);
+  const [eating, setEating] = useState<EatingHabit[] | null>(null)
+  const [fetchError, setFetchError] = useState<string | null>(null)
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const res = await fetch('/api/eatingData');
+        if (!res.ok) {
+          throw new Error('Error fetching data');
+        }
+        const result: EatingHabit[] = await res.json();
+        setEating(result);
+      } catch (error) {
+        if (error instanceof Error) {
+          setFetchError(error.message);
+        } else {
+          setFetchError('An unknown error occurred');
+        }
+      }
+    }
+
+    fetchData();
+  }, []);
 
   const handleOpenModal = () => {
     setShowModal(true);
@@ -73,7 +107,8 @@ const Calculator: React.FC = () => {
             selectedCountry={selectedRegion}
             setSelectedCountry={setSelectedRegion}
             selectedEating={selectedEating}
-            setSelectedEating={setSelectedEating}/>
+            setSelectedEating={setSelectedEating}
+            />
           <CyclingInput 
             selectedBike={selectedBike}
             setSelectedBike={setSelectedBike}
@@ -111,3 +146,5 @@ const Calculator: React.FC = () => {
 };
 
 export default Calculator;
+
+
