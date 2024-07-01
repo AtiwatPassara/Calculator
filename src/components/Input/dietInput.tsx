@@ -1,20 +1,28 @@
 import { Regions } from "@/components/region/regionselector";
 
+interface EatingHabit{
+    id: number;
+    Region: string;
+    Habit: string;
+    Impact: number;
+}
+
 interface DietInputprops{
-    selectedCountry: string;
-    setSelectedCountry: (value: string) => void;
+    selectedRegion: string;
+    setSelectedRegion: (value: string) => void;
     selectedEating: string;
     setSelectedEating: (value: string) => void;
+    eating:  EatingHabit[];
 }
 
 const DietInput:React.FC<DietInputprops> = ({
-    selectedCountry,setSelectedCountry,selectedEating,setSelectedEating
+    selectedRegion,setSelectedRegion,selectedEating,setSelectedEating,eating
 }) => {
 
     const eatingBehaviour = [
         {title:"-" , value:"-"},
-        {title:"Omnivore" , value:"omni"},
-        {title:"Vegetarian" , value:"vegan"},
+        {title:"Omnivore" , value:"Omnivore"},
+        {title:"Vegetarian" , value:"Vegetarian"},
     ]
 
     return <div >
@@ -25,11 +33,11 @@ const DietInput:React.FC<DietInputprops> = ({
                             Select Your Region
                                 <select
                                 className="bg-black text-white p-2 mx-2 border border-white rounded-md focus:border-orange-400"
-                                value={selectedCountry}
-                                onChange={(e) => setSelectedCountry(e.target.value)}
+                                value={selectedRegion}
+                                onChange={(e) => setSelectedRegion(e.target.value)}
                                 >
                                     {Regions.map((option) => (
-                                        <option value={option.code} key={option.name}>
+                                        <option value={option.name} key={option.name}>
                                         {option.name}
                                         </option>
                                     ))}

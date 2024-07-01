@@ -29,17 +29,19 @@ const Calculator: React.FC<PageProps> = ({eatingData}) => {
   const [pressure, setPressure] = useState<number | null>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showTableModal, setShowTableModal] = useState<boolean>(false);
-  const [eating, setEating] = useState<EatingHabit[] | null>(null)
-  const [fetchError, setFetchError] = useState<string | null>(null)
+  const [eating, setEating] = useState<EatingHabit[]>([]);
+  const [selectedImpact,setSelectedImpact] = useState<number>(0);
+  const [fetchError, setFetchError] = useState<string | null>(null);
 
   useEffect(() => {
-    async function fetchData() {
+    async function fetchRegionData() {
       try {
         const res = await fetch('/api/eatingData');
         if (!res.ok) {
           throw new Error('Error fetching data');
         }
         const result: EatingHabit[] = await res.json();
+        console.log('Fetched data:', result); 
         setEating(result);
       } catch (error) {
         if (error instanceof Error) {
@@ -49,9 +51,27 @@ const Calculator: React.FC<PageProps> = ({eatingData}) => {
         }
       }
     }
-
-    fetchData();
+    fetchRegionData();
   }, []);
+
+  useEffect(() => {
+    const matchDiet = (selectedRegion : string | null, selectedEating : string | null) => {
+      if(!eating){return}
+      try{
+        const [match] = eating.filter(data => data.Region === selectedRegion && data.Habit === selectedEating)
+      if(match){
+        setSelectedImpact(match.Impact)}
+      else{
+        setSelectedImpact(0)
+      }}
+      catch(error){
+        console.error(error)
+      }
+  }
+  matchDiet(selectedRegion,selectedEating)
+  },[selectedRegion,selectedEating])
+
+  
 
   const handleOpenModal = () => {
     setShowModal(true);
@@ -92,6 +112,7 @@ const Calculator: React.FC<PageProps> = ({eatingData}) => {
       fitness: selectedFitness,
       temperature: temperature,
       pressure: pressure,
+      impact: selectedImpact,
       // steepness: inputSteepness
     };
 
@@ -104,10 +125,11 @@ const Calculator: React.FC<PageProps> = ({eatingData}) => {
         <span className="text-3xl mb-11 font-bold">Provide Your Details</span>
         <div className="flex flex-col justify-center gap-8">
           <DietInput 
-            selectedCountry={selectedRegion}
-            setSelectedCountry={setSelectedRegion}
+            selectedRegion={selectedRegion}
+            setSelectedRegion={setSelectedRegion}
             selectedEating={selectedEating}
             setSelectedEating={setSelectedEating}
+            eating={eating}
             />
           <CyclingInput 
             selectedBike={selectedBike}
@@ -137,7 +159,7 @@ const Calculator: React.FC<PageProps> = ({eatingData}) => {
             showTableModal={showTableModal}
           />
           <div className="flex justify-center">
-            <button onClick={handleSubmit} className='border rounded py-2 px-4 hover:border-green-500 duration-200 focus:border-2 focus:ring'>Submit</button>
+            <button onClick={() => { handleSubmit();}} className='border rounded py-2 px-4 hover:border-green-500 duration-200 focus:border-2 focus:ring'>Submit</button>
           </div>
         </div>
       </div>
