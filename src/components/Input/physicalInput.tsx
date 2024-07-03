@@ -63,7 +63,7 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
 
   const getUserLocation = () => {
     if (navigator.geolocation) {
-      setLoading(true); // Start loading when the button is clicked
+      setLoading(true); 
       navigator.geolocation.getCurrentPosition(
         (position) => {
           setLatitude(position.coords.latitude);
@@ -71,7 +71,7 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
         },
         (error) => {
           console.error('Error fetching location:', error);
-          setLoading(false); // Stop loading if there is an error
+          setLoading(false);
         }
       );
     } else {
