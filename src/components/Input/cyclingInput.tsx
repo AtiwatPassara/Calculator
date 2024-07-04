@@ -28,7 +28,7 @@ const CyclingInput: React.FC<CyclingInputProps> = ({
           <label>Select your bike </label>
           <button
             type="button"
-            className="bg-white text-black py-2 px-4 rounded-md flex items-center border-2 transition duration-300 ease-in-out hover:border-green-500"
+            className="bg-white text-black py-2 px-4 rounded-md flex items-center border-2 hover:border-green-500 transition-all hover:scale-110 duration-300 ease-in-out"
             onClick={handleOpenModal}
           >
             <MdOutlinePedalBike size={30} />

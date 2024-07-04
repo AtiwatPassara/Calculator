@@ -33,19 +33,19 @@ const BikeModal: React.FC<BikeModalProps> = ({
           <div className="h-full flex justify-center items-center mt-5 p-5 gap-5 rounded-md">
             <button onClick={() => handleBikeSelection("Classic")}>
               <div className={`transition-all duration-300 relative w-64 h-64 border p-5 rounded-md ${selectedBike === "Classic" ? "bg-white" : "bg-black"} hover:border-yellow-500`}>
-                <Image src="/asset/classic.png" alt="bike" layout="fill" objectFit="contain" />
-                <div className={`transition-all duration-300 ${selectedBike === "Classic" ? "text-black" : "text-white"} hover:text-black`}>Mechanical</div>
+                <Image src="/asset/classic.png" alt="bike" layout="fill" objectFit="contain" sizes='30vw'/>
+                <div className={`transition-all duration-300 ${selectedBike === "Classic" ? "text-black" : "text-white"} hover:text-black`}>Classic</div>
               </div>
             </button>
             <button onClick={() => handleBikeSelection("Mountain")}>
               <div className={`transition-all duration-300 relative w-64 h-64 border p-5 rounded-md ${selectedBike === "Mountain" ? "bg-white" : "bg-black"} hover:border-yellow-500`}>
-                <Image src="/asset/mountain.png" alt="bike" layout="fill" objectFit="contain" />
-                <div className={`transition-all duration-300 ${selectedBike === "Mountain" ? "text-black" : "text-white"} hover:text-black`}>Electrical</div>
+                <Image src="/asset/mountain.png" alt="bike" layout="fill" objectFit="contain" sizes='30vw'/>
+                <div className={`transition-all duration-300 ${selectedBike === "Mountain" ? "text-black" : "text-white"} hover:text-black`}>Mountain</div>
               </div>
             </button>
             <button onClick={() => handleBikeSelection("Cargo")}>
               <div className={`transition-all duration-300 relative w-64 h-64 border p-5 rounded-md ${selectedBike === "Cargo" ? "bg-white" : "bg-black"} hover:border-yellow-500`}>
-                <Image src="/asset/cargo.png" alt="bike" layout="fill" objectFit="contain" />
+                <Image src="/asset/cargo.png" alt="bike" layout="fill" sizes='30vw' objectFit="contain" />
                 <div className={`transition-all duration-300 ${selectedBike === "Cargo" ? "text-black" : "text-white"} `}>Cargo</div>
               </div>
             </button>

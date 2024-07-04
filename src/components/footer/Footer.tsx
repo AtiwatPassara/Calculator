@@ -11,9 +11,6 @@ const Footer : React.FC = () => {
                 </div>
                 <div className="border-2 border-white">
                         website
-                        <div>
-                            ok
-                        </div>
                 </div>
                 <div className="flex-col border-2 border-white">
                         contact

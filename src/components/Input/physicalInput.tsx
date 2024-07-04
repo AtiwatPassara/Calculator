@@ -164,7 +164,7 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
                 </option>
               ))}
             </select>
-            <button onClick={handleOpenTableModal} >
+            <button onClick={handleOpenTableModal} className="transition-all hover:scale-110 duration-200 ease-in-out">
               <IoIosInformationCircleOutline size={25} style={{ opacity: 0.7 }} />
             </button>
           </div>
@@ -172,7 +172,7 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
         <div className="flex flex-row justify-between mt-5">
           <div className="p-2">
             Location :{" "}
-            <button onClick={getUserLocation} className="border rounded p-2 focus:ring focus:border-green-500 ml-1">Get my location</button>
+            <button onClick={getUserLocation} className="border rounded p-2 focus:ring focus:border-green-500 ml-1 hover:border-green-500 hover:text-green-300 transition-all hover:scale-110 duration-300 ease-in-out">Get my location</button>
           </div>
           <div className="p-2 flex items-center">
             <span>Outside Temperature :</span>
