@@ -255,7 +255,7 @@ const Calculator: React.FC<PageProps> = () => {
       updatedFitness = 3;
     }
     
-    const matchDiet = (selectedRegion : string | null, selectedEating : string | null) => {
+    const matchDiet = () => {
       if(!eatingData){return 0}
       try{
         const [match] = eatingData.filter(data => data.Region === updatedRegion && data.Habit === updatedEating)
@@ -270,9 +270,26 @@ const Calculator: React.FC<PageProps> = () => {
         return 0;
       }
     }
-    const updatedDietImpact = matchDiet(selectedRegion,selectedEating)
+    const updatedDietImpact = matchDiet()
 
-    const matchBike = (updatedBike: string | null) => {
+    const matchPhysical = () => {
+      if(!physicalData){return 0}
+      try{
+        const [match] = physicalData.filter(data => data.Fitness === updatedFitness)
+      if(match){
+        return match.Impact}
+      else{
+        console.log(physicalData)
+        return 0
+      }}
+      catch(error){
+        console.error(error)
+        return 0
+      }
+      }
+      const updatedPhysical = matchPhysical()
+
+    const matchBike = () => {
       if (!bikeData) { return 0; }
       try {
         const match = bikeData.find(data => data.Bike === updatedBike);
@@ -287,7 +304,7 @@ const Calculator: React.FC<PageProps> = () => {
         return 0;
       }
     }
-    const updatedBikeImpact = matchBike(updatedBike);
+    const updatedBikeImpact = matchBike();
   
     // Update states with default values
     setSelectedBike(updatedBike);
@@ -303,7 +320,7 @@ const Calculator: React.FC<PageProps> = () => {
         age: updatedAge,
         weight: updatedWeight,
         fitness: updatedFitness,
-        physicalImpact: fitnessImpact,
+        physicalImpact: updatedPhysical,
         height: selectedHeight,
       },
       Cycling: {
