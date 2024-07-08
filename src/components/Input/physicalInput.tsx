@@ -150,6 +150,7 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
               min={0}
               max={999}
             />
+            Kg
           </div>
           <div className="p-2 flex items-center">
             Fitness Level

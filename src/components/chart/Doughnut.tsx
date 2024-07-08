@@ -18,29 +18,30 @@ interface UserSelection {
   pressure: number | null,
   impact: number,
   bikeImpact: number,
+  physicalImpact: number,
   // steepness: inputSteepness
 }
 
 
 Chart.register(ArcElement, Tooltip, Legend, Title);
 
-const MyDoughnutChart: React.FC<MyDoughnutChartProps> = ({userInput}) => {
+const ImpactDoughnutChart: React.FC<MyDoughnutChartProps> = ({userInput}) => {
 
   const data = {
-    labels: ['Cycling','Diet'],
+    labels: ['Cycling','Diet','Physical'],
     datasets: [
       {
         label: 'Impact',
-        data: [userInput?.bikeImpact,userInput?.impact],
+        data: [userInput?.bikeImpact,userInput?.impact,userInput?.physicalImpact],
         backgroundColor: [
           'rgba(0, 200, 0, 0.2)',
           'rgba(153, 102, 255, 0.2)',
-        
+          'rgba(128, 72, 26, 0.2)'
         ],
         borderColor: [
           'rgba(0, 255, 0, 1)',
           'rgba(153, 102, 255, 1)',
-          
+          'rgba(128, 72, 26, 1)',
         ],
         borderWidth: 1,
         hoverOffset: 4,
@@ -74,10 +75,10 @@ const MyDoughnutChart: React.FC<MyDoughnutChartProps> = ({userInput}) => {
   };
 
   return (
-    <div style={{ width: '400px', height: '400px' }}>
+    <div style={{ width: '350px', height: '350px' }}>
       <Doughnut data={data} options={options} />
     </div>
   );
 };
 
-export default MyDoughnutChart;
+export default ImpactDoughnutChart;

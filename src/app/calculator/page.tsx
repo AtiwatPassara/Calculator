@@ -4,7 +4,7 @@ import DietInput from "@/components/Input/dietInput";
 import CyclingInput from "@/components/Input/cyclingInput";
 import PhysicalInput from "@/components/Input/physicalInput";
 import MyChart from "@/components/chart/Doughnut";
-import MyDoughnutChart from "@/components/chart/Doughnut";
+import ImpactDoughnutChart from "@/components/chart/Doughnut";
 import Output from "@/components/output/output";
 
 interface UserSelection {
@@ -19,10 +19,17 @@ interface UserSelection {
     pressure: number | null,
     impact: number,
     bikeImpact: number,
+    physicalImpact: number,
     // steepness: inputSteepness
 }
 
-interface EatingHabit {
+interface physicalData{
+  id:number;
+  Fitness:number;
+  Impact:number;
+}
+
+interface eatingData {
   id:number;
   Region: string;
   Habit: string;
@@ -36,7 +43,7 @@ interface bikeData {
 }
 
 interface PageProps {
-  eatingData: EatingHabit[];
+  eatingData: eatingData[];
 }
 
 const Calculator: React.FC<PageProps> = () => {
@@ -52,12 +59,15 @@ const Calculator: React.FC<PageProps> = () => {
   const [pressure, setPressure] = useState<number | null>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showTableModal, setShowTableModal] = useState<boolean>(false);
-  const [eatingData, setEatingData] = useState<EatingHabit[]>([]);
+  const [eatingData, setEatingData] = useState<eatingData[]>([]);
   const [selectedImpact,setSelectedImpact] = useState<number>(0);
   const [bikeData,setBikeData] = useState<bikeData[]>([])
   const [bikeImpact,setBikeImpact] = useState<number>(0)
+  const [fitnessImpact,setFitnessImpact] = useState<number>(0);
+  const [physicalData,setPhysicalData] = useState<physicalData[]>([])
   const [fetchError, setFetchError] = useState<string | null>(null);
-  const [userInput,setUserInput] = useState<UserSelection | null>(null)
+  const [userInput,setUserInput] = useState<UserSelection | null>(null);
+  
 
   useEffect(() => {
     async function fetchBikeData(){
@@ -84,7 +94,7 @@ const Calculator: React.FC<PageProps> = () => {
         if (!res.ok) {
           throw new Error('Error fetching data');
         }
-        const result: EatingHabit[] = await res.json();
+        const result: eatingData[] = await res.json();
         // console.log('Fetched data:', result); 
         setEatingData(result);
       } catch (error) {
@@ -95,8 +105,26 @@ const Calculator: React.FC<PageProps> = () => {
         }
       }
     }
+
+    async function fetchPhysicalData() {
+      try{
+        const res = await fetch('/api/physicalData');
+        if(!res.ok){
+          throw new Error('Error fetching data');
+        }
+        const result: physicalData[] = await res.json();
+        setPhysicalData(result)
+      } catch (error) {
+        if (error instanceof Error) {
+          setFetchError(error.message);
+        } else {
+          setFetchError('An unknown error occurred');
+        }
+      }
+    }
     fetchRegionData();
     fetchBikeData();
+    fetchPhysicalData();
   }, []);
 
   useEffect(() => {
@@ -135,6 +163,23 @@ const Calculator: React.FC<PageProps> = () => {
   matchBike(selectedBike)
   },[selectedBike])
   
+  useEffect(() => {
+    const matchPhysical = (selectedFitness : number | null ) => {
+      if(!physicalData){return}
+      try{
+        const [match] = physicalData.filter(data => data.Fitness === selectedFitness)
+      if(match){
+        setFitnessImpact(match.Impact)}
+      else{
+        setFitnessImpact(0)
+        console.log(physicalData)
+      }}
+      catch(error){
+        console.error(error)
+      }
+      }
+      matchPhysical(selectedFitness)
+      },[selectedFitness])
 
   const handleOpenModal = () => {
     setShowModal(true);
@@ -247,6 +292,7 @@ const Calculator: React.FC<PageProps> = () => {
       pressure: pressure,
       impact: updatedDietImpact,
       bikeImpact: updatedBikeImpact,
+      physicalImpact: fitnessImpact, 
       // steepness: inputSteepness
     };
   
@@ -260,7 +306,7 @@ const Calculator: React.FC<PageProps> = () => {
     <div className="flex justify-center items-center min-h-screen">
       <div className="flex flex-col items-center mt-5 ">
         <span className="text-3xl m-5 font-bold">Provide Your Details</span>
-          <div className="flex flex-col justify-center gap-8 m-3 border p-9 border-gray-500">
+          <div className="flex flex-col justify-center gap-8 m-9 border p-9 border-gray-500">
             <DietInput 
               selectedRegion={selectedRegion}
               setSelectedRegion={setSelectedRegion}

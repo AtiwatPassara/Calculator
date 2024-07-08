@@ -1,6 +1,7 @@
 
 import { useState } from "react"
-import MyDoughnutChart from "../chart/Doughnut"
+import ImpactDoughnutChart from "../chart/Doughnut"
+import ImpactBarChart from "../chart/Barchart"
 
 interface UserSelection {
     gender: string,
@@ -14,6 +15,7 @@ interface UserSelection {
     pressure: number | null,
     impact: number,
     bikeImpact: number,
+    physicalImpact: number,
     // steepness: inputSteepness
 }
 
@@ -31,12 +33,12 @@ const OutputChart: React.FC<OutputProps> = ({userInput}) => {
                 <div>
                     <hr className="m-4"/>
                     <span className="flex text-3xl mt-5 font-bold justify-center ">Result</span>
-                    <div className="flex">
-                        <div className="m-4">
-                            <MyDoughnutChart userInput={userInput}/>
+                    <div className="flex flex-col">
+                        <div className="flex m-4 justify-center">
+                            <ImpactDoughnutChart userInput={userInput}/>
                         </div>
-                        <div className="m-4">
-                            <MyDoughnutChart userInput={userInput}/>
+                        <div className="flex justify-center m-4 ">
+                            <ImpactBarChart userInput={userInput}/>
                         </div>
                     </div>
                 </div>

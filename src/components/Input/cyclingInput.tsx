@@ -22,19 +22,53 @@ const CyclingInput: React.FC<CyclingInputProps> = ({
 }) => {
   return (
     <div>
-      <div className="p-2">
+      <div className="p-2 ">
         <h2 className="text-lg font-bold mb-4">Cycling Information</h2>
-        <div className="flex items-center space-x-2">
-          <label>Select your bike </label>
-          <button
-            type="button"
-            className="bg-white text-black py-2 px-4 rounded-md flex items-center border-2 hover:border-green-500 transition-all hover:scale-110 duration-300 ease-in-out"
-            onClick={handleOpenModal}
-          >
-            <MdOutlinePedalBike size={30} />
-          </button>
-          <span>:</span>
-          <span>{selectedBike ? `${selectedBike} Bike` : "No bike selected"}</span>
+        <div className='flex flex-row justify-between '>
+          <div className="flex items-center space-x-2 ">
+            <label>Select your bike </label>
+            <button
+              type="button"
+              className="bg-white text-black py-2 px-4 rounded-md flex items-center border-2 hover:border-green-500 transition-all hover:scale-110 duration-300 ease-in-out"
+              onClick={handleOpenModal}
+            >
+              <MdOutlinePedalBike size={30} />
+            </button>
+            <span>:</span>
+            <span>{selectedBike ? `${selectedBike} Bike` : "No bike selected"}</span>
+          </div>
+          <div className="flex items-center">
+            Average Speed : 
+            <input
+              type="number"
+              className="bg-black text-white p-2 mx-2 border border-white rounded-md w-20 focus:border-orange-500 focus:outline-none"
+              min={0}
+              max={999}
+            />
+              Km/hr
+          </div>
+        </div>
+        <div className='flex flex-row justify-between '>
+          <div className="flex items-center mt-5">
+            Average Speed : 
+            <input
+              type="number"
+              className="bg-black text-white p-2 mx-2 border border-white rounded-md w-20 focus:border-orange-500 focus:outline-none"
+              min={0}
+              max={999}
+            />
+              Km/hr
+          </div>
+          <div className="flex items-center">
+            Duration : 
+            <input
+              type="number"
+              className="bg-black text-white p-2 mx-2 border border-white rounded-md w-20 focus:border-orange-500 focus:outline-none"
+              min={0}
+              max={999}
+            />
+              Minute
+          </div>
         </div>
       </div>
       <BikeModal

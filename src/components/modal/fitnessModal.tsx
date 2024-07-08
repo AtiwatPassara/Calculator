@@ -62,7 +62,7 @@ const FitnessTable: React.FC<FitnessTableProps> = ({
             <tr>
               <td className="px-4 py-2 text-center">3</td>
               <td className="px-4 py-2">Regularly participate in light-intensity physical activity that does not cause shortness of breath</td>
-              <td className="px-4 py-2">More than 60 minutes 3 of weekly activity</td>
+              <td className="px-4 py-2">More than 60 minutes of weekly activity</td>
             </tr>
             <tr>
               <td className="px-4 py-2 text-center">4</td>
