@@ -3,26 +3,35 @@ import { useEffect, useState } from "react";
 import DietInput from "@/components/Input/dietInput";
 import CyclingInput from "@/components/Input/cyclingInput";
 import PhysicalInput from "@/components/Input/physicalInput";
-import MyChart from "@/components/chart/Doughnut";
-import ImpactDoughnutChart from "@/components/chart/Doughnut";
 import Output from "@/components/output/output";
 
+interface Physical{
+  gender: string,
+  age: number,
+  weight: number,
+  fitness: number,
+  physicalImpact: number,
+}
+
+interface Cycling{
+  bike: string | null, 
+  speed: number,
+  duration: number,
+  temperature: number | null,
+  pressure: number | null,
+  bikeImpact: number,
+}
+
+interface Diet{
+  region: string,
+  eating: string, 
+  impact: number,
+}
+
 interface UserSelection {
-    gender: string,
-    region: string,
-    bike: string | null,
-    eating: string,
-    age: number,
-    weight: number,
-    fitness: number,
-    temperature: number | null,
-    pressure: number | null,
-    impact: number,
-    bikeImpact: number,
-    physicalImpact: number,
-    speed: number,
-    duration: number,
-    // steepness: inputSteepness
+  Physical : Physical,
+  Cycling : Cycling,
+  Diet : Diet,
 }
 
 interface physicalData{
@@ -287,21 +296,27 @@ const Calculator: React.FC<PageProps> = () => {
     setSelectedFitness(updatedFitness);
   
     const userSelection: UserSelection = {
-      gender: selectedGender,
-      region: updatedRegion,
-      bike: updatedBike,
-      eating: updatedEating,
-      age: updatedAge,
-      weight: updatedWeight,
-      fitness: updatedFitness,
-      temperature: temperature,
-      pressure: pressure,
-      impact: updatedDietImpact,
-      bikeImpact: updatedBikeImpact,
-      physicalImpact: fitnessImpact, 
-      speed: updatedSpeed,
-      duration: updatedDuration,
-      // steepness: inputSteepness
+      Physical: {
+        gender: selectedGender,
+        age: updatedAge,
+        weight: updatedWeight,
+        fitness: updatedFitness,
+        physicalImpact: fitnessImpact,
+      },
+      Cycling: {
+        bike: updatedBike,
+        speed: updatedSpeed,
+        duration: updatedDuration,
+        temperature: temperature,
+        pressure: pressure,
+        bikeImpact: updatedBikeImpact,
+      },
+      Diet: {
+        region: updatedRegion,
+        eating: updatedEating,
+        impact: updatedDietImpact,
+      }
+   
     };
   
     // Update the userInput state

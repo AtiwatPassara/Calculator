@@ -6,22 +6,34 @@ interface MyDoughnutChartProps {
   userInput : UserSelection | null
 }
 
-interface UserSelection {
+interface Physical{
   gender: string,
-  region: string,
-  bike: string | null,
-  eating: string,
   age: number,
   weight: number,
   fitness: number,
-  temperature: number | null,
-  pressure: number | null,
-  impact: number,
-  bikeImpact: number,
   physicalImpact: number,
-  // steepness: inputSteepness
 }
 
+interface Cycling{
+  bike: string | null, 
+  speed: number,
+  duration: number,
+  temperature: number | null,
+  pressure: number | null,
+  bikeImpact: number,
+}
+
+interface Diet{
+  region: string,
+  eating: string, 
+  impact: number,
+}
+
+interface UserSelection {
+  Physical : Physical,
+  Cycling : Cycling,
+  Diet : Diet,
+}
 
 Chart.register(ArcElement, Tooltip, Legend, Title);
 
@@ -32,7 +44,7 @@ const ImpactDoughnutChart: React.FC<MyDoughnutChartProps> = ({userInput}) => {
     datasets: [
       {
         label: 'Impact',
-        data: [userInput?.bikeImpact,userInput?.impact,userInput?.physicalImpact],
+        data: [userInput?.Cycling.bikeImpact,userInput?.Diet.impact,userInput?.Physical.physicalImpact],
         backgroundColor: [
           'rgba(0, 200, 0, 0.2)',
           'rgba(153, 102, 255, 0.2)',
