@@ -9,6 +9,8 @@ interface CyclingInputProps {
   handleCloseModal: () => void;
   handleBikeSelection: (bikeType: string) => void;
   handleBikeSubmit: () => void;
+  setSelectedSpeed: (value: number) => void;
+  selectedSpeed: number;
 }
 
 const CyclingInput: React.FC<CyclingInputProps> = ({
@@ -19,7 +21,15 @@ const CyclingInput: React.FC<CyclingInputProps> = ({
   handleCloseModal,
   handleBikeSelection,
   handleBikeSubmit,
+  setSelectedSpeed,
+  selectedSpeed,
 }) => {
+
+  const handleSpeedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSelectedSpeed(Number(value));
+  }
+
   return (
     <div>
       <div className="p-2 ">
@@ -37,16 +47,6 @@ const CyclingInput: React.FC<CyclingInputProps> = ({
             <span>:</span>
             <span>{selectedBike ? `${selectedBike} Bike` : "No bike selected"}</span>
           </div>
-          <div className="flex items-center">
-            Average Speed : 
-            <input
-              type="number"
-              className="bg-black text-white p-2 mx-2 border border-white rounded-md w-20 focus:border-orange-500 focus:outline-none"
-              min={0}
-              max={999}
-            />
-              Km/hr
-          </div>
         </div>
         <div className='flex flex-row justify-between '>
           <div className="flex items-center mt-5">
@@ -54,6 +54,8 @@ const CyclingInput: React.FC<CyclingInputProps> = ({
             <input
               type="number"
               className="bg-black text-white p-2 mx-2 border border-white rounded-md w-20 focus:border-orange-500 focus:outline-none"
+              onChange={handleSpeedChange}
+              value={selectedSpeed}
               min={0}
               max={999}
             />

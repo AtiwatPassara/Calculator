@@ -20,6 +20,7 @@ interface UserSelection {
     impact: number,
     bikeImpact: number,
     physicalImpact: number,
+    speed: number,
     // steepness: inputSteepness
 }
 
@@ -67,6 +68,7 @@ const Calculator: React.FC<PageProps> = () => {
   const [physicalData,setPhysicalData] = useState<physicalData[]>([])
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [userInput,setUserInput] = useState<UserSelection | null>(null);
+  const [selectedSpeed,setSelectedSpeed] = useState<number>(0);
   
 
   useEffect(() => {
@@ -218,6 +220,7 @@ const Calculator: React.FC<PageProps> = () => {
     let updatedAge = selectedAge;
     let updatedWeight = selectedWeight;
     let updatedFitness = selectedFitness;
+    let updatedSpeed = selectedSpeed;
   
     if (selectedBike === null) {
       updatedBike = "Classic";
@@ -293,6 +296,8 @@ const Calculator: React.FC<PageProps> = () => {
       impact: updatedDietImpact,
       bikeImpact: updatedBikeImpact,
       physicalImpact: fitnessImpact, 
+      speed: updatedSpeed,
+
       // steepness: inputSteepness
     };
   
@@ -321,7 +326,10 @@ const Calculator: React.FC<PageProps> = () => {
               handleOpenModal={handleOpenModal}
               handleCloseModal={handleCloseModal}
               handleBikeSelection={handleBikeSelection}
-              handleBikeSubmit={handleBikeSubmit}/>
+              handleBikeSubmit={handleBikeSubmit}
+              setSelectedSpeed={setSelectedSpeed}
+              selectedSpeed={selectedSpeed}
+              />
             {/* <BehaviorInput 
               inputSteepness={inputSteepness}
               setInputSteepness={setInputSteepness}
