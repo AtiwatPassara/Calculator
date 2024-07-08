@@ -11,6 +11,8 @@ interface CyclingInputProps {
   handleBikeSubmit: () => void;
   setSelectedSpeed: (value: number) => void;
   selectedSpeed: number;
+  setSelectedDuration: (value: number) => void;
+  selectedDuration: number;
 }
 
 const CyclingInput: React.FC<CyclingInputProps> = ({
@@ -23,11 +25,18 @@ const CyclingInput: React.FC<CyclingInputProps> = ({
   handleBikeSubmit,
   setSelectedSpeed,
   selectedSpeed,
+  setSelectedDuration,
+  selectedDuration,
 }) => {
 
   const handleSpeedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSelectedSpeed(Number(value));
+  }
+
+  const handleDurationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value =e.target.value;
+    setSelectedDuration(Number(value));
   }
 
   return (
@@ -68,6 +77,8 @@ const CyclingInput: React.FC<CyclingInputProps> = ({
               className="bg-black text-white p-2 mx-2 border border-white rounded-md w-20 focus:border-orange-500 focus:outline-none"
               min={0}
               max={999}
+              onChange={handleDurationChange}
+              value={selectedDuration}
             />
               Minute
           </div>
