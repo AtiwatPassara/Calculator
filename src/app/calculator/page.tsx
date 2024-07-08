@@ -11,6 +11,7 @@ interface Physical{
   weight: number,
   fitness: number,
   physicalImpact: number,
+  height: number,
 }
 
 interface Cycling{
@@ -80,6 +81,7 @@ const Calculator: React.FC<PageProps> = () => {
   const [userInput,setUserInput] = useState<UserSelection | null>(null);
   const [selectedSpeed,setSelectedSpeed] = useState<number>(0);
   const [selectedDuration,setSelectedDuration] = useState<number>(0);
+  const [selectedHeight,setSelectedHeight] = useState<number>(0);
   
 
   useEffect(() => {
@@ -302,6 +304,7 @@ const Calculator: React.FC<PageProps> = () => {
         weight: updatedWeight,
         fitness: updatedFitness,
         physicalImpact: fitnessImpact,
+        height: selectedHeight,
       },
       Cycling: {
         bike: updatedBike,
@@ -368,6 +371,8 @@ const Calculator: React.FC<PageProps> = () => {
               handleCloseTableModal={handleCloseTableModal}
               handleOpenTableModal={handleOpenTableModal}
               showTableModal={showTableModal}
+              selectedHeight={selectedHeight}
+              setSelectedHeight={setSelectedHeight}
             />
             <div className="flex justify-center">
               <button onClick={() => handleSubmit()} className='border rounded py-2 px-4 hover:border-green-500 duration-200 focus:border-2 focus:ring'>Submit</button>
