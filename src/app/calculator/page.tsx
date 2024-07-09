@@ -82,6 +82,9 @@ const Calculator: React.FC<PageProps> = () => {
   const [selectedSpeed,setSelectedSpeed] = useState<number>(0);
   const [selectedDuration,setSelectedDuration] = useState<number>(0);
   const [selectedHeight,setSelectedHeight] = useState<number>(0);
+  const [showClassicModal,setShowClassicModal] = useState<boolean>(false);
+  const [selectedPower,setSelectedPower] = useState<string | null>("-");
+  const [selectedMaterial,setSelectedMaterial] = useState<string | null>("-");
   
 
   useEffect(() => {
@@ -192,9 +195,31 @@ const Calculator: React.FC<PageProps> = () => {
       catch(error){
         console.error(error)
       }
-      }
+    }
       matchPhysical(selectedFitness)
       },[selectedFitness])
+
+  useEffect(() => {console.log("UpdateGender")},[selectedGender])
+
+  const handleCloseClassic = () => {
+    setShowClassicModal(false)
+  }
+
+  const handleMaterialSelection = (material: string) => {
+    setSelectedPower(material);
+  }
+
+  const handleSubmitClassic = () => {
+    setShowClassicModal(false)
+  }
+
+  const handlePowerSelection = (power: string) => {
+    setSelectedPower(power);
+  }
+
+  const handleOpenClassic = () => {
+    setShowClassicModal(true);
+  };
 
   const handleOpenModal = () => {
     setShowModal(true);
@@ -213,7 +238,7 @@ const Calculator: React.FC<PageProps> = () => {
   }
 
   const handleBikeSelection = (bikeType: string) => {
-    setSelectedBike((prevBike) => (prevBike === bikeType ? null : bikeType));
+    setSelectedBike(bikeType);
   };
 
   const handleBikeSubmit = () => {
@@ -235,6 +260,7 @@ const Calculator: React.FC<PageProps> = () => {
     let updatedFitness = selectedFitness;
     let updatedSpeed = selectedSpeed;
     let updatedDuration = selectedDuration;
+    let updatedGender = selectedGender;
   
     if (selectedBike === null) {
       updatedBike = "Classic";
@@ -253,6 +279,12 @@ const Calculator: React.FC<PageProps> = () => {
     }
     if (selectedFitness === 0) {
       updatedFitness = 3;
+    }
+    if(selectedGender === "-"){
+      updatedGender = "male";
+    }
+    if(selectedSpeed === 0){
+      updatedSpeed = 15;
     }
     
     const matchDiet = () => {
@@ -313,6 +345,8 @@ const Calculator: React.FC<PageProps> = () => {
     setSelectedAge(updatedAge);
     setSelectedWeight(updatedWeight);
     setSelectedFitness(updatedFitness);
+    setSelectedGender(updatedGender);
+    setSelectedSpeed(updatedSpeed);
   
     const userSelection: UserSelection = {
       Physical: {
@@ -369,6 +403,14 @@ const Calculator: React.FC<PageProps> = () => {
               selectedSpeed={selectedSpeed}
               setSelectedDuration={setSelectedDuration}
               selectedDuration={selectedDuration}
+              showClassicModal={showClassicModal}
+              handleOpenClassic={handleOpenClassic}  
+              handleCloseClassic={handleCloseClassic}
+              handleSubmitClassic={handleSubmitClassic} 
+              handlePowerSelection={handlePowerSelection} 
+              selectedPower={selectedPower} 
+              handleMaterialSelection={handleMaterialSelection} 
+              selectedMaterial={selectedMaterial}              
               />
             {/* <BehaviorInput 
               inputSteepness={inputSteepness}

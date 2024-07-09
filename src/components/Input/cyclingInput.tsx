@@ -1,5 +1,6 @@
 import { MdOutlinePedalBike } from "react-icons/md";
 import BikeModal from "../modal/bikeModal";
+import ClassicModal from "../modal/classicModal";
 
 interface CyclingInputProps {
   selectedBike: string | null;
@@ -13,6 +14,14 @@ interface CyclingInputProps {
   selectedSpeed: number;
   setSelectedDuration: (value: number) => void;
   selectedDuration: number;
+  showClassicModal: boolean;
+  handleOpenClassic: () => void;
+  handleCloseClassic: () => void;
+  handleSubmitClassic: () => void;
+  handlePowerSelection: (power: string) => void;
+  selectedPower: string | null;
+  handleMaterialSelection: (material: string) => void;
+  selectedMaterial: string | null;
 }
 
 const CyclingInput: React.FC<CyclingInputProps> = ({
@@ -27,6 +36,15 @@ const CyclingInput: React.FC<CyclingInputProps> = ({
   selectedSpeed,
   setSelectedDuration,
   selectedDuration,
+  showClassicModal,
+  handleOpenClassic,
+  handleCloseClassic,
+  handleSubmitClassic,
+  handlePowerSelection,
+  selectedPower,
+  handleMaterialSelection,
+  selectedMaterial,
+
 }) => {
 
   const handleSpeedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -90,7 +108,21 @@ const CyclingInput: React.FC<CyclingInputProps> = ({
         selectedBike={selectedBike}
         handleBikeSelection={handleBikeSelection}
         handleBikeSubmit={handleBikeSubmit}
-      />
+        showClassicModal={showClassicModal}
+        handleOpenClassic={handleOpenClassic} 
+        handleCloseClassic={handleCloseClassic} 
+        handleSubmitClassic={handleSubmitClassic} 
+        handleMaterialSelection={handleMaterialSelection} 
+        handlePowerSelection={handlePowerSelection} 
+        selectedMaterial={null} selectedPower={null}      />
+      <ClassicModal showClassicModal={false} 
+       handleCloseClassic={handleCloseClassic}
+       handleSubmitClassic={handleSubmitClassic} 
+       handleMaterialSelection={handleMaterialSelection} 
+       handlePowerSelection={handlePowerSelection} 
+       selectedMaterial={selectedMaterial} 
+       selectedPower={selectedPower}        />
+
     </div>
   );
 };
