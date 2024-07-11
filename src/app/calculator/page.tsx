@@ -3,26 +3,36 @@ import { useEffect, useState } from "react";
 import DietInput from "@/components/Input/dietInput";
 import CyclingInput from "@/components/Input/cyclingInput";
 import PhysicalInput from "@/components/Input/physicalInput";
-import MyChart from "@/components/chart/Doughnut";
-import ImpactDoughnutChart from "@/components/chart/Doughnut";
 import Output from "@/components/output/output";
 
+interface Physical{
+  gender: string,
+  age: number,
+  weight: number,
+  fitness: number,
+  physicalImpact: number,
+  height: number,
+  temperature: number | null,
+  pressure: number | null,
+}
+
+interface Cycling{
+  bike: string | null, 
+  speed: number,
+  duration: number,
+  bikeImpact: number,
+}
+
+interface Diet{
+  region: string,
+  eating: string, 
+  impact: number,
+}
+
 interface UserSelection {
-    gender: string,
-    region: string,
-    bike: string | null,
-    eating: string,
-    age: number,
-    weight: number,
-    fitness: number,
-    temperature: number | null,
-    pressure: number | null,
-    impact: number,
-    bikeImpact: number,
-    physicalImpact: number,
-    speed: number,
-    duration: number,
-    // steepness: inputSteepness
+  Physical : Physical,
+  Cycling : Cycling,
+  Diet : Diet,
 }
 
 interface physicalData{
@@ -71,6 +81,10 @@ const Calculator: React.FC<PageProps> = () => {
   const [userInput,setUserInput] = useState<UserSelection | null>(null);
   const [selectedSpeed,setSelectedSpeed] = useState<number>(0);
   const [selectedDuration,setSelectedDuration] = useState<number>(0);
+  const [selectedHeight,setSelectedHeight] = useState<number>(0);
+  const [showClassicModal,setShowClassicModal] = useState<boolean>(false);
+  const [selectedPower,setSelectedPower] = useState<string | null>("-");
+  const [selectedMaterial,setSelectedMaterial] = useState<string | null>("-");
   
 
   useEffect(() => {
@@ -181,9 +195,29 @@ const Calculator: React.FC<PageProps> = () => {
       catch(error){
         console.error(error)
       }
-      }
+    }
       matchPhysical(selectedFitness)
       },[selectedFitness])
+
+  const handleCloseClassic = () => {
+    setShowClassicModal(false)
+  }
+
+  const handleMaterialSelection = (material: string) => {
+    setSelectedMaterial(material);
+  }
+
+  const handleSubmitClassic = () => {
+    setShowClassicModal(false)
+  }
+
+  const handlePowerSelection = (power: string) => {
+    setSelectedPower(power);
+  }
+
+  const handleOpenClassic = () => {
+    setShowClassicModal(true);
+  };
 
   const handleOpenModal = () => {
     setShowModal(true);
@@ -202,7 +236,7 @@ const Calculator: React.FC<PageProps> = () => {
   }
 
   const handleBikeSelection = (bikeType: string) => {
-    setSelectedBike((prevBike) => (prevBike === bikeType ? null : bikeType));
+    setSelectedBike(bikeType);
   };
 
   const handleBikeSubmit = () => {
@@ -224,6 +258,8 @@ const Calculator: React.FC<PageProps> = () => {
     let updatedFitness = selectedFitness;
     let updatedSpeed = selectedSpeed;
     let updatedDuration = selectedDuration;
+    let updatedGender = selectedGender;
+    let updatedHeight = selectedHeight;
   
     if (selectedBike === null) {
       updatedBike = "Classic";
@@ -243,8 +279,20 @@ const Calculator: React.FC<PageProps> = () => {
     if (selectedFitness === 0) {
       updatedFitness = 3;
     }
+    if(selectedGender === "-"){
+      updatedGender = "male";
+    }
+    if(selectedSpeed === 0){
+      updatedSpeed = 15;
+    }
+    if(selectedHeight === 0){
+      updatedHeight = 170;
+    }
+    if(selectedDuration === 0){
+      updatedDuration = 30
+    }
     
-    const matchDiet = (selectedRegion : string | null, selectedEating : string | null) => {
+    const matchDiet = () => {
       if(!eatingData){return 0}
       try{
         const [match] = eatingData.filter(data => data.Region === updatedRegion && data.Habit === updatedEating)
@@ -259,9 +307,26 @@ const Calculator: React.FC<PageProps> = () => {
         return 0;
       }
     }
-    const updatedDietImpact = matchDiet(selectedRegion,selectedEating)
+    const updatedDietImpact = matchDiet()
 
-    const matchBike = (updatedBike: string | null) => {
+    const matchPhysical = () => {
+      if(!physicalData){return 0}
+      try{
+        const [match] = physicalData.filter(data => data.Fitness === updatedFitness)
+      if(match){
+        return match.Impact}
+      else{
+        console.log(physicalData)
+        return 0
+      }}
+      catch(error){
+        console.error(error)
+        return 0
+      }
+      }
+      const updatedPhysical = matchPhysical()
+
+    const matchBike = () => {
       if (!bikeData) { return 0; }
       try {
         const match = bikeData.find(data => data.Bike === updatedBike);
@@ -276,7 +341,7 @@ const Calculator: React.FC<PageProps> = () => {
         return 0;
       }
     }
-    const updatedBikeImpact = matchBike(updatedBike);
+    const updatedBikeImpact = matchBike();
   
     // Update states with default values
     setSelectedBike(updatedBike);
@@ -285,23 +350,34 @@ const Calculator: React.FC<PageProps> = () => {
     setSelectedAge(updatedAge);
     setSelectedWeight(updatedWeight);
     setSelectedFitness(updatedFitness);
+    setSelectedGender(updatedGender);
+    setSelectedSpeed(updatedSpeed);
+    setSelectedHeight(updatedHeight);
+    setSelectedDuration(updatedDuration);
   
     const userSelection: UserSelection = {
-      gender: selectedGender,
-      region: updatedRegion,
-      bike: updatedBike,
-      eating: updatedEating,
-      age: updatedAge,
-      weight: updatedWeight,
-      fitness: updatedFitness,
-      temperature: temperature,
-      pressure: pressure,
-      impact: updatedDietImpact,
-      bikeImpact: updatedBikeImpact,
-      physicalImpact: fitnessImpact, 
-      speed: updatedSpeed,
-      duration: updatedDuration,
-      // steepness: inputSteepness
+      Physical: {
+        gender: updatedGender,
+        age: updatedAge,
+        weight: updatedWeight,
+        fitness: updatedFitness,
+        physicalImpact: updatedPhysical,
+        height: updatedHeight,
+        temperature: temperature,
+        pressure: pressure,
+      },
+      Cycling: {
+        bike: updatedBike,
+        speed: updatedSpeed,
+        duration: updatedDuration,
+        bikeImpact: updatedBikeImpact,
+      },
+      Diet: {
+        region: updatedRegion,
+        eating: updatedEating,
+        impact: updatedDietImpact,
+      }
+   
     };
   
     // Update the userInput state
@@ -334,6 +410,14 @@ const Calculator: React.FC<PageProps> = () => {
               selectedSpeed={selectedSpeed}
               setSelectedDuration={setSelectedDuration}
               selectedDuration={selectedDuration}
+              showClassicModal={showClassicModal}
+              handleOpenClassic={handleOpenClassic}  
+              handleCloseClassic={handleCloseClassic}
+              handleSubmitClassic={handleSubmitClassic} 
+              handlePowerSelection={handlePowerSelection} 
+              selectedPower={selectedPower} 
+              handleMaterialSelection={handleMaterialSelection} 
+              selectedMaterial={selectedMaterial}              
               />
             {/* <BehaviorInput 
               inputSteepness={inputSteepness}
@@ -353,6 +437,8 @@ const Calculator: React.FC<PageProps> = () => {
               handleCloseTableModal={handleCloseTableModal}
               handleOpenTableModal={handleOpenTableModal}
               showTableModal={showTableModal}
+              selectedHeight={selectedHeight}
+              setSelectedHeight={setSelectedHeight}
             />
             <div className="flex justify-center">
               <button onClick={() => handleSubmit()} className='border rounded py-2 px-4 hover:border-green-500 duration-200 focus:border-2 focus:ring'>Submit</button>

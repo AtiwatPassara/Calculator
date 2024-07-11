@@ -40,7 +40,6 @@ const DietInput: React.FC<DietInputProps> = ({
               className="bg-black text-white p-2 mx-2 border border-white rounded-md focus:border-orange-400"
               value={selectedRegion}
               onChange={(e) => setSelectedRegion(e.target.value)}
-              required
             >
               {Regions.map((option) => (
                 <option value={option.name} key={option.name}>

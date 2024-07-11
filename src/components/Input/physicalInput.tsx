@@ -15,6 +15,8 @@ interface PhysicalInputProps {
   setSelectedFitness: (value: number) => void;
   setTemperature: (value: number | null) => void; 
   setPressure: (value: number | null) => void;
+  setSelectedHeight: (value: number) => void;
+  selectedHeight: number;
   handleOpenTableModal: () => void;
   handleCloseTableModal: () => void;
   showTableModal: boolean;
@@ -27,6 +29,8 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
   setSelectedAge,
   selectedWeight,
   setSelectedWeight,
+  setSelectedHeight,
+  selectedHeight,
   selectedFitness,
   setSelectedFitness,
   setTemperature,
@@ -110,11 +114,16 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
     }
   }
 
+  const handleHeightChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSelectedHeight(Number(value))
+  }
+
   return (
     <div>
       <div className="p-2">
         <h2 className="text-lg font-bold mb-4">Physical Information</h2>
-        <div className="flex flex-row">
+        <div className="flex flex-row justify-between">
           <div className="p-2">
             Select Gender
             <select
@@ -129,6 +138,25 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
               ))}
             </select>
           </div>
+          <div className="p-2 flex items-center">
+              Fitness Level
+              <select
+                className="bg-black text-white p-2 mx-2 border border-white rounded-md w-20 focus:border-[#42ddf5] focus:outline-none"
+                value={selectedFitness}
+                onChange={(e) => setSelectedFitness(Number(e.target.value))}
+              >
+                {selectFitness.map((option) => (
+                  <option value={option.value} key={option.value}>
+                    {option.title}
+                  </option>
+                ))}
+              </select>
+              <button onClick={handleOpenTableModal} className="transition-all hover:scale-110 duration-200 ease-in-out">
+                <IoIosInformationCircleOutline size={25} style={{ opacity: 0.7 }} />
+              </button>
+          </div>
+        </div>
+        <div className="flex flex-row mt-5 justify-between">
           <div className="p-2">
             Age
             <input
@@ -152,22 +180,17 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
             />
             Kg
           </div>
-          <div className="p-2 flex items-center">
-            Fitness Level
-            <select
-              className="bg-black text-white p-2 mx-2 border border-white rounded-md w-20 focus:border-[#42ddf5] focus:outline-none"
-              value={selectedFitness}
-              onChange={(e) => setSelectedFitness(Number(e.target.value))}
-            >
-              {selectFitness.map((option) => (
-                <option value={option.value} key={option.value}>
-                  {option.title}
-                </option>
-              ))}
-            </select>
-            <button onClick={handleOpenTableModal} className="transition-all hover:scale-110 duration-200 ease-in-out">
-              <IoIosInformationCircleOutline size={25} style={{ opacity: 0.7 }} />
-            </button>
+          <div className="p-2">
+            Height
+            <input
+              type="number"
+              className="bg-black text-white p-2 mx-2 border border-white rounded-md w-20 focus:border-red-500 focus:outline-none"
+              value={selectedHeight}
+              onChange={handleHeightChange}
+              min={0}
+              max={999}
+            />
+            Cm
           </div>
         </div>
         <div className="flex flex-row justify-between mt-5">
@@ -185,7 +208,6 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
               )
               )}
           </div>
-
           <div className="p-2 flex items-center">
               <span>Atmospheric Pressure :</span>
               {loading ? (
@@ -204,3 +226,6 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
 };
 
 export default PhysicalInput;
+
+
+

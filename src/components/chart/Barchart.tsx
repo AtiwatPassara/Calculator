@@ -6,19 +6,33 @@ interface ImpactBarChartProps {
   userInput : UserSelection | null
 }
 
-interface UserSelection {
+interface Physical{
   gender: string,
-  region: string,
-  bike: string | null,
-  eating: string,
   age: number,
   weight: number,
   fitness: number,
+  physicalImpact: number,
   temperature: number | null,
   pressure: number | null,
-  impact: number,
+}
+
+interface Cycling{
+  bike: string | null, 
+  speed: number,
+  duration: number,
   bikeImpact: number,
-  // steepness: inputSteepness
+}
+
+interface Diet{
+  region: string,
+  eating: string, 
+  impact: number,
+}
+
+interface UserSelection {
+  Physical : Physical,
+  Cycling : Cycling,
+  Diet : Diet,
 }
 
 
