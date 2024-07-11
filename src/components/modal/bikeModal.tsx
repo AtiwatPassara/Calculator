@@ -98,7 +98,7 @@ const BikeModal: React.FC<BikeModalProps> = ({
           </div>
           <div className="flex flex-row justify-center gap-3 mt-5">
             <div className='flex items-center p-2 rounded-md'>
-              <span className="text-white ">Select Material</span>
+              <span className={`text-white ${selectedBike != 'Classic' ? 'text-[#B3B3B3]' : ''}`}>Select Material</span>
               <select
                 className="bg-black text-white p-2 border border-white rounded-md focus:border-green-500 m-2"
                 onChange={(e) => handleMaterialSelection(e.target.value)}
