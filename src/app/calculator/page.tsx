@@ -1,18 +1,223 @@
 'use client'
-import { useState } from "react";
-import BehaviorInput from "@/components/Input/behaviourInput";
+import { useEffect, useState } from "react";
 import DietInput from "@/components/Input/dietInput";
 import CyclingInput from "@/components/Input/cyclingInput";
 import PhysicalInput from "@/components/Input/physicalInput";
+import Output from "@/components/output/output";
 
-const Calculator: React.FC = () => {
+interface Physical{
+  gender: string,
+  age: number,
+  weight: number,
+  fitness: number,
+  physicalImpact: number,
+  height: number,
+  temperature: number | null,
+  pressure: number | null,
+}
+
+interface Cycling{
+  bike: string | null, 
+  speed: number,
+  duration: number,
+  bikeImpact: number,
+}
+
+interface Diet{
+  region: string,
+  eating: string, 
+  impact: number,
+}
+
+interface UserSelection {
+  Physical : Physical,
+  Cycling : Cycling,
+  Diet : Diet,
+}
+
+interface physicalData{
+  id:number;
+  Fitness:number;
+  Impact:number;
+}
+
+interface eatingData {
+  id:number;
+  Region: string;
+  Habit: string;
+  Impact: number;
+}
+
+interface bikeData {
+  id: number;
+  Bike: string;
+  Impact: number;
+}
+
+interface PageProps {
+  eatingData: eatingData[];
+}
+
+const Calculator: React.FC<PageProps> = () => {
   const [selectedGender, setSelectedGender] = useState<string>("-");
-  const [selectedCountry, setSelectedCountry] = useState<string>("-");
+  const [selectedRegion, setSelectedRegion] = useState<string>("-");
   const [selectedEating, setSelectedEating] = useState<string>("-");
   const [selectedBike, setSelectedBike] = useState<string | null>(null);
+  const [selectedAge, setSelectedAge] = useState<number>(0);
+  const [selectedWeight, setSelectedWeight] = useState<number>(0);
+  const [selectedFitness, setSelectedFitness] = useState<number>(0);
   const [inputSteepness, setInputSteepness] = useState<number>(0);
+  const [temperature, setTemperature] = useState<number | null>(null);
+  const [pressure, setPressure] = useState<number | null>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [showTableModal, setShowTableModal] = useState<boolean>(false);
+  const [eatingData, setEatingData] = useState<eatingData[]>([]);
+  const [selectedImpact,setSelectedImpact] = useState<number>(0);
+  const [bikeData,setBikeData] = useState<bikeData[]>([])
+  const [bikeImpact,setBikeImpact] = useState<number>(0)
+  const [fitnessImpact,setFitnessImpact] = useState<number>(0);
+  const [physicalData,setPhysicalData] = useState<physicalData[]>([])
+  const [fetchError, setFetchError] = useState<string | null>(null);
+  const [userInput,setUserInput] = useState<UserSelection | null>(null);
+  const [selectedSpeed,setSelectedSpeed] = useState<number>(0);
+  const [selectedDuration,setSelectedDuration] = useState<number>(0);
+  const [selectedHeight,setSelectedHeight] = useState<number>(0);
+  const [showClassicModal,setShowClassicModal] = useState<boolean>(false);
+  const [selectedPower,setSelectedPower] = useState<string | null>("-");
+  const [selectedMaterial,setSelectedMaterial] = useState<string | null>("-");
   
+
+  useEffect(() => {
+    async function fetchBikeData(){
+      try{
+        const res = await fetch('api/bikeData');
+        if(!res.ok){
+          throw new Error('Error fetching data');
+        }
+        const result: bikeData[] = await res.json();
+        setBikeData(result);
+      }
+      catch (error) {
+        if (error instanceof Error) {
+          setFetchError(error.message);
+        } else {
+          setFetchError('An unknown error occurred');
+        }
+      }
+    }
+
+    async function fetchRegionData() {
+      try {
+        const res = await fetch('/api/eatingData');
+        if (!res.ok) {
+          throw new Error('Error fetching data');
+        }
+        const result: eatingData[] = await res.json();
+        // console.log('Fetched data:', result); 
+        setEatingData(result);
+      } catch (error) {
+        if (error instanceof Error) {
+          setFetchError(error.message);
+        } else {
+          setFetchError('An unknown error occurred');
+        }
+      }
+    }
+
+    async function fetchPhysicalData() {
+      try{
+        const res = await fetch('/api/physicalData');
+        if(!res.ok){
+          throw new Error('Error fetching data');
+        }
+        const result: physicalData[] = await res.json();
+        setPhysicalData(result)
+      } catch (error) {
+        if (error instanceof Error) {
+          setFetchError(error.message);
+        } else {
+          setFetchError('An unknown error occurred');
+        }
+      }
+    }
+    fetchRegionData();
+    fetchBikeData();
+    fetchPhysicalData();
+  }, []);
+
+  useEffect(() => {
+    const matchDiet = (selectedRegion : string | null, selectedEating : string | null) => {
+      if(!eatingData){return}
+      try{
+        const [match] = eatingData.filter(data => data.Region === selectedRegion && data.Habit === selectedEating)
+      if(match){
+        setSelectedImpact(match.Impact)}
+      else{
+        setSelectedImpact(0)
+      }}
+      catch(error){
+        console.error(error)
+      }
+  }
+  matchDiet(selectedRegion,selectedEating)
+  },[selectedRegion,selectedEating])
+
+  useEffect(() => {
+    const matchBike = (selectedBike : string | null ) => {
+      if(!bikeData){return}
+      try{
+        const [match] = bikeData.filter(data => data.Bike === selectedBike)
+      if(match){
+        setBikeImpact(match.Impact)}
+      else{
+        setBikeImpact(0)
+        console.log(bikeData)
+      }}
+      catch(error){
+        console.error(error)
+      }
+ 
+  }
+  matchBike(selectedBike)
+  },[selectedBike])
+  
+  useEffect(() => {
+    const matchPhysical = (selectedFitness : number | null ) => {
+      if(!physicalData){return}
+      try{
+        const [match] = physicalData.filter(data => data.Fitness === selectedFitness)
+      if(match){
+        setFitnessImpact(match.Impact)}
+      else{
+        setFitnessImpact(0)
+        console.log(physicalData)
+      }}
+      catch(error){
+        console.error(error)
+      }
+    }
+      matchPhysical(selectedFitness)
+      },[selectedFitness])
+
+  const handleCloseClassic = () => {
+    setShowClassicModal(false)
+  }
+
+  const handleMaterialSelection = (material: string) => {
+    setSelectedMaterial(material);
+  }
+
+  const handleSubmitClassic = () => {
+    setShowClassicModal(false)
+  }
+
+  const handlePowerSelection = (power: string) => {
+    setSelectedPower(power);
+  }
+
+  const handleOpenClassic = () => {
+    setShowClassicModal(true);
+  };
 
   const handleOpenModal = () => {
     setShowModal(true);
@@ -21,9 +226,17 @@ const Calculator: React.FC = () => {
   const handleCloseModal = () => {
     setShowModal(false);
   };
+  
+  const handleOpenTableModal = () => {
+    setShowTableModal(true);
+  };
+
+  const handleCloseTableModal = () => {
+    setShowTableModal(false);
+  }
 
   const handleBikeSelection = (bikeType: string) => {
-    setSelectedBike((prevBike) => (prevBike === bikeType ? null : bikeType));
+    setSelectedBike(bikeType);
   };
 
   const handleBikeSubmit = () => {
@@ -31,47 +244,209 @@ const Calculator: React.FC = () => {
   };
 
   const handleSteepInput = (steepness: number) => {
-    setInputSteepness(steepness)
+    setInputSteepness(steepness);
   }
 
-
   const handleSubmit = () => {
-    const userSelection = {
-      gender: selectedGender,
-      country: selectedCountry,
-      bike: selectedBike,
-      eating: selectedEating,
-      // steepness: inputSteepness
-    };
 
+    // Set default values if necessary
+    let updatedBike = selectedBike;
+    let updatedRegion = selectedRegion;
+    let updatedEating = selectedEating;
+    let updatedAge = selectedAge;
+    let updatedWeight = selectedWeight;
+    let updatedFitness = selectedFitness;
+    let updatedSpeed = selectedSpeed;
+    let updatedDuration = selectedDuration;
+    let updatedGender = selectedGender;
+    let updatedHeight = selectedHeight;
+  
+    if (selectedBike === null) {
+      updatedBike = "Classic";
+    }
+    if (selectedRegion === "-") {
+      updatedRegion = "North America";
+    }
+    if (selectedEating === "-") {
+      updatedEating = "Omnivore";
+    }
+    if (selectedAge === 0) {
+      updatedAge = 30;
+    }
+    if (selectedWeight === 0) {
+      updatedWeight = 70;
+    }
+    if (selectedFitness === 0) {
+      updatedFitness = 3;
+    }
+    if(selectedGender === "-"){
+      updatedGender = "male";
+    }
+    if(selectedSpeed === 0){
+      updatedSpeed = 15;
+    }
+    if(selectedHeight === 0){
+      updatedHeight = 170;
+    }
+    if(selectedDuration === 0){
+      updatedDuration = 30
+    }
+    
+    const matchDiet = () => {
+      if(!eatingData){return 0}
+      try{
+        const [match] = eatingData.filter(data => data.Region === updatedRegion && data.Habit === updatedEating)
+      if(match){
+        return match.Impact;
+        }
+      else{
+        return 0;
+      }}
+      catch(error){
+        console.error(error)
+        return 0;
+      }
+    }
+    const updatedDietImpact = matchDiet()
+
+    const matchPhysical = () => {
+      if(!physicalData){return 0}
+      try{
+        const [match] = physicalData.filter(data => data.Fitness === updatedFitness)
+      if(match){
+        return match.Impact}
+      else{
+        console.log(physicalData)
+        return 0
+      }}
+      catch(error){
+        console.error(error)
+        return 0
+      }
+      }
+      const updatedPhysical = matchPhysical()
+
+    const matchBike = () => {
+      if (!bikeData) { return 0; }
+      try {
+        const match = bikeData.find(data => data.Bike === updatedBike);
+        if (match) {
+          return match.Impact;
+        } else {
+          console.log(bikeData);
+          return 0;
+        }
+      } catch (error) {
+        console.error(error);
+        return 0;
+      }
+    }
+    const updatedBikeImpact = matchBike();
+  
+    // Update states with default values
+    setSelectedBike(updatedBike);
+    setSelectedRegion(updatedRegion);
+    setSelectedEating(updatedEating);
+    setSelectedAge(updatedAge);
+    setSelectedWeight(updatedWeight);
+    setSelectedFitness(updatedFitness);
+    setSelectedGender(updatedGender);
+    setSelectedSpeed(updatedSpeed);
+    setSelectedHeight(updatedHeight);
+    setSelectedDuration(updatedDuration);
+  
+    const userSelection: UserSelection = {
+      Physical: {
+        gender: updatedGender,
+        age: updatedAge,
+        weight: updatedWeight,
+        fitness: updatedFitness,
+        physicalImpact: updatedPhysical,
+        height: updatedHeight,
+        temperature: temperature,
+        pressure: pressure,
+      },
+      Cycling: {
+        bike: updatedBike,
+        speed: updatedSpeed,
+        duration: updatedDuration,
+        bikeImpact: updatedBikeImpact,
+      },
+      Diet: {
+        region: updatedRegion,
+        eating: updatedEating,
+        impact: updatedDietImpact,
+      }
+   
+    };
+  
+    // Update the userInput state
+    setUserInput(userSelection);
+  
+    // Log the userSelection object
     console.log(userSelection);
   };
-
   return (
     <div className="flex justify-center items-center min-h-screen">
-      <div className="flex flex-col justify-center gap-5">
-        <DietInput 
-          selectedCountry={selectedCountry}
-          setSelectedCountry={setSelectedCountry}
-          selectedEating={selectedEating}
-          setSelectedEating={setSelectedEating}/>
-        <CyclingInput 
-          selectedBike={selectedBike}
-          setSelectedBike={setSelectedBike}
-          showModal={showModal}
-          handleOpenModal={handleOpenModal}
-          handleCloseModal={handleCloseModal}
-          handleBikeSelection={handleBikeSelection}
-          handleBikeSubmit={handleBikeSubmit}/>
-        {/* <BehaviorInput 
-          inputSteepness={inputSteepness}
-          setInputSteepness={setInputSteepness}
-          handleSteepInput={handleSteepInput}/> */}
-        <PhysicalInput 
-          selectedGender={selectedGender}
-          setSelectedGender={setSelectedGender}/>
-        <div className="flex justify-center">
-          <button onClick={handleSubmit} className='border rounded py-2 px-4'>Submit</button>
+      <div className="flex flex-col items-center mt-5 ">
+        <span className="text-3xl m-5 font-bold">Provide Your Details</span>
+          <div className="flex flex-col justify-center gap-8 m-9 border p-9 border-gray-500">
+            <DietInput 
+              selectedRegion={selectedRegion}
+              setSelectedRegion={setSelectedRegion}
+              selectedEating={selectedEating}
+              setSelectedEating={setSelectedEating}
+              eating={eatingData}
+              />
+            <CyclingInput 
+              selectedBike={selectedBike}
+              setSelectedBike={setSelectedBike}
+              showModal={showModal}
+              handleOpenModal={handleOpenModal}
+              handleCloseModal={handleCloseModal}
+              handleBikeSelection={handleBikeSelection}
+              handleBikeSubmit={handleBikeSubmit}
+              setSelectedSpeed={setSelectedSpeed}
+              selectedSpeed={selectedSpeed}
+              setSelectedDuration={setSelectedDuration}
+              selectedDuration={selectedDuration}
+              showClassicModal={showClassicModal}
+              handleOpenClassic={handleOpenClassic}  
+              handleCloseClassic={handleCloseClassic}
+              handleSubmitClassic={handleSubmitClassic} 
+              handlePowerSelection={handlePowerSelection} 
+              selectedPower={selectedPower} 
+              handleMaterialSelection={handleMaterialSelection} 
+              selectedMaterial={selectedMaterial}              
+              />
+            {/* <BehaviorInput 
+              inputSteepness={inputSteepness}
+              setInputSteepness={setInputSteepness}
+              handleSteepInput={handleSteepInput}/> */}
+            <PhysicalInput 
+              selectedGender={selectedGender}
+              setSelectedGender={setSelectedGender}
+              selectedAge={selectedAge}
+              setSelectedAge={setSelectedAge}
+              selectedWeight={selectedWeight}
+              setSelectedWeight={setSelectedWeight}
+              selectedFitness={selectedFitness}
+              setSelectedFitness={setSelectedFitness}
+              setTemperature={setTemperature} 
+              setPressure={setPressure}
+              handleCloseTableModal={handleCloseTableModal}
+              handleOpenTableModal={handleOpenTableModal}
+              showTableModal={showTableModal}
+              selectedHeight={selectedHeight}
+              setSelectedHeight={setSelectedHeight}
+            />
+            <div className="flex justify-center">
+              <button onClick={() => handleSubmit()} className='border rounded py-2 px-4 hover:border-green-500 duration-200 focus:border-2 focus:ring'>Submit</button>
+            </div>     
+          </div>
+        <div>
+              <Output 
+              userInput= {userInput}/>
         </div>
       </div>
     </div>
@@ -79,3 +454,5 @@ const Calculator: React.FC = () => {
 };
 
 export default Calculator;
+
+

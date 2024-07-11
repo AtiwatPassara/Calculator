@@ -13,6 +13,11 @@
     color: black;
 }
 
+.container:focus {
+    border-style: double;
+    border-color: white;
+}
+
 .active {
     background-color: white;
     color: black;
