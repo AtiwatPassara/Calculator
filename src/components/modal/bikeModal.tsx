@@ -3,6 +3,13 @@ import Image from 'next/image';
 import { IoIosClose } from "react-icons/io";
 import ClassicModal from '../modal/classicModal'; // Correct import path
 
+const selectMaterial = [
+  { title: "-", value: "-" },
+  { title: "Mechanic", value: "mechanic" },
+  { title: "Electric", value: "electric" },
+];
+
+
 interface BikeModalProps {
   showModal: boolean;
   handleClose: () => void;
@@ -52,7 +59,6 @@ const BikeModal: React.FC<BikeModalProps> = ({
                 <Image src="/asset/classic.png" alt="Classic" width={200} height={200} objectFit="contain" />
                 <div className={`transition-all duration-300 ${selectedBike === "Classic" ? "text-black" : "text-white"} absolute bottom-2`}>
                   Classic
-                  <button onClick={() => {handleOpenClassic()}} className="border p-2 m-3">Open</button>
                 </div>
               </div>
             </button>
@@ -63,6 +69,17 @@ const BikeModal: React.FC<BikeModalProps> = ({
               </div>
             </button>
           </div>
+          <div>
+              Select Material
+              <select
+                className="bg-black text-white p-2 mx-2 border border-white rounded-md focus:border-green-500">
+                {selectMaterial.map((option) => (
+                  <option value={option.value} key={option.value}>
+                    {option.title}
+                  </option>
+                ))}
+              </select>
+            </div>
           <button className="mt-6 bg-black p-2 rounded border-white border hover:border-green-500 hover:text-green-400 duration-300 ease-in-out text-white" onClick={handleBikeSubmit}>
             Choose the bike
           </button>

@@ -12,14 +12,14 @@ interface Physical{
   weight: number,
   fitness: number,
   physicalImpact: number,
+  temperature: number | null,
+  pressure: number | null,
 }
 
 interface Cycling{
   bike: string | null, 
   speed: number,
   duration: number,
-  temperature: number | null,
-  pressure: number | null,
   bikeImpact: number,
 }
 

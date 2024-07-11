@@ -12,14 +12,14 @@ interface Physical{
   fitness: number,
   physicalImpact: number,
   height: number,
+  temperature: number | null,
+  pressure: number | null,
 }
 
 interface Cycling{
   bike: string | null, 
   speed: number,
   duration: number,
-  temperature: number | null,
-  pressure: number | null,
   bikeImpact: number,
 }
 
@@ -199,14 +199,12 @@ const Calculator: React.FC<PageProps> = () => {
       matchPhysical(selectedFitness)
       },[selectedFitness])
 
-  useEffect(() => {console.log("UpdateGender")},[selectedGender])
-
   const handleCloseClassic = () => {
     setShowClassicModal(false)
   }
 
   const handleMaterialSelection = (material: string) => {
-    setSelectedPower(material);
+    setSelectedMaterial(material);
   }
 
   const handleSubmitClassic = () => {
@@ -261,6 +259,7 @@ const Calculator: React.FC<PageProps> = () => {
     let updatedSpeed = selectedSpeed;
     let updatedDuration = selectedDuration;
     let updatedGender = selectedGender;
+    let updatedHeight = selectedHeight;
   
     if (selectedBike === null) {
       updatedBike = "Classic";
@@ -285,6 +284,12 @@ const Calculator: React.FC<PageProps> = () => {
     }
     if(selectedSpeed === 0){
       updatedSpeed = 15;
+    }
+    if(selectedHeight === 0){
+      updatedHeight = 170;
+    }
+    if(selectedDuration === 0){
+      updatedDuration = 30
     }
     
     const matchDiet = () => {
@@ -347,22 +352,24 @@ const Calculator: React.FC<PageProps> = () => {
     setSelectedFitness(updatedFitness);
     setSelectedGender(updatedGender);
     setSelectedSpeed(updatedSpeed);
+    setSelectedHeight(updatedHeight);
+    setSelectedDuration(updatedDuration);
   
     const userSelection: UserSelection = {
       Physical: {
-        gender: selectedGender,
+        gender: updatedGender,
         age: updatedAge,
         weight: updatedWeight,
         fitness: updatedFitness,
         physicalImpact: updatedPhysical,
-        height: selectedHeight,
+        height: updatedHeight,
+        temperature: temperature,
+        pressure: pressure,
       },
       Cycling: {
         bike: updatedBike,
         speed: updatedSpeed,
         duration: updatedDuration,
-        temperature: temperature,
-        pressure: pressure,
         bikeImpact: updatedBikeImpact,
       },
       Diet: {
