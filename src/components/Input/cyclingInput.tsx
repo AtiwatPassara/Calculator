@@ -75,8 +75,8 @@ const CyclingInput: React.FC<CyclingInputProps> = ({
             <span>{selectedBike ? `${selectedBike} Bike` : "No bike selected"}</span>
           </div>
         </div>
-        <div className='flex flex-row justify-between '>
-          <div className="flex items-center mt-5">
+        <div className='flex flex-row justify-between mt-5'>
+          <div className="flex items-center ">
             Average Speed : 
             <input
               type="number"
