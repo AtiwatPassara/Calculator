@@ -283,6 +283,10 @@ const Calculator: React.FC<PageProps> = () => {
     let updatedDuration = selectedDuration === 0 ? 30 : selectedDuration;
     let updatedMaterial = selectedMaterial === '-' ? "Aluminium" : selectedMaterial;
     let updatedPower = selectedPower === '-' ? 'Mechanic' : selectedPower;
+    
+    if(updatedBike === "Cargo"){
+      updatedMaterial = '-'
+    }
   
     const matchDiet = () => {
       if (!eatingData) { return 0; }
