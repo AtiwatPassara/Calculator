@@ -20,7 +20,6 @@ interface Cycling{
   bike: string | null, 
   material: string | null,
   power: string | null,
-  isElectric: boolean | null;
   speed: number,
   duration: number,
   bikeImpact: number,
@@ -58,6 +57,12 @@ interface classicBikeData {
   Impact: number;
 }
 
+interface cargoBikeData {
+  id: number;
+  PowerType: string;
+  Impact: number;
+}
+
 interface PageProps {
   eatingData: eatingData[];
 }
@@ -70,7 +75,6 @@ const Calculator: React.FC<PageProps> = () => {
   const [selectedAge, setSelectedAge] = useState<number>(0);
   const [selectedWeight, setSelectedWeight] = useState<number>(0);
   const [selectedFitness, setSelectedFitness] = useState<number>(0);
-  const [inputSteepness, setInputSteepness] = useState<number>(0);
   const [temperature, setTemperature] = useState<number | null>(null);
   const [pressure, setPressure] = useState<number | null>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -78,6 +82,7 @@ const Calculator: React.FC<PageProps> = () => {
   const [eatingData, setEatingData] = useState<eatingData[]>([]);
   const [selectedImpact,setSelectedImpact] = useState<number>(0);
   const [classicBikeData,setclassicBikeData] = useState<classicBikeData[]>([])
+  const [cargoBikeData,setcargoBikeData] = useState<cargoBikeData[]>([])
   const [bikeImpact,setBikeImpact] = useState<number>(0)
   const [fitnessImpact,setFitnessImpact] = useState<number>(0);
   const [physicalData,setPhysicalData] = useState<physicalData[]>([])
@@ -86,12 +91,9 @@ const Calculator: React.FC<PageProps> = () => {
   const [selectedSpeed,setSelectedSpeed] = useState<number>(0);
   const [selectedDuration,setSelectedDuration] = useState<number>(0);
   const [selectedHeight,setSelectedHeight] = useState<number>(0);
-  const [showClassicModal,setShowClassicModal] = useState<boolean>(false);
   const [selectedPower,setSelectedPower] = useState<string>("-");
   const [selectedMaterial,setSelectedMaterial] = useState<string>("-");
-  const [isElectric,setIsElectric] = useState<boolean | null>(null)
   
-
   useEffect(() => {
     async function fetchClassicBikeData(){
       try{
@@ -101,6 +103,24 @@ const Calculator: React.FC<PageProps> = () => {
         }
         const result: classicBikeData[] = await res.json();
         setclassicBikeData(result);
+      }
+      catch (error) {
+        if (error instanceof Error) {
+          setFetchError(error.message);
+        } else {
+          setFetchError('An unknown error occurred');
+        }
+      }
+    }
+
+    async function fetchCargoBikeData(){
+      try{
+        const res = await fetch('api/cargoBikeData');
+        if(!res.ok){
+          throw new Error('Error fetching data');
+        }
+        const result: cargoBikeData[] = await res.json();
+        setcargoBikeData(result);
       }
       catch (error) {
         if (error instanceof Error) {
@@ -145,6 +165,7 @@ const Calculator: React.FC<PageProps> = () => {
         }
       }
     }
+    fetchCargoBikeData();
     fetchRegionData();
     fetchClassicBikeData();
     fetchPhysicalData();
@@ -168,8 +189,8 @@ const Calculator: React.FC<PageProps> = () => {
   },[selectedRegion,selectedEating])
 
   useEffect(() => {
-    const matchClassicBike = (selectedBike : string | null ) => {
-      if(!classicBikeData){return}
+    const matchBike = (selectedBike : string | null ) => {
+      if(!classicBikeData || !cargoBikeData){return}
       try{
           if(selectedBike === "Classic"){
             const [match] = classicBikeData.filter(data => data.Material === selectedMaterial && data.PowerType === selectedPower)
@@ -179,13 +200,22 @@ const Calculator: React.FC<PageProps> = () => {
               setBikeImpact(0)
             }
           }
-        }
+          else if(selectedBike === "Cargo"){       
+              const [match] = cargoBikeData.filter(data => data.PowerType === selectedPower)
+              if(match){
+                setBikeImpact(match.Impact)}
+              else{
+                setBikeImpact(0)
+            }
+          }           
+            else{return}
+          }
       catch(error){
         console.error(error)
       }
  
   }
-  matchClassicBike(selectedBike)
+  matchBike(selectedBike)
   },[selectedBike])
   
   useEffect(() => {
@@ -206,25 +236,15 @@ const Calculator: React.FC<PageProps> = () => {
       matchPhysical(selectedFitness)
       },[selectedFitness])
 
-  const handleCloseClassic = () => {
-    setShowClassicModal(false)
-  }
 
   const handleMaterialSelection = (material: string) => {
     setSelectedMaterial(material);
   }
 
-  const handleSubmitClassic = () => {
-    setShowClassicModal(false)
-  }
 
   const handlePowerSelection = (power: string) => {
     setSelectedPower(power);
   }
-
-  const handleOpenClassic = () => {
-    setShowClassicModal(true);
-  };
 
   const handleOpenModal = () => {
     setShowModal(true);
@@ -250,115 +270,66 @@ const Calculator: React.FC<PageProps> = () => {
     handleCloseModal();
   };
 
-  const handleSteepInput = (steepness: number) => {
-    setInputSteepness(steepness);
-  }
-
   const handleSubmit = () => {
-
-    // Set default values if necessary
-    let updatedBike = selectedBike;
-    let updatedRegion = selectedRegion;
-    let updatedEating = selectedEating;
-    let updatedAge = selectedAge;
-    let updatedWeight = selectedWeight;
-    let updatedFitness = selectedFitness;
-    let updatedSpeed = selectedSpeed;
-    let updatedDuration = selectedDuration;
-    let updatedGender = selectedGender;
-    let updatedHeight = selectedHeight;
-    let updatedMaterial = selectedMaterial;
-    let updatedPower = selectedPower;
+    let updatedBike = selectedBike ?? "Classic";
+    let updatedRegion = selectedRegion === "-" ? "North America" : selectedRegion;
+    let updatedEating = selectedEating === "-" ? "Omnivore" : selectedEating;
+    let updatedAge = selectedAge === 0 ? 30 : selectedAge;
+    let updatedWeight = selectedWeight === 0 ? 70 : selectedWeight;
+    let updatedFitness = selectedFitness === 0 ? 3 : selectedFitness;
+    let updatedGender = selectedGender === "-" ? "male" : selectedGender;
+    let updatedSpeed = selectedSpeed === 0 ? 15 : selectedSpeed;
+    let updatedHeight = selectedHeight === 0 ? 170 : selectedHeight;
+    let updatedDuration = selectedDuration === 0 ? 30 : selectedDuration;
+    let updatedMaterial = selectedMaterial === '-' ? "Aluminium" : selectedMaterial;
+    let updatedPower = selectedPower === '-' ? 'Mechanic' : selectedPower;
   
-    if (selectedBike === null) {
-      updatedBike = "Classic";
-    }
-    if (selectedRegion === "-") {
-      updatedRegion = "North America";
-    }
-    if (selectedEating === "-") {
-      updatedEating = "Omnivore";
-    }
-    if (selectedAge === 0) {
-      updatedAge = 30;
-    }
-    if (selectedWeight === 0) {
-      updatedWeight = 70;
-    }
-    if (selectedFitness === 0) {
-      updatedFitness = 3;
-    }
-    if(selectedGender === "-"){
-      updatedGender = "male";
-    }
-    if(selectedSpeed === 0){
-      updatedSpeed = 15;
-    }
-    if(selectedHeight === 0){
-      updatedHeight = 170;
-    }
-    if(selectedDuration === 0){
-      updatedDuration = 30
-    }
-    if(selectedMaterial === '-'){
-      updatedMaterial = "Aluminium"
-    }
-    if(selectedPower === '-'){
-      updatedPower = 'Mechanic'
-    }
-    
     const matchDiet = () => {
-      if(!eatingData){return 0}
-      try{
-        const [match] = eatingData.filter(data => data.Region === updatedRegion && data.Habit === updatedEating)
-      if(match){
-        return match.Impact;
-        }
-      else{
-        return 0;
-      }}
-      catch(error){
-        console.error(error)
-        return 0;
-      }
-    }
-    const updatedDietImpact = matchDiet()
-
-    const matchPhysical = () => {
-      if(!physicalData){return 0}
-      try{
-        const [match] = physicalData.filter(data => data.Fitness === updatedFitness)
-      if(match){
-        return match.Impact}
-      else{
-        console.log(physicalData)
-        return 0
-      }}
-      catch(error){
-        console.error(error)
-        return 0
-      }
-      }
-      const updatedPhysical = matchPhysical()
-
-    const matchClassicBike = () => {
-      if (!classicBikeData) { return 0; }
+      if (!eatingData) { return 0; }
       try {
-        const match = classicBikeData.find(data => data.Material === updatedMaterial && data.PowerType === updatedPower);
-        if (match) {
-          return match.Impact;
-        } else {
-          console.log(`${selectedMaterial} is not found`);
-          return 0;
-        }
+        const [match] = eatingData.filter(data => data.Region === updatedRegion && data.Habit === updatedEating);
+        return match ? match.Impact : 0;
       } catch (error) {
         console.error(error);
         return 0;
       }
     }
-    const updatedBikeImpact = matchClassicBike();
   
-    // Update states with default values
+    const updatedDietImpact = matchDiet();
+  
+    const matchPhysical = () => {
+      if (!physicalData) { return 0; }
+      try {
+        const match = physicalData.find(data => data.Fitness === updatedFitness);
+        return match ? match.Impact : 0;
+      } catch (error) {
+        console.error(error);
+        return 0;
+      }
+    }
+  
+    const updatedPhysical = matchPhysical();
+  
+    const matchBike = () => {
+      if (!classicBikeData || !cargoBikeData) { return 0; }
+      try {
+        if (updatedBike === "Classic") {
+          const match = classicBikeData.find(data => data.Material === updatedMaterial && data.PowerType === updatedPower);
+          return match ? match.Impact : 0;
+        } else if (updatedBike === "Cargo") {
+          const match = cargoBikeData.find(data => data.PowerType === updatedPower);
+          return match ? match.Impact : 0;
+        }
+        return 0;
+      } catch (error) {
+        console.error(error);
+        return 0;
+      }
+    }
+  
+    const updatedBikeImpact = matchBike();
+  
+    // Update states with default values and impacts
     setSelectedBike(updatedBike);
     setSelectedRegion(updatedRegion);
     setSelectedEating(updatedEating);
@@ -371,7 +342,8 @@ const Calculator: React.FC<PageProps> = () => {
     setSelectedDuration(updatedDuration);
     setSelectedMaterial(updatedMaterial);
     setSelectedPower(updatedPower);
-  
+    setBikeImpact(updatedBikeImpact);  // Update bike impact immediately
+    
     const userSelection: UserSelection = {
       Physical: {
         gender: updatedGender,
@@ -387,7 +359,6 @@ const Calculator: React.FC<PageProps> = () => {
         bike: updatedBike,
         material: updatedMaterial,
         power: updatedPower,
-        isElectric: isElectric,
         speed: updatedSpeed,
         duration: updatedDuration,
         bikeImpact: updatedBikeImpact,
@@ -397,7 +368,6 @@ const Calculator: React.FC<PageProps> = () => {
         eating: updatedEating,
         impact: updatedDietImpact,
       }
-   
     };
   
     // Update the userInput state
@@ -406,6 +376,7 @@ const Calculator: React.FC<PageProps> = () => {
     // Log the userSelection object
     console.log(userSelection);
   };
+  
   return (
     <div className="flex justify-center items-center min-h-screen">
       <div className="flex flex-col items-center mt-5 ">
@@ -430,10 +401,6 @@ const Calculator: React.FC<PageProps> = () => {
               selectedSpeed={selectedSpeed}
               setSelectedDuration={setSelectedDuration}
               selectedDuration={selectedDuration}
-              showClassicModal={showClassicModal}
-              handleOpenClassic={handleOpenClassic}  
-              handleCloseClassic={handleCloseClassic}
-              handleSubmitClassic={handleSubmitClassic} 
               handlePowerSelection={handlePowerSelection} 
               selectedPower={selectedPower} 
               handleMaterialSelection={handleMaterialSelection} 
@@ -474,5 +441,3 @@ const Calculator: React.FC<PageProps> = () => {
 };
 
 export default Calculator;
-
-
