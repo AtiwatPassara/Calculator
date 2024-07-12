@@ -6,15 +6,15 @@ import ClassicModal from '../modal/classicModal'; // Correct import path
 
 const selectMaterial = [
   { title: "-", value: "-" },
-  { title: "Bamboo", value: "ฺbamboo" },
-  { title: "Carbon", value: "carbon" },
-  { title: "Aluminium", value: "aluminium" }
+  { title: "Bamboo", value: "Bamboo" },
+  { title: "Carbon", value: "Carbon" },
+  { title: "Aluminium", value: "Aluminium" },
 ];
 
 const selectType = [
   { title: "-", value: "-" },
-  { title: "Mechanic", value: "mechanic" },
-  { title: "Electric", value: "electric" },
+  { title: "Mechanic", value: "Mechanic" },
+  { title: "Electric", value: "Electric"},
 ];
 
 interface BikeModalProps {
@@ -29,8 +29,8 @@ interface BikeModalProps {
   handleSubmitClassic: () => void;
   handleMaterialSelection: (material: string) => void;
   handlePowerSelection: (power: string) => void;
-  selectedMaterial: string | null;
-  selectedPower: string | null;
+  selectedMaterial: string;
+  selectedPower: string;
 }
 
 const BikeModal: React.FC<BikeModalProps> = ({
@@ -48,10 +48,8 @@ const BikeModal: React.FC<BikeModalProps> = ({
   selectedMaterial,
   selectedPower,
 }) => {
-  if (!showModal) return null;
-
+  
   const [isDisabled,setIsDisabled] = useState<boolean>(true);
-
   useEffect(() => {
     const handleDisable = () => {
       if(selectedBike === "Classic"){
@@ -64,7 +62,7 @@ const BikeModal: React.FC<BikeModalProps> = ({
   handleDisable()
   },[selectedBike])
 
-  
+  if (!showModal) return null;
 
   return (
     <div className="fixed left-0 top-0 w-full h-full bg-black bg-opacity-50 z-50 overflow-auto backdrop-blur flex justify-center items-center">
@@ -98,11 +96,11 @@ const BikeModal: React.FC<BikeModalProps> = ({
           </div>
           <div className="flex flex-row justify-center gap-3 mt-5">
             <div className='flex items-center p-2 rounded-md'>
-              <span className={`text-white ${selectedBike != 'Classic' ? 'text-[#B3B3B3]' : ''}`}>Select Material</span>
+              <span className={`text-white ${selectedBike != 'Classic' ? 'text-[#aaaaaa]' : ''}`}>Select Material</span>
               <select
                 className="bg-black text-white p-2 border border-white rounded-md focus:border-green-500 m-2"
                 onChange={(e) => handleMaterialSelection(e.target.value)}
-                
+                value={selectedMaterial}
                 disabled={isDisabled}
               >
                 {selectMaterial.map((option) => (
@@ -117,7 +115,7 @@ const BikeModal: React.FC<BikeModalProps> = ({
               <select
                 className="bg-black text-white p-2 border border-white rounded-md focus:border-green-500 m-2"
                 onChange={(e) => handlePowerSelection(e.target.value)}
-                
+                value={selectedPower}
               >
                 {selectType.map((option) => (
                   <option value={option.value} key={option.value}>
@@ -132,15 +130,6 @@ const BikeModal: React.FC<BikeModalProps> = ({
           </button>
         </div>
       </div>
-      <ClassicModal
-        showClassicModal={showClassicModal}
-        handleCloseClassic={handleCloseClassic}
-        handleSubmitClassic={handleSubmitClassic}
-        handleMaterialSelection={handleMaterialSelection}
-        handlePowerSelection={handlePowerSelection}
-        selectedMaterial={selectedMaterial}
-        selectedPower={selectedPower}
-      />
     </div>
   );
 };

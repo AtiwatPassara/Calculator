@@ -19,9 +19,9 @@ interface CyclingInputProps {
   handleCloseClassic: () => void;
   handleSubmitClassic: () => void;
   handlePowerSelection: (power: string) => void;
-  selectedPower: string | null;
+  selectedPower: string ;
   handleMaterialSelection: (material: string) => void;
-  selectedMaterial: string | null;
+  selectedMaterial: string;
 }
 
 const CyclingInput: React.FC<CyclingInputProps> = ({
@@ -114,15 +114,7 @@ const CyclingInput: React.FC<CyclingInputProps> = ({
         handleSubmitClassic={handleSubmitClassic} 
         handleMaterialSelection={handleMaterialSelection} 
         handlePowerSelection={handlePowerSelection} 
-        selectedMaterial={null} selectedPower={null}      />
-      <ClassicModal showClassicModal={false} 
-       handleCloseClassic={handleCloseClassic}
-       handleSubmitClassic={handleSubmitClassic} 
-       handleMaterialSelection={handleMaterialSelection} 
-       handlePowerSelection={handlePowerSelection} 
-       selectedMaterial={selectedMaterial} 
-       selectedPower={selectedPower}        />
-
+        selectedMaterial={selectedMaterial} selectedPower={selectedPower}      />
     </div>
   );
 };
