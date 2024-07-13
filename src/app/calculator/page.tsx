@@ -4,19 +4,21 @@ import DietInput from "@/components/Input/dietInput";
 import CyclingInput from "@/components/Input/cyclingInput";
 import PhysicalInput from "@/components/Input/physicalInput";
 import Output from "@/components/output/output";
+import { calculateCaloriesSpend } from "@/components/calculation/calories";
 
-interface Physical{
+export interface Physical{
   gender: string,
+  genderValue: number,
   age: number,
   weight: number,
   fitness: number,
   physicalImpact: number,
   height: number,
-  temperature: number | null,
-  pressure: number | null,
+  temperature: number ,
+  pressure: number,
 }
 
-interface Cycling{
+export interface Cycling{
   bike: string | null, 
   material: string | null,
   power: string | null,
@@ -25,45 +27,45 @@ interface Cycling{
   bikeImpact: number,
 }
 
-interface Diet{
+export interface Diet{
   region: string,
   eating: string, 
   impact: number,
 }
 
-interface UserSelection {
+export interface UserSelection {
   Physical : Physical,
   Cycling : Cycling,
   Diet : Diet,
 }
 
-interface physicalData{
+export interface physicalData{
   id:number;
   Fitness:number;
   Impact:number;
 }
 
-interface eatingData {
+export interface eatingData {
   id:number;
   Region: string;
   Habit: string;
   Impact: number;
 }
 
-interface classicBikeData {
+export interface classicBikeData {
   id: number;
   Material: string;
   PowerType: string;
   Impact: number;
 }
 
-interface cargoBikeData {
+export interface cargoBikeData {
   id: number;
   PowerType: string;
   Impact: number;
 }
 
-interface PageProps {
+export interface PageProps {
   eatingData: eatingData[];
 }
 
@@ -75,8 +77,8 @@ const Calculator: React.FC<PageProps> = () => {
   const [selectedAge, setSelectedAge] = useState<number>(0);
   const [selectedWeight, setSelectedWeight] = useState<number>(0);
   const [selectedFitness, setSelectedFitness] = useState<number>(0);
-  const [temperature, setTemperature] = useState<number | null>(null);
-  const [pressure, setPressure] = useState<number | null>(null);
+  const [temperature, setTemperature] = useState<number>(0);
+  const [pressure, setPressure] = useState<number>(0);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showTableModal, setShowTableModal] = useState<boolean>(false);
   const [eatingData, setEatingData] = useState<eatingData[]>([]);
@@ -93,6 +95,7 @@ const Calculator: React.FC<PageProps> = () => {
   const [selectedHeight,setSelectedHeight] = useState<number>(0);
   const [selectedPower,setSelectedPower] = useState<string>("-");
   const [selectedMaterial,setSelectedMaterial] = useState<string>("-");
+  const [selectedGenderValue,setSelectedGenderValue] = useState<number>(1);
   
   useEffect(() => {
     async function fetchClassicBikeData(){
@@ -278,12 +281,20 @@ const Calculator: React.FC<PageProps> = () => {
     let updatedWeight = selectedWeight === 0 ? 70 : selectedWeight;
     let updatedFitness = selectedFitness === 0 ? 3 : selectedFitness;
     let updatedGender = selectedGender === "-" ? "male" : selectedGender;
+    let updatedGenderValue = selectedGenderValue;
     let updatedSpeed = selectedSpeed === 0 ? 15 : selectedSpeed;
     let updatedHeight = selectedHeight === 0 ? 170 : selectedHeight;
     let updatedDuration = selectedDuration === 0 ? 30 : selectedDuration;
     let updatedMaterial = selectedMaterial === '-' ? "Aluminium" : selectedMaterial;
     let updatedPower = selectedPower === '-' ? 'Mechanic' : selectedPower;
-    
+
+    if(updatedGender === 'male'){
+      updatedGenderValue = 1;
+    }
+    else if(updatedGender === 'female'){
+      updatedGenderValue = 0;
+    }
+
     if(updatedBike === "Cargo"){
       updatedMaterial = '-'
     }
@@ -341,6 +352,7 @@ const Calculator: React.FC<PageProps> = () => {
     setSelectedWeight(updatedWeight);
     setSelectedFitness(updatedFitness);
     setSelectedGender(updatedGender);
+    setSelectedGenderValue(updatedGenderValue);
     setSelectedSpeed(updatedSpeed);
     setSelectedHeight(updatedHeight);
     setSelectedDuration(updatedDuration);
@@ -351,6 +363,7 @@ const Calculator: React.FC<PageProps> = () => {
     const userSelection: UserSelection = {
       Physical: {
         gender: updatedGender,
+        genderValue: updatedGenderValue,
         age: updatedAge,
         weight: updatedWeight,
         fitness: updatedFitness,
@@ -377,8 +390,10 @@ const Calculator: React.FC<PageProps> = () => {
     // Update the userInput state
     setUserInput(userSelection);
   
+    const caloriesSpend = calculateCaloriesSpend(userSelection);
     // Log the userSelection object
     console.log(userSelection);
+    console.log(caloriesSpend)
   };
   
   return (

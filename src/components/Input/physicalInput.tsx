@@ -13,8 +13,8 @@ interface PhysicalInputProps {
   setSelectedWeight: (value: number) => void;
   selectedFitness: number;
   setSelectedFitness: (value: number) => void;
-  setTemperature: (value: number | null) => void; 
-  setPressure: (value: number | null) => void;
+  setTemperature: (value: number) => void; 
+  setPressure: (value: number) => void;
   setSelectedHeight: (value: number) => void;
   selectedHeight: number;
   handleOpenTableModal: () => void;
