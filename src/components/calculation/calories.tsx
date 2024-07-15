@@ -1,3 +1,4 @@
+
 import { UserSelection } from "../../app/calculator/page";
 
 export const calculateCaloriesSpend = (userSelection: UserSelection) => {

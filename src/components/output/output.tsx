@@ -3,6 +3,12 @@ import { useState } from "react"
 import ImpactDoughnutChart from "../chart/Doughnut"
 import ImpactBarChart from "../chart/Barchart"
 
+interface Result {
+    kcalSpend: number,
+    dietImpact: number,
+    bikeImpact: number,
+  }
+
 interface Physical{
     gender: string,
     age: number,
@@ -30,6 +36,7 @@ interface UserSelection {
     Physical : Physical,
     Cycling : Cycling,
     Diet : Diet,
+    Result : Result,
 }
 
 interface OutputProps {
@@ -37,6 +44,12 @@ interface OutputProps {
 }
 
 const OutputChart: React.FC<OutputProps> = ({userInput}) => {
+
+    const roundedDecimal = (value: number, decimalPlaces: number) : number => {
+        const factor = Math.pow(10,decimalPlaces)
+        const roundedValue = Math.round(value * factor)/ factor
+        return roundedValue
+    }
 
     if(!userInput){
         return
@@ -47,6 +60,9 @@ const OutputChart: React.FC<OutputProps> = ({userInput}) => {
                     <hr className="m-4"/>
                     <span className="flex text-3xl mt-5 font-bold justify-center ">Result</span>
                     <div className="flex flex-col">
+                        <div>
+                            Calories Spend : {roundedDecimal(userInput.Result.kcalSpend,3)}
+                        </div>
                         <div className="flex m-4 justify-center">
                             <ImpactDoughnutChart userInput={userInput}/>
                         </div>

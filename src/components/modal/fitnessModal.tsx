@@ -67,17 +67,17 @@ const FitnessTable: React.FC<FitnessTableProps> = ({
             <tr>
               <td className="px-4 py-2 text-center">4</td>
               <td className="px-4 py-2">Participates fairly regularly in fairly intense physical activity which causes shortness of breath</td>
-              <td className="px-4 py-2">Runs on average over 1 month 2 km per week or participates in another activity (cycling, rollerblading, swimming, dancing, gym) 30 min to 1 hour per week</td>
+              <td className="px-4 py-2">Runs on average over 1 month, approximately 2 km per week or participates in another activity - cycling, rollerblading, swimming, dancing, gym 30 min to 1 hour per week</td>
             </tr>
             <tr>
               <td className="px-4 py-2 text-center">5</td>
               <td className="px-4 py-2">Participate regularly in a fairly intense physical activity that causes shortness of breath</td>
-              <td className="px-4 py-2">Runs on average over 1 month 2 to 8 km per week or participates in another activity (cycling, rollerblading, swimming, dancing, gym) 1 to 2 hours per week.</td>
+              <td className="px-4 py-2">Runs on average over 1 month, approximately 2 to 8 km per week or participates in another activity (cycling, rollerblading, swimming, dancing, gym) 1 to 2 hours per week.</td>
             </tr>
             <tr>
               <td className="px-4 py-2 text-center">6</td>
               <td className="px-4 py-2">Follows diligent training including fairly intense sessions which cause shortness of breath</td>
-              <td className="px-4 py-2">Runs on average over 1 month less than 10 to 30 km per week or participates in another activity (cycling, rollerblading, swimming, dancing. gym) for 2 to 4 hours per week</td>
+              <td className="px-4 py-2">Runs on average over 1 month, approximately less than 10 to 30 km per week or participates in another activity (cycling, rollerblading, swimming, dancing. gym) for 2 to 4 hours per week</td>
             </tr>
             <tr>
               <td className="px-4 py-2 text-center">7</td>
