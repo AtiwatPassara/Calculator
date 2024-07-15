@@ -3,6 +3,7 @@ import { WeatherData } from "@/app/type/weatherData";
 import { IoIosInformationCircleOutline } from "react-icons/io";
 import { AiOutlineLoading3Quarters } from "react-icons/ai"; // Import spinner icon
 import FitnessTable from "../modal/fitnessModal";
+import { CountryData } from "@/app/type/countryData";
 
 interface PhysicalInputProps {
   selectedGender: string;
@@ -42,7 +43,43 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
+  const [countryData, setCountryData] = useState<CountryData[]>([]);
+  const [country,setCountry] = useState<string>("-");
   const [loading, setLoading] = useState<boolean>(false);
+  
+  const fetchCountryData = async () => {
+    try {
+      const response = await fetch(`https://countriesnow.space/api/v0.1/countries/positions`);
+      const data = await response.json();
+      setCountryData(data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  }
+  
+  useEffect(() => {
+    const fetchCountryData = async () => {
+        try {
+          const response = await fetch(`https://countriesnow.space/api/v0.1/countries/positions`);
+          const result = await response.json();
+          setCountryData(result.data);
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+      }
+    fetchCountryData();
+  }, []);
+
+  useEffect(() => {
+    const updateLocation = () => {
+      const updateCountry = countryData.find((c) => c.name.toLowerCase() === country.toLowerCase())
+      if(updateCountry){
+      setLatitude(updateCountry.lat)
+      setLongitude(updateCountry.lat)
+      }
+    }
+    updateLocation();
+  },[country,countryData])
 
   useEffect(() => {
     const fetchWeatherData = async () => {
@@ -191,32 +228,49 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
               max={999}
             />
             Cm
-          </div>
+          </div>       
         </div>
         <div className="flex flex-row justify-between mt-5">
           <div className="p-2">
             Location :{" "}
             <button onClick={getUserLocation} className="border rounded p-2 focus:ring focus:border-green-500 ml-1 hover:border-green-500 hover:text-green-300 transition-all hover:scale-110 duration-300 ease-in-out">Get my location</button>
           </div>
-          <div className="p-2 flex items-center">
-            <span>Outside Temperature :</span>
-              {loading ? (
-                <AiOutlineLoading3Quarters className="animate-spin ml-2" size={24} />
-              ) : (
-              weatherData && weatherData.main && (
-              <p className="ml-2">{weatherData.main.temp}{" "}°C</p>
-              )
-              )}
-          </div>
-          <div className="p-2 flex items-center">
-              <span>Atmospheric Pressure :</span>
-              {loading ? (
-                <AiOutlineLoading3Quarters className="animate-spin ml-2" size={24} />
-              ) : (weatherData && weatherData.main &&(
-              <p className="ml-2">{weatherData.main.pressure}{" "}hPa</p>))
-              }
+          <span className="flex items-center">or</span>
+          <div className="p-2">
+            Select Country
+            <select
+              className="bg-black text-white p-2 mx-2 border max-w-[150px] border-white rounded-md focus:border-green-500"
+              value={country}
+              onChange={(e) => setCountry(e.target.value)}
+            >
+              {countryData.map((option) => (
+                <option value={option.name} key={option.name}>
+                  {option.name}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
+        <div className="flex flex-row justify-between mt-5">
+            <div className="p-2 flex items-center">
+              <span>Outside Temperature :</span>
+                {loading ? (
+                  <AiOutlineLoading3Quarters className="animate-spin ml-2" size={24} />
+                ) : (
+                weatherData && weatherData.main && (
+                <p className="ml-2">{weatherData.main.temp}{" "}°C</p>
+                )
+                )}
+            </div>
+            <div className="p-2 flex items-center">
+                <span>Atmospheric Pressure :</span>
+                {loading ? (
+                  <AiOutlineLoading3Quarters className="animate-spin ml-2" size={24} />
+                ) : (weatherData && weatherData.main &&(
+                <p className="ml-2">{weatherData.main.pressure}{" "}hPa</p>))
+                }
+            </div>
+          </div>
       </div>
       <FitnessTable 
       handleCloseTableModal={handleCloseTableModal}

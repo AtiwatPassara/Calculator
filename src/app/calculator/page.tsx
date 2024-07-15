@@ -419,7 +419,7 @@ const Calculator: React.FC<PageProps> = () => {
     <div className="flex justify-center items-center min-h-screen">
       <div className="flex flex-col items-center mt-5 ">
         <span className="text-3xl m-5 font-bold">Provide Your Details</span>
-          <div className="flex flex-col justify-center gap-8 m-9 border p-9 border-gray-500">
+          <div className="flex flex-col justify-center gap-8 m-9 border p-9 border-gray-500 max-w-[790px]">
             <DietInput 
               selectedRegion={selectedRegion}
               setSelectedRegion={setSelectedRegion}
