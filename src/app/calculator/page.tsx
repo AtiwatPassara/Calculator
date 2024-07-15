@@ -369,40 +369,6 @@ const Calculator: React.FC<PageProps> = () => {
     setSelectedPower(updatedPower);
     setBikeImpact(updatedBikeImpact);  // Update bike impact immediately
     
-    const createUserSelection = (kcalSpend: number): UserSelection => {
-      return {
-        Physical: {
-          gender: updatedGender,
-          genderValue: updatedGenderValue,
-          age: updatedAge,
-          weight: updatedWeight,
-          fitness: updatedFitness,
-          physicalImpact: updatedPhysical,
-          height: updatedHeight,
-          temperature: temperature,
-          pressure: pressure,
-        },
-        Cycling: {
-          bike: updatedBike,
-          material: updatedMaterial,
-          power: updatedPower,
-          speed: updatedSpeed,
-          duration: updatedDuration,
-          bikeImpact: updatedBikeImpact,
-        },
-        Diet: {
-          region: updatedRegion,
-          eating: updatedEating,
-          impact: updatedDietImpact,
-        },
-        Result: {
-          kcalSpend: kcalSpend,
-          dietImpact: updatedDietImpact,
-          bikeImpact: updatedBikeImpact,
-        }
-      };
-    };
-
     const userSelection: UserSelection = {
       Physical: {
         gender: updatedGender,
