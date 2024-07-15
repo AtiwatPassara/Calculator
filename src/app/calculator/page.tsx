@@ -369,75 +369,49 @@ const Calculator: React.FC<PageProps> = () => {
     setSelectedPower(updatedPower);
     setBikeImpact(updatedBikeImpact);  // Update bike impact immediately
     
-    const userSelection: UserSelection = {
-      Physical: {
-        gender: updatedGender,
-        genderValue: updatedGenderValue,
-        age: updatedAge,
-        weight: updatedWeight,
-        fitness: updatedFitness,
-        physicalImpact: updatedPhysical,
-        height: updatedHeight,
-        temperature: temperature,
-        pressure: pressure,
-      },
-      Cycling: {
-        bike: updatedBike,
-        material: updatedMaterial,
-        power: updatedPower,
-        speed: updatedSpeed,
-        duration: updatedDuration,
-        bikeImpact: updatedBikeImpact,
-      },
-      Diet: {
-        region: updatedRegion,
-        eating: updatedEating,
-        impact: updatedDietImpact,
-      },
-      Result: {
-        kcalSpend: kcalSpend,
-        dietImpact: updatedDietImpact,
-        bikeImpact: updatedBikeImpact,
-      }
+    const createUserSelection = (kcalSpend: number):  UserSelection => {
+        return{
+          Physical: {
+          gender: updatedGender,
+          genderValue: updatedGenderValue,
+          age: updatedAge,
+          weight: updatedWeight,
+          fitness: updatedFitness,
+          physicalImpact: updatedPhysical,
+          height: updatedHeight,
+          temperature: temperature,
+          pressure: pressure,
+        },
+        Cycling: {
+          bike: updatedBike,
+          material: updatedMaterial,
+          power: updatedPower,
+          speed: updatedSpeed,
+          duration: updatedDuration,
+          bikeImpact: updatedBikeImpact,
+        },
+        Diet: {
+          region: updatedRegion,
+          eating: updatedEating,
+          impact: updatedDietImpact,
+        },
+        Result: {
+          kcalSpend: kcalSpend,
+          dietImpact: updatedDietImpact,
+          bikeImpact: updatedBikeImpact,
+        }
+      }      
     };
-    const caloriesSpend = calculateCaloriesSpend(userSelection);
-    
-    const userSelected: UserSelection = {
-      Physical: {
-        gender: updatedGender,
-        genderValue: updatedGenderValue,
-        age: updatedAge,
-        weight: updatedWeight,
-        fitness: updatedFitness,
-        physicalImpact: updatedPhysical,
-        height: updatedHeight,
-        temperature: temperature,
-        pressure: pressure,
-      },
-      Cycling: {
-        bike: updatedBike,
-        material: updatedMaterial,
-        power: updatedPower,
-        speed: updatedSpeed,
-        duration: updatedDuration,
-        bikeImpact: updatedBikeImpact,
-      },
-      Diet: {
-        region: updatedRegion,
-        eating: updatedEating,
-        impact: updatedDietImpact,
-      },
-      Result: {
-        kcalSpend: caloriesSpend,
-        dietImpact: updatedDietImpact,
-        bikeImpact: updatedBikeImpact,
-      }
-    };
+
+    const initialUserSelection = createUserSelection(0)
+    const caloriesSpend = calculateCaloriesSpend(initialUserSelection)
+    const calculatedUserSelection = createUserSelection(caloriesSpend)
+
     // Update the userInput state
-    setUserInput(userSelection);
+    setUserInput(calculatedUserSelection);
 
     // Log the userSelection object
-    console.log(userSelected);
+    console.log(calculatedUserSelection);
     console.log(caloriesSpend)
   };
   
