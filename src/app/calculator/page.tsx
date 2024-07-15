@@ -4,7 +4,13 @@ import DietInput from "@/components/Input/dietInput";
 import CyclingInput from "@/components/Input/cyclingInput";
 import PhysicalInput from "@/components/Input/physicalInput";
 import Output from "@/components/output/output";
-import { calculateCaloriesSpend } from "@/components/calculation/calories";
+import { calculateCaloriesSpend } from "@/components/calculation/calories"
+
+export interface Result {
+  kcalSpend: number,
+  dietImpact: number,
+  bikeImpact: number,
+}
 
 export interface Physical{
   gender: string,
@@ -37,6 +43,7 @@ export interface UserSelection {
   Physical : Physical,
   Cycling : Cycling,
   Diet : Diet,
+  Result : Result,
 }
 
 export interface physicalData{
@@ -96,6 +103,7 @@ const Calculator: React.FC<PageProps> = () => {
   const [selectedPower,setSelectedPower] = useState<string>("-");
   const [selectedMaterial,setSelectedMaterial] = useState<string>("-");
   const [selectedGenderValue,setSelectedGenderValue] = useState<number>(1);
+  const [kcalSpend,setKcalSpend] = useState<number>(0);
   
   useEffect(() => {
     async function fetchClassicBikeData(){
@@ -274,6 +282,7 @@ const Calculator: React.FC<PageProps> = () => {
   };
 
   const handleSubmit = () => {
+    
     let updatedBike = selectedBike ?? "Classic";
     let updatedRegion = selectedRegion === "-" ? "North America" : selectedRegion;
     let updatedEating = selectedEating === "-" ? "Omnivore" : selectedEating;
@@ -360,6 +369,40 @@ const Calculator: React.FC<PageProps> = () => {
     setSelectedPower(updatedPower);
     setBikeImpact(updatedBikeImpact);  // Update bike impact immediately
     
+    const createUserSelection = (kcalSpend: number): UserSelection => {
+      return {
+        Physical: {
+          gender: updatedGender,
+          genderValue: updatedGenderValue,
+          age: updatedAge,
+          weight: updatedWeight,
+          fitness: updatedFitness,
+          physicalImpact: updatedPhysical,
+          height: updatedHeight,
+          temperature: temperature,
+          pressure: pressure,
+        },
+        Cycling: {
+          bike: updatedBike,
+          material: updatedMaterial,
+          power: updatedPower,
+          speed: updatedSpeed,
+          duration: updatedDuration,
+          bikeImpact: updatedBikeImpact,
+        },
+        Diet: {
+          region: updatedRegion,
+          eating: updatedEating,
+          impact: updatedDietImpact,
+        },
+        Result: {
+          kcalSpend: kcalSpend,
+          dietImpact: updatedDietImpact,
+          bikeImpact: updatedBikeImpact,
+        }
+      };
+    };
+
     const userSelection: UserSelection = {
       Physical: {
         gender: updatedGender,
@@ -384,15 +427,51 @@ const Calculator: React.FC<PageProps> = () => {
         region: updatedRegion,
         eating: updatedEating,
         impact: updatedDietImpact,
+      },
+      Result: {
+        kcalSpend: kcalSpend,
+        dietImpact: updatedDietImpact,
+        bikeImpact: updatedBikeImpact,
       }
     };
-  
+    const caloriesSpend = calculateCaloriesSpend(userSelection);
+    
+    const userSelected: UserSelection = {
+      Physical: {
+        gender: updatedGender,
+        genderValue: updatedGenderValue,
+        age: updatedAge,
+        weight: updatedWeight,
+        fitness: updatedFitness,
+        physicalImpact: updatedPhysical,
+        height: updatedHeight,
+        temperature: temperature,
+        pressure: pressure,
+      },
+      Cycling: {
+        bike: updatedBike,
+        material: updatedMaterial,
+        power: updatedPower,
+        speed: updatedSpeed,
+        duration: updatedDuration,
+        bikeImpact: updatedBikeImpact,
+      },
+      Diet: {
+        region: updatedRegion,
+        eating: updatedEating,
+        impact: updatedDietImpact,
+      },
+      Result: {
+        kcalSpend: caloriesSpend,
+        dietImpact: updatedDietImpact,
+        bikeImpact: updatedBikeImpact,
+      }
+    };
     // Update the userInput state
     setUserInput(userSelection);
-  
-    const caloriesSpend = calculateCaloriesSpend(userSelection);
+
     // Log the userSelection object
-    console.log(userSelection);
+    console.log(userSelected);
     console.log(caloriesSpend)
   };
   

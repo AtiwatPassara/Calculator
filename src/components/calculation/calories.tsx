@@ -1,6 +1,7 @@
 import { UserSelection } from "../../app/calculator/page";
 
 export const calculateCaloriesSpend = (userSelection: UserSelection) => {
+
     const { Physical, Cycling, Diet } = userSelection;
     const Vo2Max = 0.133*Physical.age - 0.005*(Physical.age**2) + 11.403*Physical.genderValue + 1.463*Physical.fitness + (9.17*Physical.height)/100 - 0.254*Physical.weight + 34.142; 
     const MaxAerobicPower = (Vo2Max*20.9)/4;
