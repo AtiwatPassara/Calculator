@@ -5,9 +5,9 @@ export default function Page() {
   return (
     <div>
       <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
-        <div className="flex flex-col lg:flex-row items-center justify-around p-8">
+        <div className="flex flex-col lg:flex-row items-center justify-around p-2 lg:p-8">
             <div className="text-white max-w-lg mb-8 lg:mb-0">
-              <div className="text-5xl font-bold leading-tight text-center lg:text-left">
+               <div className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight text-center lg:text-left">
                 Calculating tool for
                 <div>
                   <span className="text-green-500">Environmental Impact</span> of
