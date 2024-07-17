@@ -4,6 +4,7 @@ import { IoIosInformationCircleOutline } from "react-icons/io";
 import { AiOutlineLoading3Quarters } from "react-icons/ai"; // Import spinner icon
 import FitnessTable from "../modal/fitnessModal";
 import { CountryData } from "@/app/type/countryData";
+import { UserSelection } from "@/app/calculator/page";
 
 interface PhysicalInputProps {
   selectedGender: string;
@@ -21,6 +22,10 @@ interface PhysicalInputProps {
   handleOpenTableModal: () => void;
   handleCloseTableModal: () => void;
   showTableModal: boolean;
+  userInput: UserSelection | null;
+  isSubmitClicked: boolean;
+  setIsRequiredSet: (value: boolean) => void;
+  isRequiredSet: boolean;
 }
 
 const PhysicalInput: React.FC<PhysicalInputProps> = ({
@@ -39,47 +44,57 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
   handleCloseTableModal,
   handleOpenTableModal,
   showTableModal,
+  userInput,
+  isSubmitClicked,
+  setIsRequiredSet,
+  isRequiredSet,
 }) => {
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
   const [countryData, setCountryData] = useState<CountryData[]>([]);
-  const [country,setCountry] = useState<string>("-");
+  const [country, setCountry] = useState<string>("-");
   const [loading, setLoading] = useState<boolean>(false);
-  
-  const fetchCountryData = async () => {
-    try {
-      const response = await fetch(`https://countriesnow.space/api/v0.1/countries/positions`);
-      const data = await response.json();
-      setCountryData(data);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  }
-  
+  const [isLocationSelected, setIsLocationSelected] = useState<boolean>(true);
+
+  useEffect(() => {
+    const handleLocationSelect = async () => {
+      if(isSubmitClicked && userInput){
+          if(userInput.Physical.temperature !== 0){
+            setIsLocationSelected(true)
+            setIsRequiredSet(true)
+          }
+          else if(userInput.Physical.temperature === 0){
+            setIsLocationSelected(false)
+            setIsRequiredSet(false)
+          }
+      }
+    };
+    handleLocationSelect();
+  }, [userInput]);
+
   useEffect(() => {
     const fetchCountryData = async () => {
-        try {
-          const response = await fetch(`https://countriesnow.space/api/v0.1/countries/positions`);
-          const result = await response.json();
-          setCountryData(result.data);
-        } catch (error) {
-          console.error('Error fetching data:', error);
-        }
+      try {
+        const response = await fetch(`https://countriesnow.space/api/v0.1/countries/positions`);
+        const result = await response.json();
+        setCountryData(result.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
       }
+    };
     fetchCountryData();
   }, []);
 
   useEffect(() => {
-    const updateLocation = () => {
-      const updateCountry = countryData.find((c) => c.name.toLowerCase() === country.toLowerCase())
-      if(updateCountry){
-      setLatitude(updateCountry.lat)
-      setLongitude(updateCountry.lat)
+    if (countryData.length > 0) {
+      const updateCountry = countryData.find((c) => c.name.toLowerCase() === country.toLowerCase());
+      if (updateCountry) {
+        setLatitude(updateCountry.lat);
+        setLongitude(updateCountry.lat);
       }
     }
-    updateLocation();
-  },[country,countryData])
+  }, [country, countryData]);
 
   useEffect(() => {
     const fetchWeatherData = async () => {
@@ -98,7 +113,6 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
         }
       }
     };
-  
     fetchWeatherData();
   }, [latitude, longitude, setTemperature, setPressure]);
 
@@ -149,137 +163,140 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
     if (value.length <= 3) {
       setSelectedWeight(Number(value));
     }
-  }
+  };
 
   const handleHeightChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    setSelectedHeight(Number(value))
-  }
+    setSelectedHeight(Number(value));
+  };
 
   return (
-    <div>
-      <div className="p-2">
-        <h2 className="text-lg font-bold mb-4">Physical Information</h2>
-        <div className="flex flex-row justify-between">
-          <div className="p-2">
-            Select Gender
-            <select
-              className="bg-black text-white p-2 mx-2 border border-white rounded-md focus:border-green-500"
-              value={selectedGender}
-              onChange={(e) => setSelectedGender(e.target.value)}
-            >
-              {selectGender.map((option) => (
-                <option value={option.value} key={option.value}>
-                  {option.title}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="p-2 flex items-center">
-              Fitness Level
-              <select
-                className="bg-black text-white p-2 mx-2 border border-white rounded-md w-20 focus:border-[#42ddf5] focus:outline-none"
-                value={selectedFitness}
-                onChange={(e) => setSelectedFitness(Number(e.target.value))}
-              >
-                {selectFitness.map((option) => (
-                  <option value={option.value} key={option.value}>
-                    {option.title}
-                  </option>
-                ))}
-              </select>
-              <button onClick={handleOpenTableModal} className="transition-all hover:scale-110 duration-200 ease-in-out">
-                <IoIosInformationCircleOutline size={25} style={{ opacity: 0.7 }} />
-              </button>
-          </div>
+    <div className="p-2">
+      <h2 className="text-lg font-bold mb-4">Physical Information</h2>
+      <div className="flex flex-row justify-between">
+        <div className="p-2">
+          Select Gender
+          <select
+            className="bg-black text-white p-2 mx-2 border border-white rounded-md focus:border-green-500"
+            value={selectedGender}
+            onChange={(e) => setSelectedGender(e.target.value)}
+          >
+            {selectGender.map((option) => (
+              <option value={option.value} key={option.value}>
+                {option.title}
+              </option>
+            ))}
+          </select>
         </div>
-        <div className="flex flex-row mt-5 justify-between">
-          <div className="p-2">
-            Age
-            <input
-              type="number"
-              className="bg-black text-white p-2 mx-2 border border-white rounded-md w-20 focus:border-red-500 focus:outline-none"
-              value={selectedAge}
-              onChange={handleAgeChange}
-              min={0}
-              max={999}
-            />
-          </div>
-          <div className="p-2">
-            Weight
-            <input
-              type="number"
-              className="bg-black text-white p-2 mx-2 border border-white rounded-md w-20 focus:border-orange-500 focus:outline-none"
-              value={selectedWeight}
-              onChange={handleWeightChange}
-              min={0}
-              max={999}
-            />
-            Kg
-          </div>
-          <div className="p-2">
-            Height
-            <input
-              type="number"
-              className="bg-black text-white p-2 mx-2 border border-white rounded-md w-20 focus:border-red-500 focus:outline-none"
-              value={selectedHeight}
-              onChange={handleHeightChange}
-              min={0}
-              max={999}
-            />
-            Cm
-          </div>       
+        <div className="p-2 flex items-center">
+          Fitness Level
+          <select
+            className="bg-black text-white p-2 mx-2 border border-white rounded-md w-20 focus:border-[#42ddf5] focus:outline-none"
+            value={selectedFitness}
+            onChange={(e) => setSelectedFitness(Number(e.target.value))}
+          >
+            {selectFitness.map((option) => (
+              <option value={option.value} key={option.value}>
+                {option.title}
+              </option>
+            ))}
+          </select>
+          <button onClick={handleOpenTableModal} className="transition-all hover:scale-110 duration-200 ease-in-out">
+            <IoIosInformationCircleOutline size={25} style={{ opacity: 0.7 }} />
+          </button>
         </div>
-        <div className="flex flex-row justify-between mt-5">
-          <div className="p-2">
-            Location :{" "}
-            <button onClick={getUserLocation} className="border rounded p-2 focus:ring focus:border-green-500 ml-1 hover:border-green-500 hover:text-green-300 transition-all hover:scale-110 duration-300 ease-in-out">Get my location</button>
-          </div>
-          <span className="flex items-center">or</span>
-          <div className="p-2">
-            Select Country
-            <select
-              className="bg-black text-white p-2 mx-2 border max-w-[150px] border-white rounded-md focus:border-green-500"
-              value={country}
-              onChange={(e) => setCountry(e.target.value)}
-            >
-              {countryData.map((option) => (
-                <option value={option.name} key={option.name}>
-                  {option.name}
-                </option>
-              ))}
-            </select>
-          </div>
+      </div>
+      <div className="flex flex-row mt-5 justify-between">
+        <div className="p-2">
+          Age
+          <input
+            type="number"
+            className="bg-black text-white p-2 mx-2 border border-white rounded-md w-20 focus:border-red-500 focus:outline-none"
+            value={selectedAge}
+            onChange={handleAgeChange}
+            min={0}
+            max={999}
+          />
         </div>
-        <div className="flex flex-row justify-between mt-5">
-            <div className="p-2 flex items-center">
-              <span>Outside Temperature :</span>
-                {loading ? (
-                  <AiOutlineLoading3Quarters className="animate-spin ml-2" size={24} />
-                ) : (
-                weatherData && weatherData.main && (
-                <p className="ml-2">{weatherData.main.temp}{" "}°C</p>
-                )
-                )}
-            </div>
-            <div className="p-2 flex items-center">
-                <span>Atmospheric Pressure :</span>
-                {loading ? (
-                  <AiOutlineLoading3Quarters className="animate-spin ml-2" size={24} />
-                ) : (weatherData && weatherData.main &&(
-                <p className="ml-2">{weatherData.main.pressure}{" "}hPa</p>))
-                }
-            </div>
-          </div>
+        <div className="p-2">
+          Weight
+          <input
+            type="number"
+            className="bg-black text-white p-2 mx-2 border border-white rounded-md w-20 focus:border-orange-500 focus:outline-none"
+            value={selectedWeight}
+            onChange={handleWeightChange}
+            min={0}
+            max={999}
+          />
+          Kg
+        </div>
+        <div className="p-2">
+          Height
+          <input
+            type="number"
+            className="bg-black text-white p-2 mx-2 border border-white rounded-md w-20 focus:border-red-500 focus:outline-none"
+            value={selectedHeight}
+            onChange={handleHeightChange}
+            min={0}
+            max={999}
+          />
+          Cm
+        </div>       
+      </div>
+      
+      <div className={`flex flex-row justify-between mt-5 ${!isLocationSelected ? 'border border-red-500 rounded p-2' : ''}`}>
+      <span className="text-red-500 text-[15px]"> *</span> 
+        <div className="p-2">
+        Location:{" "}
+          <button onClick={getUserLocation} className="border rounded p-2 focus:ring focus:border-green-500 ml-1 hover:border-green-500 hover:text-green-300 transition-all hover:scale-110 duration-300 ease-in-out">Get my location</button>
+        </div>
+        <span className="flex items-center">or</span>
+        <div className="p-2">
+          Select Country
+          <select
+            className="bg-black text-white p-2 mx-2 border max-w-[150px] border-white rounded-md focus:border-green-500"
+            value={country}
+            onChange={(e) => setCountry(e.target.value)}
+          >
+            <option value="-" key="-">
+              -
+            </option>
+            {countryData.map((option) => (
+              <option value={option.name} key={option.name}>
+                {option.name}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+      <div className="flex flex-row justify-between mt-5">
+        <div className="p-2 flex items-center">
+          <span>Outside Temperature :</span>
+          {loading ? (
+            <AiOutlineLoading3Quarters className="animate-spin ml-2" size={24} />
+          ) : (
+            weatherData && weatherData.main && (
+              <p className="ml-2">{weatherData.main.temp}{" "}°C</p>
+            )
+          )}
+        </div>
+        <div className="p-2 flex items-center">
+          <span>Atmospheric Pressure :</span>
+          {loading ? (
+            <AiOutlineLoading3Quarters className="animate-spin ml-2" size={24} />
+          ) : (
+            weatherData && weatherData.main && (
+              <p className="ml-2">{weatherData.main.pressure}{" "}hPa</p>
+            )
+          )}
+        </div>
       </div>
       <FitnessTable 
-      handleCloseTableModal={handleCloseTableModal}
-      showTableModal={showTableModal}/>
+        handleCloseTableModal={handleCloseTableModal}
+        showTableModal={showTableModal}
+      />
     </div>
   );
 };
 
 export default PhysicalInput;
-
-
-
