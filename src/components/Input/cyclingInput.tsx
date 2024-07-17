@@ -1,6 +1,5 @@
 import { MdOutlinePedalBike } from "react-icons/md";
 import BikeModal from "../modal/bikeModal";
-import ClassicModal from "../modal/classicModal";
 
 interface CyclingInputProps {
   selectedBike: string | null;
@@ -14,10 +13,6 @@ interface CyclingInputProps {
   selectedSpeed: number;
   setSelectedDuration: (value: number) => void;
   selectedDuration: number;
-  showClassicModal: boolean;
-  handleOpenClassic: () => void;
-  handleCloseClassic: () => void;
-  handleSubmitClassic: () => void;
   handlePowerSelection: (power: string) => void;
   selectedPower: string ;
   handleMaterialSelection: (material: string) => void;
@@ -26,7 +21,6 @@ interface CyclingInputProps {
 
 const CyclingInput: React.FC<CyclingInputProps> = ({
   selectedBike,
-  setSelectedBike,
   showModal,
   handleOpenModal,
   handleCloseModal,
@@ -36,10 +30,6 @@ const CyclingInput: React.FC<CyclingInputProps> = ({
   selectedSpeed,
   setSelectedDuration,
   selectedDuration,
-  showClassicModal,
-  handleOpenClassic,
-  handleCloseClassic,
-  handleSubmitClassic,
   handlePowerSelection,
   selectedPower,
   handleMaterialSelection,
@@ -59,28 +49,28 @@ const CyclingInput: React.FC<CyclingInputProps> = ({
 
   return (
     <div>
-      <div className="p-2 ">
+      <div className="p-2 border rounded m-1 md:m-0">
         <h2 className="text-lg font-bold mb-4">Cycling Information</h2>
-        <div className='flex flex-row justify-between '>
-          <div className="flex items-center space-x-2 ">
-            <label>Select your bike </label>
+        <div className='flex flex-col sm:flex-row justify-between '>
+          <div className="flex items-center md:space-x-2 space-x-1 p-2">
+            <label>Select bike</label>
             <button
               type="button"
-              className="bg-white text-black py-2 px-4 rounded-md flex items-center border-2 hover:border-green-500 transition-all hover:scale-110 duration-300 ease-in-out"
+              className="bg-white text-black md:py-2 md:px-4 rounded-md px-2 py-1 flex items-center border-2 hover:border-green-500 transition-all hover:scale-110 duration-300 ease-in-out"
               onClick={handleOpenModal}
             >
-              <MdOutlinePedalBike size={30} />
+              <MdOutlinePedalBike className="text-2xl md:text-3xl" />
             </button>
             <span>:</span>
             <span>{selectedBike ? `${selectedBike} Bike` : "No bike selected"}</span>
           </div>
         </div>
-        <div className='flex flex-row justify-between mt-5'>
-          <div className="flex items-center ">
+        <div className='flex flex-col md:flex-row justify-between md:mt-5'>
+          <div className="flex items-center p-2">
             Average Speed : 
             <input
               type="number"
-              className="bg-black text-white p-2 mx-2 border border-white rounded-md w-20 focus:border-orange-500 focus:outline-none"
+              className="bg-black text-white p-1 m-2 md:p-2 md:mx-2 border border-white rounded-md w-[60px] md:w-20 focus:border-orange-500 focus:outline-none"
               onChange={handleSpeedChange}
               value={selectedSpeed}
               min={0}
@@ -88,11 +78,11 @@ const CyclingInput: React.FC<CyclingInputProps> = ({
             />
               Km/hr
           </div>
-          <div className="flex items-center">
+          <div className="flex items-center p-2">
             Duration : 
             <input
               type="number"
-              className="bg-black text-white p-2 mx-2 border border-white rounded-md w-20 focus:border-orange-500 focus:outline-none"
+              className="bg-black text-white p-1 m-2 md:p-2 md:mx-2 border border-white rounded-md w-[60px] md:w-20 focus:border-orange-500 focus:outline-none"
               min={0}
               max={999}
               onChange={handleDurationChange}
@@ -108,10 +98,6 @@ const CyclingInput: React.FC<CyclingInputProps> = ({
         selectedBike={selectedBike}
         handleBikeSelection={handleBikeSelection}
         handleBikeSubmit={handleBikeSubmit}
-        showClassicModal={showClassicModal}
-        handleOpenClassic={handleOpenClassic} 
-        handleCloseClassic={handleCloseClassic} 
-        handleSubmitClassic={handleSubmitClassic} 
         handleMaterialSelection={handleMaterialSelection} 
         handlePowerSelection={handlePowerSelection} 
         selectedMaterial={selectedMaterial} selectedPower={selectedPower}      />

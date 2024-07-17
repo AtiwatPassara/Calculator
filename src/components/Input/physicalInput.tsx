@@ -171,13 +171,13 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
   };
 
   return (
-    <div className="p-2">
+    <div className="p-2 border rounded m-1 md:m-0">
       <h2 className="text-lg font-bold mb-4">Physical Information</h2>
-      <div className="flex flex-row justify-between">
+      <div className="flex flex-col md:flex-row justify-between">
         <div className="p-2">
           Select Gender
           <select
-            className="bg-black text-white p-2 mx-2 border border-white rounded-md focus:border-green-500"
+            className="bg-black text-white p-1 m-2 md:p-2 md:mx-2 border border-white rounded-md focus:border-green-500"
             value={selectedGender}
             onChange={(e) => setSelectedGender(e.target.value)}
           >
@@ -191,7 +191,7 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
         <div className="p-2 flex items-center">
           Fitness Level
           <select
-            className="bg-black text-white p-2 mx-2 border border-white rounded-md w-20 focus:border-[#42ddf5] focus:outline-none"
+            className="bg-black text-white p-1 m-2 md:p-2 md:mx-2 border border-white rounded-md w-20 focus:border-[#42ddf5] focus:outline-none"
             value={selectedFitness}
             onChange={(e) => setSelectedFitness(Number(e.target.value))}
           >
@@ -202,16 +202,16 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
             ))}
           </select>
           <button onClick={handleOpenTableModal} className="transition-all hover:scale-110 duration-200 ease-in-out">
-            <IoIosInformationCircleOutline size={25} style={{ opacity: 0.7 }} />
+            <IoIosInformationCircleOutline className="text-xl" style={{ opacity: 0.7 }} />
           </button>
         </div>
       </div>
-      <div className="flex flex-row mt-5 justify-between">
+      <div className="flex flex-col md:flex-row md:mt-5 justify-between">
         <div className="p-2">
           Age
           <input
             type="number"
-            className="bg-black text-white p-2 mx-2 border border-white rounded-md w-20 focus:border-red-500 focus:outline-none"
+            className="bg-black text-white p-1 m-2 md:p-2 md:mx-2 border border-white rounded-md w-20 focus:border-red-500 focus:outline-none"
             value={selectedAge}
             onChange={handleAgeChange}
             min={0}
@@ -222,7 +222,7 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
           Weight
           <input
             type="number"
-            className="bg-black text-white p-2 mx-2 border border-white rounded-md w-20 focus:border-orange-500 focus:outline-none"
+            className="bg-black text-white p-1 m-2 md:p-2 md:mx-2 border border-white rounded-md w-20 focus:border-orange-500 focus:outline-none"
             value={selectedWeight}
             onChange={handleWeightChange}
             min={0}
@@ -234,7 +234,7 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
           Height
           <input
             type="number"
-            className="bg-black text-white p-2 mx-2 border border-white rounded-md w-20 focus:border-red-500 focus:outline-none"
+            className="bg-black text-white p-1 m-2 md:p-2 md:mx-2 border border-white rounded-md w-20 focus:border-red-500 focus:outline-none"
             value={selectedHeight}
             onChange={handleHeightChange}
             min={0}
@@ -244,51 +244,50 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
         </div>       
       </div>
       
-      <div className={`flex flex-row justify-between mt-5 ${!isLocationSelected ? 'border border-red-500 rounded p-2' : ''}`}>
-      <span className="text-red-500 text-[15px]"> *</span> 
-        <div className="p-2">
-        Location:{" "}
-          <button onClick={getUserLocation} className="border rounded p-2 focus:ring focus:border-green-500 ml-1 hover:border-green-500 hover:text-green-300 transition-all hover:scale-110 duration-300 ease-in-out">Get my location</button>
-        </div>
-        <span className="flex items-center">or</span>
-        <div className="p-2">
-          Select Country
-          <select
-            className="bg-black text-white p-2 mx-2 border max-w-[150px] border-white rounded-md focus:border-green-500"
-            value={country}
-            onChange={(e) => setCountry(e.target.value)}
-          >
-            <option value="-" key="-">
-              -
-            </option>
-            {countryData.map((option) => (
-              <option value={option.name} key={option.name}>
-                {option.name}
+        <div className={`flex flex-col md:flex-row justify-between md:mt-5 ${!isLocationSelected ? 'border border-red-500 rounded p-2' : 'border border-gray-400 rounded p-2'}`}>
+          <div className="p-2 flex items-center">
+            <span className="text-red-500 text-[15px] mr-1">*</span> Location :{" "}
+            <button onClick={getUserLocation} className="border rounded p-2 focus:ring focus:border-green-500 ml-1 hover:border-green-500 hover:text-green-300 transition-all hover:scale-110 duration-300 ease-in-out">Get Location</button>
+          </div>
+          <span className="md:flex items-center hidden">/</span>
+          <div className="p-2 flex items-center">
+            <span className='md:hidden mx-1'>/</span>Select Country
+            <select
+              className="bg-black text-white p-1 m-2 md:p-2 md:mx-2 border w-[100px] md:max-w-[150px]  border-white rounded-md focus:border-green-500"
+              value={country}
+              onChange={(e) => setCountry(e.target.value)}
+            >
+              <option value="-" key="-">
+                -
               </option>
-            ))}
-          </select>
+              {countryData.map((option) => (
+                <option value={option.name} key={option.name}>
+                  {option.name}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
-      </div>
-      <div className="flex flex-row justify-between mt-5">
-        <div className="p-2 flex items-center">
-          <span>Outside Temperature :</span>
-          {loading ? (
-            <AiOutlineLoading3Quarters className="animate-spin ml-2" size={24} />
-          ) : (
-            weatherData && weatherData.main && (
-              <p className="ml-2">{weatherData.main.temp}{" "}°C</p>
-            )
-          )}
-        </div>
-        <div className="p-2 flex items-center">
-          <span>Atmospheric Pressure :</span>
-          {loading ? (
-            <AiOutlineLoading3Quarters className="animate-spin ml-2" size={24} />
-          ) : (
-            weatherData && weatherData.main && (
-              <p className="ml-2">{weatherData.main.pressure}{" "}hPa</p>
-            )
-          )}
+        <div className="flex flex-col md:flex-row justify-between md:mt-5">
+          <div className="p-2 flex items-center">
+            <span>Outside Temperature :</span>
+            {loading ? (
+              <AiOutlineLoading3Quarters className="animate-spin ml-2" size={24} />
+            ) : (
+              weatherData && weatherData.main && (
+                <p className="ml-2">{weatherData.main.temp}{" "}°C</p>
+              )
+            )}
+          </div>
+          <div className="p-2 flex items-center">
+            <span>Atmospheric Pressure :</span>
+            {loading ? (
+              <AiOutlineLoading3Quarters className="animate-spin ml-2" size={24} />
+            ) : (
+              weatherData && weatherData.main && (
+                <p className="ml-2">{weatherData.main.pressure}{" "}hPa</p>
+              )
+            )}
         </div>
       </div>
       <FitnessTable 
