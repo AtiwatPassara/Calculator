@@ -61,7 +61,7 @@ const OutputChart: React.FC<OutputProps> = ({userInput}) => {
                     <span className="flex text-3xl mt-5 font-bold justify-center ">Result</span>
                     <div className="flex flex-col">
                         <div>
-                            Calories Spend : {roundedDecimal(userInput.Result.kcalSpend,3)}
+                            Excess Calories Spent : {roundedDecimal(userInput.Result.kcalSpend,3)} Kcal/Km
                         </div>
                         <div className="flex m-4 justify-center">
                             <ImpactDoughnutChart userInput={userInput}/>

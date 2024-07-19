@@ -72,11 +72,7 @@ export interface cargoBikeData {
   Impact: number;
 }
 
-export interface PageProps {
-  eatingData: eatingData[];
-}
-
-const Calculator: React.FC<PageProps> = () => {
+const Calculator: React.FC = () => {
   const [selectedGender, setSelectedGender] = useState<string>("-");
   const [selectedRegion, setSelectedRegion] = useState<string>("-");
   const [selectedEating, setSelectedEating] = useState<string>("-");
@@ -200,7 +196,7 @@ const Calculator: React.FC<PageProps> = () => {
       }
     }
     matchDiet(selectedRegion, selectedEating)
-  }, [selectedRegion, selectedEating])
+  }, [selectedRegion, selectedEating, eatingData])
 
   useEffect(() => {
     const matchBike = (selectedBike: string | null) => {
@@ -232,7 +228,7 @@ const Calculator: React.FC<PageProps> = () => {
 
     }
     matchBike(selectedBike)
-  }, [selectedBike])
+  }, [selectedBike, classicBikeData, cargoBikeData, selectedMaterial, selectedPower])
 
   useEffect(() => {
     const matchPhysical = (selectedFitness: number | null) => {
@@ -252,7 +248,7 @@ const Calculator: React.FC<PageProps> = () => {
       }
     }
     matchPhysical(selectedFitness)
-  }, [selectedFitness])
+  }, [selectedFitness, physicalData])
 
 
   const handleMaterialSelection = (material: string) => {

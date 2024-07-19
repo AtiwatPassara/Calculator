@@ -71,7 +71,7 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
       }
     };
     handleLocationSelect();
-  }, [userInput]);
+  }, [userInput,isSubmitClicked,setIsRequiredSet]);
 
   useEffect(() => {
     const fetchCountryData = async () => {
