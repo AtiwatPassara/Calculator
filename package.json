@@ -13,6 +13,7 @@
     "@nextui-org/system": "^2.2.1",
     "@nextui-org/theme": "^2.2.5",
     "chart.js": "^4.4.3",
+    "dotenv": "^16.4.5",
     "framer-motion": "^11.2.10",
     "mysql2": "^3.10.1",
     "net": "^1.0.2",

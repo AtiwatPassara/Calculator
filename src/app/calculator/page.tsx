@@ -298,7 +298,7 @@ const Calculator: React.FC = () => {
     let updatedHeight = selectedHeight === 0 ? 170 : selectedHeight;
     let updatedDuration = selectedDuration === 0 ? 30 : selectedDuration;
     let updatedMaterial = selectedMaterial === '-' ? "Aluminium" : selectedMaterial;
-    let updatedPower = selectedPower === '-' ? 'Mechanic' : selectedPower;
+    let updatedPower = selectedPower === '-' ? 'Mechanical' : selectedPower;
 
     if (updatedGender === 'male') {
       updatedGenderValue = 1;
@@ -474,7 +474,7 @@ const Calculator: React.FC = () => {
               Please Enter Required Field
             </div>}
           <div className="flex justify-center">
-            <button onClick={() => handleSubmit()} className='border rounded py-2 px-4 hover:border-green-500 duration-200 focus:border-2 focus:ring'>Submit</button>
+            <button onClick={() => handleSubmit()} className='border rounded py-2 px-4 md:m-0 mt-4 hover:border-green-500 duration-200 focus:border-2 focus:ring'>Submit</button>
           </div>
         </div>
         {isRequiredSet && <div className="w-full">

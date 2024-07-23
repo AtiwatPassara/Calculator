@@ -1,54 +1,29 @@
 import React from 'react';
 import { Doughnut } from 'react-chartjs-2';
 import { Chart, ArcElement, Tooltip, Legend, Title } from 'chart.js';
+import { UserSelection } from '@/app/type/userSelection';
 
 interface MyDoughnutChartProps {
-  userInput : UserSelection | null
-}
-
-interface Physical{
-  gender: string,
-  age: number,
-  weight: number,
-  fitness: number,
-  physicalImpact: number,
-  temperature: number | null,
-  pressure: number | null,
-}
-
-interface Cycling{
-  bike: string | null, 
-  speed: number,
-  duration: number,
-  bikeImpact: number,
-}
-
-interface Diet{
-  region: string,
-  eating: string, 
-  impact: number,
-}
-
-interface UserSelection {
-  Physical : Physical,
-  Cycling : Cycling,
-  Diet : Diet,
+  userInput: UserSelection | null;
 }
 
 Chart.register(ArcElement, Tooltip, Legend, Title);
 
-const ImpactDoughnutChart: React.FC<MyDoughnutChartProps> = ({userInput}) => {
-
+const ImpactDoughnutChart: React.FC<MyDoughnutChartProps> = ({ userInput }) => {
   const data = {
-    labels: ['Cycling','Diet','Physical'],
+    labels: ['Cycling', 'Diet', 'Physical'],
     datasets: [
       {
         label: 'Impact',
-        data: [userInput?.Cycling.bikeImpact,userInput?.Diet.impact,userInput?.Physical.physicalImpact],
+        data: [
+          userInput?.Cycling.bikeImpact,
+          userInput?.Diet.impact,
+          userInput?.Physical.physicalImpact,
+        ],
         backgroundColor: [
           'rgba(0, 200, 0, 0.2)',
           'rgba(153, 102, 255, 0.2)',
-          'rgba(128, 72, 26, 0.2)'
+          'rgba(128, 72, 26, 0.2)',
         ],
         borderColor: [
           'rgba(0, 255, 0, 1)',
@@ -63,6 +38,7 @@ const ImpactDoughnutChart: React.FC<MyDoughnutChartProps> = ({userInput}) => {
 
   const options = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         position: 'top' as const,
@@ -87,7 +63,7 @@ const ImpactDoughnutChart: React.FC<MyDoughnutChartProps> = ({userInput}) => {
   };
 
   return (
-    <div style={{ width: '350px', height: '350px' }}>
+    <div className="relative w-full h-64 md:h-80 lg:h-96">
       <Doughnut data={data} options={options} />
     </div>
   );

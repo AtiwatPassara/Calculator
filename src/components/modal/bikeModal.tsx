@@ -12,7 +12,7 @@ const selectMaterial = [
 
 const selectType = [
   { title: "-", value: "-" },
-  { title: "Mechanic", value: "Mechanic" },
+  { title: "Mechanical", value: "Mechanical" },
   { title: "Electric", value: "Electric"},
 ];
 
