@@ -2,6 +2,11 @@ export interface Result {
     kcalSpend: number,
     dietImpact: number,
     bikeImpact: number,
+    bikeMaintenance: number,
+    bikeEol: number,
+    bikeEngine: number,
+    bikeBattery: number,
+    bikeElectricity: number,
   }
   
   export interface Physical{

@@ -4,7 +4,7 @@ import { IoIosInformationCircleOutline } from "react-icons/io";
 import { AiOutlineLoading3Quarters } from "react-icons/ai"; // Import spinner icon
 import FitnessTable from "../modal/fitnessModal";
 import { CountryData } from "@/app/type/countryData";
-import { UserSelection } from "@/app/calculator/page";
+import { UserSelection } from "@/app/type/userSelection";
 
 interface PhysicalInputProps {
   selectedGender: string;

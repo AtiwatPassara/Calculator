@@ -1,7 +1,7 @@
-const About : React.FC = () => {
+const Reference : React.FC = () => {
     return  <div className="flex flex-col" >
                <div className="flex justify-center">
-                 About
+                 Reference
                </div>
                <div className='flex justify-center'>
                  content
@@ -9,4 +9,4 @@ const About : React.FC = () => {
             </div>
 }
 
-export default About;
+export default Reference;

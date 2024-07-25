@@ -20,7 +20,7 @@
   :root {
     --foreground-rgb: 255, 255, 255;
     --background-start-rgb: 12,153,40;
-    --background-end-rgb: 89, 212, 80;
+  
   }
 }
 
@@ -38,7 +38,6 @@ body {
 }
 
 .container {
-  
   height: auto;
   margin: auto;
   padding-left: 50px;

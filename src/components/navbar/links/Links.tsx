@@ -19,6 +19,10 @@ const Links: React.FC = () => {
       path: "/contact",
     },
     {
+      title: "Reference",
+      path: "/reference",
+    },
+    {
       title: "Calculator",
       path: "/calculator",
     },

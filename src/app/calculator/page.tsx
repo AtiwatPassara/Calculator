@@ -1,50 +1,12 @@
 'use client'
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import DietInput from "@/components/Input/dietInput";
 import CyclingInput from "@/components/Input/cyclingInput";
 import PhysicalInput from "@/components/Input/physicalInput";
 import Output from "@/components/output/output";
 import { calculateCaloriesSpend } from "@/components/calculation/calories"
-
-export interface Result {
-  kcalSpend: number,
-  dietImpact: number,
-  bikeImpact: number,
-}
-
-export interface Physical {
-  gender: string,
-  genderValue: number,
-  age: number,
-  weight: number,
-  fitness: number,
-  physicalImpact: number,
-  height: number,
-  temperature: number,
-  pressure: number,
-}
-
-export interface Cycling {
-  bike: string | null, 
-  material: string | null,
-  power: string | null,
-  speed: number,
-  duration: number,
-  bikeImpact: number,
-}
-
-export interface Diet {
-  region: string,
-  eating: string, 
-  impact: number,
-}
-
-export interface UserSelection {
-  Physical: Physical,
-  Cycling: Cycling,
-  Diet: Diet,
-  Result: Result,
-}
+import { classicTestData, cargoTestData } from "../type/bikeTestData";
+import { UserSelection } from "../type/userSelection";
 
 export interface physicalData {
   id: number;
@@ -102,8 +64,58 @@ const Calculator: React.FC = () => {
   const [kcalSpend, setKcalSpend] = useState<number>(0);
   const [isSubmitClicked, setIsSubmitClicked] = useState<boolean>(false);
   const [isRequiredSet, setIsRequiredSet] = useState<boolean>(false);
+  const [classicTestData, setClassicTestData] = useState<classicTestData[]>([])
+  const [cargoTestData, setCargoTestData] = useState<cargoTestData[]>([])
+  const [bikeMaintenance, setBikeMaintenance] = useState<number>(0)
+  const [bikeEol, setBikeEol] = useState<number>(0)
+  const [bikeEngine, setBikeEngine] = useState<number>(0)
+  const [bikeBattery, setBikeBattery] = useState<number>(0)
+  const [bikeElectricity, setBikeElectricity] = useState<number>(0)
+  const resultRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if(resultRef.current){
+      resultRef.current.scrollIntoView({behavior : 'smooth'});
+    }
+  },[isRequiredSet])
   
   useEffect(() => {
+    async function fetchClassicTestData() {
+      try {
+        const res = await fetch('api/classicTestData');
+        if (!res.ok) {
+          throw new Error('Error fetching data');
+        }
+        const result: classicTestData[] = await res.json();
+        setClassicTestData(result);
+      }
+      catch (error) {
+        if (error instanceof Error) {
+          setFetchError(error.message);
+        } else {
+          setFetchError('An unknown error occurred');
+        }
+      }
+    }
+
+    async function fetchCargoTestData() {
+      try {
+        const res = await fetch('api/cargoTestData');
+        if (!res.ok) {
+          throw new Error('Error fetching data');
+        }
+        const result: cargoTestData[] = await res.json();
+        setCargoTestData(result);
+      }
+      catch (error) {
+        if (error instanceof Error) {
+          setFetchError(error.message);
+        } else {
+          setFetchError('An unknown error occurred');
+        }
+      }
+    }
+
     async function fetchClassicBikeData() {
       try {
         const res = await fetch('api/classicBikeData');
@@ -173,6 +185,8 @@ const Calculator: React.FC = () => {
         }
       }
     }
+    fetchClassicTestData();
+    fetchCargoTestData();
     fetchCargoBikeData();
     fetchRegionData();
     fetchClassicBikeData();
@@ -200,21 +214,31 @@ const Calculator: React.FC = () => {
 
   useEffect(() => {
     const matchBike = (selectedBike: string | null) => {
-      if (!classicBikeData || !cargoBikeData) { return }
+      if (!classicTestData || !cargoTestData) { return }
       try {
         if (selectedBike === "Classic") {
-          const [match] = classicBikeData.filter(data => data.Material === selectedMaterial && data.PowerType === selectedPower)
+          const [match] = classicTestData.filter(data => data.Material === selectedMaterial && data.PowerType === selectedPower)
           if (match) {
-            setBikeImpact(match.Impact)
+            setBikeImpact(match.Manufacture)
+            setBikeMaintenance(match.Maintenance)
+            setBikeEol(match.Eol)
+            setBikeEngine(match.Engine)
+            setBikeBattery(match.Battery)
+            setBikeElectricity(match.Electricity)
           }
           else {
             setBikeImpact(0)
           }
         }
         else if (selectedBike === "Cargo") {
-          const [match] = cargoBikeData.filter(data => data.PowerType === selectedPower)
+          const [match] = cargoTestData.filter(data => data.PowerType === selectedPower)
           if (match) {
-            setBikeImpact(match.Impact)
+            setBikeImpact(match.Manufacture)
+            setBikeMaintenance(match.Maintenance)
+            setBikeEol(match.Eol)
+            setBikeEngine(match.Engine)
+            setBikeBattery(match.Battery)
+            setBikeElectricity(match.Electricity)
           }
           else {
             setBikeImpact(0)
@@ -337,24 +361,53 @@ const Calculator: React.FC = () => {
 
     const updatedPhysical = matchPhysical();
 
-    const matchBike = () => {
-      if (!classicBikeData || !cargoBikeData) { return 0; }
+    const matchBike = (): classicTestData | cargoTestData => {
+      const noMatchClassicBike: classicTestData = {
+        id: 0,
+        Material: "",
+        PowerType: "",
+        Manufacture: 0,
+        Maintenance: 0,
+        Eol: 0,
+        Engine: 0,
+        Battery: 0,
+        Electricity: 0
+      };
+      const noMatchCargoBike: cargoTestData = {
+        id: 0,
+        PowerType: "",
+        Manufacture: 0,
+        Maintenance: 0,
+        Eol: 0,
+        Engine: 0,
+        Battery: 0,
+        Electricity: 0
+      };
+    
+      if (!classicTestData || !cargoTestData) { 
+        return updatedBike === 'Classic' ? noMatchClassicBike : noMatchCargoBike; 
+      }
       try {
         if (updatedBike === "Classic") {
-          const match = classicBikeData.find(data => data.Material === updatedMaterial && data.PowerType === updatedPower);
-          return match ? match.Impact : 0;
+          const match = classicTestData.find(data => data.Material === updatedMaterial && data.PowerType === updatedPower);
+          return match ? match : noMatchClassicBike;
         } else if (updatedBike === "Cargo") {
-          const match = cargoBikeData.find(data => data.PowerType === updatedPower);
-          return match ? match.Impact : 0;
+          const match = cargoTestData.find(data => data.PowerType === updatedPower);
+          return match ? match : noMatchCargoBike;
         }
-        return 0;
+        return updatedBike === 'Classic' ? noMatchClassicBike : noMatchCargoBike; 
       } catch (error) {
         console.error(error);
-        return 0;
+        return updatedBike === 'Classic' ? noMatchClassicBike : noMatchCargoBike; 
       }
     }
 
-    const updatedBikeImpact = matchBike();
+    const updatedBikeImpact = matchBike().Manufacture
+    const updatedMaintenance = matchBike().Maintenance
+    const updatedEol = matchBike().Eol
+    const updatedEngine = matchBike().Engine
+    const updatedBattery = matchBike().Battery
+    const updatedElectricity = matchBike().Electricity   
 
     // Update states with default values and impacts
     setSelectedBike(updatedBike);
@@ -371,6 +424,11 @@ const Calculator: React.FC = () => {
     setSelectedMaterial(updatedMaterial);
     setSelectedPower(updatedPower);
     setBikeImpact(updatedBikeImpact);  // Update bike impact immediately
+    setBikeMaintenance(updatedMaintenance);
+    setBikeEol(updatedEol)
+    setBikeEngine(updatedEngine);
+    setBikeBattery(updatedBattery);
+    setBikeElectricity(updatedElectricity);   
 
     const createUserSelection = (kcalSpend: number): UserSelection => {
       return {
@@ -402,6 +460,11 @@ const Calculator: React.FC = () => {
           kcalSpend: kcalSpend,
           dietImpact: updatedDietImpact,
           bikeImpact: updatedBikeImpact,
+          bikeMaintenance: updatedMaintenance,
+          bikeEol: updatedEol,
+          bikeEngine: updatedEngine,
+          bikeBattery: updatedBattery,
+          bikeElectricity: updatedElectricity,
         }
       }
     };
@@ -477,7 +540,7 @@ const Calculator: React.FC = () => {
             <button onClick={() => handleSubmit()} className='border rounded py-2 px-4 md:m-0 mt-4 hover:border-green-500 duration-200 focus:border-2 focus:ring'>Submit</button>
           </div>
         </div>
-        {isRequiredSet && <div className="w-full">
+        {isRequiredSet && <div className="w-full" ref={resultRef} >
           <Output
             userInput={userInput} />
         </div>}

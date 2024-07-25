@@ -11,31 +11,43 @@ Chart.register(ArcElement, Tooltip, Legend, Title);
 
 const ImpactDoughnutChart: React.FC<MyDoughnutChartProps> = ({ userInput }) => {
   const data = {
-    labels: ['Cycling', 'Diet', 'Physical'],
+    labels: ['Manufacture', 'Maintenance', 'EOL', 'Engine', 'Battery', 'Electricity', 'Diet', 'Physical'],
     datasets: [
       {
         label: 'Impact',
         data: [
-          userInput?.Cycling.bikeImpact,
+          userInput?.Result.bikeImpact,
+          userInput?.Result.bikeMaintenance,
+          userInput?.Result.bikeEol,
+          userInput?.Result.bikeEngine,
+          userInput?.Result.bikeBattery,
+          userInput?.Result.bikeElectricity,       
           userInput?.Diet.impact,
-          userInput?.Physical.physicalImpact,
         ],
         backgroundColor: [
-          'rgba(0, 200, 0, 0.2)',
-          'rgba(153, 102, 255, 0.2)',
-          'rgba(128, 72, 26, 0.2)',
+          'rgba(0, 200, 0, 0.2)',       // Manufacture
+          'rgba(153, 102, 255, 0.2)',   // Maintenance
+          'rgba(128, 72, 26, 0.2)',     // EOL
+          'rgba(255, 99, 132, 0.2)',    // Engine
+          'rgba(54, 162, 235, 0.2)',    // Battery
+          'rgba(255, 206, 86, 0.2)',    // Electricity
+          'rgba(75, 192, 192, 0.2)',    // Diet
         ],
         borderColor: [
-          'rgba(0, 255, 0, 1)',
-          'rgba(153, 102, 255, 1)',
-          'rgba(128, 72, 26, 1)',
+          'rgba(0, 255, 0, 1)',         // Manufacture
+          'rgba(153, 102, 255, 1)',     // Maintenance
+          'rgba(128, 72, 26, 1)',       // EOL
+          'rgba(255, 99, 132, 1)',      // Engine
+          'rgba(54, 162, 235, 1)',      // Battery
+          'rgba(255, 206, 86, 1)',      // Electricity
+          'rgba(75, 192, 192, 1)',      // Diet
         ],
         borderWidth: 1,
         hoverOffset: 4,
       },
     ],
   };
-
+  
   const options = {
     responsive: true,
     maintainAspectRatio: false,
