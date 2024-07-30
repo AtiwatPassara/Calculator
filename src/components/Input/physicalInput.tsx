@@ -108,9 +108,6 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
         if(updateCountry.region.toLowerCase() === 'europe'){
           updateCountry.region = 'europe'
         }
-        else if(updateCountry.region.toLowerCase() === 'africa'){
-          updateCountry.region = 'africa'
-        }
         else if(updateCountry.region.toLowerCase() === 'americas'){
           updateCountry.region = updateCountry.subregion.toLowerCase()
           if(updateCountry.subregion.toLowerCase() === 'south america' && !notLatin.includes(updateCountry.name)){ //If country selected is in South America and in Latin// 
@@ -124,10 +121,14 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
           }
         }
         else if(updateCountry.region.toLowerCase() === 'asia'){
-          if(middleEast.includes(updateCountry.name)){ 
-            updateCountry.region = 'middle east'
-          }
-          else{updateCountry.region = 'asia'}
+          updateCountry.region = updateCountry.region.toLowerCase()
+          if(middleEast.includes(updateCountry.name)){
+            updateCountry.region = 'middle east'}
+        }
+        else if(updateCountry.region.toLowerCase() === 'africa'){
+          updateCountry.region = updateCountry.region.toLowerCase()
+          if(middleEast.includes(updateCountry.name)){
+            updateCountry.region = 'middle east'}
         }
         else if(updateCountry.subregion.toLowerCase() === 'caribbean'){ 
           updateCountry.region = 'latin and carribean'
