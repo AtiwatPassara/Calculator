@@ -1,3 +1,5 @@
+import { CountryData } from "./countryData";
+
 export interface Result {
     kcalSpend: number,
     dietImpact: number,
@@ -41,4 +43,6 @@ export interface Result {
     Cycling : Cycling,
     Diet : Diet,
     Result : Result,
+    Country: CountryData
   }
+

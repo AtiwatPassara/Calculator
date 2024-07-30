@@ -7,6 +7,13 @@ import Output from "@/components/output/output";
 import { calculateCaloriesSpend } from "@/components/calculation/calories"
 import { classicTestData, cargoTestData } from "../type/bikeTestData";
 import { UserSelection } from "../type/userSelection";
+import { CountryData } from "../type/countryData";
+
+export interface electricityData {
+  id : number,
+  country: string,
+  electricity: number
+}
 
 export interface physicalData {
   id: number;
@@ -71,7 +78,17 @@ const Calculator: React.FC = () => {
   const [bikeEngine, setBikeEngine] = useState<number>(0)
   const [bikeBattery, setBikeBattery] = useState<number>(0)
   const [bikeElectricity, setBikeElectricity] = useState<number>(0)
+  const [electricityData,setElectricityData] = useState<electricityData[]>([])
+  const defaultCountryData: CountryData = {
+    name: "-",
+    region: "",
+    subregion: "",
+    latlng: []
+  }
+  const [electricityCountry,setElectricityCountry] = useState<CountryData>(defaultCountryData)
   const resultRef = useRef<HTMLDivElement>(null);
+
+ 
 
   useEffect(() => {
     if(resultRef.current){
@@ -80,6 +97,22 @@ const Calculator: React.FC = () => {
   },[isRequiredSet])
   
   useEffect(() => {
+    async function fetchElectricityData() {
+      try{
+        const res = await fetch('api/electricityData');
+        if(!res.ok){throw new Error('Error fetching data');}
+        const result : electricityData[] = await res.json();
+        setElectricityData(result);
+      }
+      catch (error) {
+        if (error instanceof Error) {
+          setFetchError(error.message);
+        } else {
+          setFetchError('An unknown error occurred');
+        }
+      }
+    }
+
     async function fetchClassicTestData() {
       try {
         const res = await fetch('api/classicTestData');
@@ -185,6 +218,7 @@ const Calculator: React.FC = () => {
         }
       }
     }
+    fetchElectricityData()
     fetchClassicTestData();
     fetchCargoTestData();
     fetchCargoBikeData();
@@ -465,6 +499,12 @@ const Calculator: React.FC = () => {
           bikeEngine: updatedEngine,
           bikeBattery: updatedBattery,
           bikeElectricity: updatedElectricity,
+        },
+        Country: {
+          name : electricityCountry.name,
+          region: electricityCountry?.region,
+          subregion: electricityCountry?.subregion,
+          latlng: electricityCountry?.latlng,
         }
       }
     };
@@ -531,6 +571,8 @@ const Calculator: React.FC = () => {
             isSubmitClicked={isSubmitClicked}
             isRequiredSet={isRequiredSet}
             setIsRequiredSet={setIsRequiredSet}
+            electricityCountry={electricityCountry}
+            setElectricityCountry={setElectricityCountry}
           />
           {!isRequiredSet &&
             <div className="text-red-500 text-center">

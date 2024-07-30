@@ -11,7 +11,7 @@ Chart.register(ArcElement, Tooltip, Legend, Title);
 
 const ImpactDoughnutChart: React.FC<MyDoughnutChartProps> = ({ userInput }) => {
   const data = {
-    labels: ['Manufacture', 'Maintenance', 'EOL', 'Engine', 'Battery', 'Electricity', 'Diet', 'Physical'],
+    labels: ['Manufacture', 'Maintenance', 'EOL', 'Engine', 'Battery', 'Electricity', 'Food'],
     datasets: [
       {
         label: 'Impact',
@@ -31,7 +31,7 @@ const ImpactDoughnutChart: React.FC<MyDoughnutChartProps> = ({ userInput }) => {
           'rgba(255, 99, 132, 0.2)',    // Engine
           'rgba(54, 162, 235, 0.2)',    // Battery
           'rgba(255, 206, 86, 0.2)',    // Electricity
-          'rgba(75, 192, 192, 0.2)',    // Diet
+          'rgba(75, 192, 192, 0.2)',    // Food
         ],
         borderColor: [
           'rgba(0, 255, 0, 1)',         // Manufacture
@@ -40,7 +40,7 @@ const ImpactDoughnutChart: React.FC<MyDoughnutChartProps> = ({ userInput }) => {
           'rgba(255, 99, 132, 1)',      // Engine
           'rgba(54, 162, 235, 1)',      // Battery
           'rgba(255, 206, 86, 1)',      // Electricity
-          'rgba(75, 192, 192, 1)',      // Diet
+          'rgba(75, 192, 192, 1)',      // Food
         ],
         borderWidth: 1,
         hoverOffset: 4,

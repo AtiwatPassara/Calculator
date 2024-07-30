@@ -26,6 +26,8 @@ interface PhysicalInputProps {
   isSubmitClicked: boolean;
   setIsRequiredSet: (value: boolean) => void;
   isRequiredSet: boolean;
+  electricityCountry: CountryData
+  setElectricityCountry: (value:CountryData) => void;
 }
 
 const PhysicalInput: React.FC<PhysicalInputProps> = ({
@@ -48,6 +50,8 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
   isSubmitClicked,
   setIsRequiredSet,
   isRequiredSet,
+  electricityCountry,
+  setElectricityCountry,
 }) => {
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
@@ -56,6 +60,10 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
   const [country, setCountry] = useState<string>("-");
   const [loading, setLoading] = useState<boolean>(false);
   const [isLocationSelected, setIsLocationSelected] = useState<boolean>(true);
+
+  const notLatin: string[] = ["Guyana",'Suriname','Falkland Islands']
+  const middleEast: string[] = [ "Saudi Arabia","Yemen","Oman","United Arab Emirates","Qatar",
+  "Bahrain","Kuwait","Iraq","Jordan","Syria","Lebanon","Israel","Palestine","Iran","Egypt","Turkey"];
 
   useEffect(() => {
     const handleLocationSelect = async () => {
@@ -76,9 +84,16 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
   useEffect(() => {
     const fetchCountryData = async () => {
       try {
-        const response = await fetch(`https://countriesnow.space/api/v0.1/countries/positions`);
+        const response = await fetch(`https://restcountries.com/v3.1/all`);
         const result = await response.json();
-        setCountryData(result.data);
+        const filteredCountries = result.map((country: any) => ({
+          name: country.name.common,
+          subregion: country.subregion,
+          region: country.region,
+          latlng: country.latlng,
+        }));
+        filteredCountries.sort((a: any, b: any) => a.name.localeCompare(b.name));
+        setCountryData(filteredCountries);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -89,10 +104,50 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
   useEffect(() => {
     if (countryData.length > 0) {
       const updateCountry = countryData.find((c) => c.name.toLowerCase() === country.toLowerCase());
-      if (updateCountry) {
-        setLatitude(updateCountry.lat);
-        setLongitude(updateCountry.lat);
+      if(updateCountry){
+        if(updateCountry.region.toLowerCase() === 'europe'){
+          updateCountry.region = 'europe'
+        }
+        else if(updateCountry.region.toLowerCase() === 'africa'){
+          updateCountry.region = 'africa'
+        }
+        else if(updateCountry.region.toLowerCase() === 'americas'){
+          updateCountry.region = updateCountry.subregion.toLowerCase()
+          if(updateCountry.subregion.toLowerCase() === 'south america' && !notLatin.includes(updateCountry.name)){ //If country selected is in South America and in Latin// 
+            updateCountry.region = 'latin and caribbean'
+          }
+          else if(updateCountry.subregion.toLowerCase() === 'north america'){
+            updateCountry.region = updateCountry.subregion.toLowerCase()
+          }
+          else{
+            updateCountry.region = 'global'
+          }
+        }
+        else if(updateCountry.region.toLowerCase() === 'asia'){
+          if(middleEast.includes(updateCountry.name)){ 
+            updateCountry.region = 'middle east'
+          }
+          else{updateCountry.region = 'asia'}
+        }
+        else if(updateCountry.subregion.toLowerCase() === 'caribbean'){ 
+          updateCountry.region = 'latin and carribean'
+        }
+        else{
+          updateCountry.region = 'global'
+        }
+        setElectricityCountry(updateCountry)
+        }
       }
+  },[countryData, country])
+
+  useEffect(() => {
+    if (countryData.length > 0) {
+      const updateCountry = countryData.find((c) => c.name.toLowerCase() === country.toLowerCase());
+      if (updateCountry) {
+        setLatitude(updateCountry.latlng[0]);
+        setLongitude(updateCountry.latlng[1]);
+      }
+      console.log(updateCountry?.region)
     }
   }, [country, countryData]);
 
@@ -257,9 +312,7 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
               value={country}
               onChange={(e) => setCountry(e.target.value)}
             >
-              <option value="-" key="-">
-                -
-              </option>
+              <option value="-" key="-">-</option>
               {countryData.map((option) => (
                 <option value={option.name} key={option.name}>
                   {option.name}
