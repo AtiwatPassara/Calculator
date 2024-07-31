@@ -1,4 +1,4 @@
-export interface CountryData {
+export interface ElectricityCountryData {
     name : string,
     region: string,
     subregion: string,

@@ -7,11 +7,11 @@ import Output from "@/components/output/output";
 import { calculateCaloriesSpend } from "@/components/calculation/calories"
 import { classicTestData, cargoTestData } from "../type/bikeTestData";
 import { UserSelection } from "../type/userSelection";
-import { CountryData } from "../type/countryData";
+import { ElectricityCountryData } from "../type/countryData";
 
-export interface electricityData {
-  id : number,
-  country: string,
+export interface electricityCountryData {
+  id: number,
+  region: string,
   electricity: number
 }
 
@@ -78,31 +78,35 @@ const Calculator: React.FC = () => {
   const [bikeEngine, setBikeEngine] = useState<number>(0)
   const [bikeBattery, setBikeBattery] = useState<number>(0)
   const [bikeElectricity, setBikeElectricity] = useState<number>(0)
-  const [electricityData,setElectricityData] = useState<electricityData[]>([])
-  const defaultCountryData: CountryData = {
+  const [bikeElectricityCountry, setBikeElectricityCountry] = useState<number>(0)
+  const [electricityCountryData, setElectricityCountryData] = useState<electricityCountryData[]>([])
+  const defaultCountryData: ElectricityCountryData = {
     name: "-",
     region: "",
     subregion: "",
     latlng: []
   }
-  const [electricityCountry,setElectricityCountry] = useState<CountryData>(defaultCountryData)
+  const [electricityCountry, setElectricityCountry] = useState<ElectricityCountryData>(defaultCountryData)
+  const [country, setCountry] = useState<string>("-")
   const resultRef = useRef<HTMLDivElement>(null);
 
- 
+  useEffect(() => {
+    console.log(electricityCountry.region)
+  },[electricityCountry,electricityCountryData])
 
   useEffect(() => {
-    if(resultRef.current){
-      resultRef.current.scrollIntoView({behavior : 'smooth'});
+    if (resultRef.current) {
+      resultRef.current.scrollIntoView({ behavior: 'smooth' });
     }
-  },[isRequiredSet])
-  
+  }, [isRequiredSet])
+
   useEffect(() => {
-    async function fetchElectricityData() {
-      try{
+    async function fetchElectricityCountryData() {
+      try {
         const res = await fetch('api/electricityData');
-        if(!res.ok){throw new Error('Error fetching data');}
-        const result : electricityData[] = await res.json();
-        setElectricityData(result);
+        if (!res.ok) { throw new Error('Error fetching data'); }
+        const result: electricityCountryData[] = await res.json();
+        setElectricityCountryData(result);
       }
       catch (error) {
         if (error instanceof Error) {
@@ -149,42 +153,6 @@ const Calculator: React.FC = () => {
       }
     }
 
-    async function fetchClassicBikeData() {
-      try {
-        const res = await fetch('api/classicBikeData');
-        if (!res.ok) {
-          throw new Error('Error fetching data');
-        }
-        const result: classicBikeData[] = await res.json();
-        setClassicBikeData(result);
-      }
-      catch (error) {
-        if (error instanceof Error) {
-          setFetchError(error.message);
-        } else {
-          setFetchError('An unknown error occurred');
-        }
-      }
-    }
-
-    async function fetchCargoBikeData() {
-      try {
-        const res = await fetch('api/cargoBikeData');
-        if (!res.ok) {
-          throw new Error('Error fetching data');
-        }
-        const result: cargoBikeData[] = await res.json();
-        setCargoBikeData(result);
-      }
-      catch (error) {
-        if (error instanceof Error) {
-          setFetchError(error.message);
-        } else {
-          setFetchError('An unknown error occurred');
-        }
-      }
-    }
-
     async function fetchRegionData() {
       try {
         const res = await fetch('/api/eatingData');
@@ -218,12 +186,10 @@ const Calculator: React.FC = () => {
         }
       }
     }
-    fetchElectricityData()
+    fetchElectricityCountryData()
     fetchClassicTestData();
     fetchCargoTestData();
-    fetchCargoBikeData();
     fetchRegionData();
-    fetchClassicBikeData();
     fetchPhysicalData();
   }, []);
 
@@ -307,6 +273,27 @@ const Calculator: React.FC = () => {
     }
     matchPhysical(selectedFitness)
   }, [selectedFitness, physicalData])
+
+  useEffect(() => {
+    const matchElectricityCountry = (Region: string) => {
+      if (!electricityCountryData) { return }
+      try {
+        const [match] = electricityCountryData.filter(data => data.region.toLowerCase() === Region.toLowerCase())
+        if (match) {
+          setBikeElectricityCountry(match.electricity)
+          console.log(match.electricity)
+        }
+        else {
+          setBikeElectricityCountry(0)
+          console.log("notfound")
+        }
+      }
+      catch (error) {
+        console.error(error)
+      }
+    }
+    matchElectricityCountry(electricityCountry.region)
+  }, [electricityCountry, electricityCountryData])
 
 
   const handleMaterialSelection = (material: string) => {
@@ -417,9 +404,9 @@ const Calculator: React.FC = () => {
         Battery: 0,
         Electricity: 0
       };
-    
-      if (!classicTestData || !cargoTestData) { 
-        return updatedBike === 'Classic' ? noMatchClassicBike : noMatchCargoBike; 
+
+      if (!classicTestData || !cargoTestData) {
+        return updatedBike === 'Classic' ? noMatchClassicBike : noMatchCargoBike;
       }
       try {
         if (updatedBike === "Classic") {
@@ -429,10 +416,10 @@ const Calculator: React.FC = () => {
           const match = cargoTestData.find(data => data.PowerType === updatedPower);
           return match ? match : noMatchCargoBike;
         }
-        return updatedBike === 'Classic' ? noMatchClassicBike : noMatchCargoBike; 
+        return updatedBike === 'Classic' ? noMatchClassicBike : noMatchCargoBike;
       } catch (error) {
         console.error(error);
-        return updatedBike === 'Classic' ? noMatchClassicBike : noMatchCargoBike; 
+        return updatedBike === 'Classic' ? noMatchClassicBike : noMatchCargoBike;
       }
     }
 
@@ -441,7 +428,8 @@ const Calculator: React.FC = () => {
     const updatedEol = matchBike().Eol
     const updatedEngine = matchBike().Engine
     const updatedBattery = matchBike().Battery
-    const updatedElectricity = matchBike().Electricity   
+    const updatedElectricity = matchBike().Electricity
+    const updatedElectricityCountry = bikeElectricityCountry
 
     // Update states with default values and impacts
     setSelectedBike(updatedBike);
@@ -462,7 +450,7 @@ const Calculator: React.FC = () => {
     setBikeEol(updatedEol)
     setBikeEngine(updatedEngine);
     setBikeBattery(updatedBattery);
-    setBikeElectricity(updatedElectricity);   
+    setBikeElectricityCountry(updatedElectricity);
 
     const createUserSelection = (kcalSpend: number): UserSelection => {
       return {
@@ -499,12 +487,14 @@ const Calculator: React.FC = () => {
           bikeEngine: updatedEngine,
           bikeBattery: updatedBattery,
           bikeElectricity: updatedElectricity,
+          bikeElectricityCountry: bikeElectricityCountry,
+          TotalElectricity: updatedElectricity * bikeElectricityCountry
         },
         Country: {
-          name : electricityCountry.name,
-          region: electricityCountry?.region,
-          subregion: electricityCountry?.subregion,
-          latlng: electricityCountry?.latlng,
+          name: electricityCountry.name,
+          region: electricityCountry.region,
+          subregion: electricityCountry.subregion,
+          latlng: electricityCountry.latlng,
         }
       }
     };
@@ -573,6 +563,10 @@ const Calculator: React.FC = () => {
             setIsRequiredSet={setIsRequiredSet}
             electricityCountry={electricityCountry}
             setElectricityCountry={setElectricityCountry}
+            country={country}
+            setCountry={setCountry}
+            bikeElectricityCountry={bikeElectricityCountry}
+            setBikeElectricityCountry={setBikeElectricityCountry}
           />
           {!isRequiredSet &&
             <div className="text-red-500 text-center">

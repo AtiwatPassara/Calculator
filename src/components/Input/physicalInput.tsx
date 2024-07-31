@@ -3,7 +3,7 @@ import { WeatherData } from "@/app/type/weatherData";
 import { IoIosInformationCircleOutline } from "react-icons/io";
 import { AiOutlineLoading3Quarters } from "react-icons/ai"; // Import spinner icon
 import FitnessTable from "../modal/fitnessModal";
-import { CountryData } from "@/app/type/countryData";
+import { ElectricityCountryData } from "@/app/type/countryData";
 import { UserSelection } from "@/app/type/userSelection";
 
 interface PhysicalInputProps {
@@ -26,8 +26,12 @@ interface PhysicalInputProps {
   isSubmitClicked: boolean;
   setIsRequiredSet: (value: boolean) => void;
   isRequiredSet: boolean;
-  electricityCountry: CountryData
-  setElectricityCountry: (value:CountryData) => void;
+  electricityCountry: ElectricityCountryData;
+  setElectricityCountry: (value: ElectricityCountryData) => void;
+  country: string;
+  setCountry: (value: string) => void;
+  bikeElectricityCountry: number
+  setBikeElectricityCountry: (value: number) => void;
 }
 
 const PhysicalInput: React.FC<PhysicalInputProps> = ({
@@ -52,16 +56,19 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
   isRequiredSet,
   electricityCountry,
   setElectricityCountry,
+  country,
+  setCountry,
+  bikeElectricityCountry,
+  setBikeElectricityCountry
 }) => {
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
-  const [countryData, setCountryData] = useState<CountryData[]>([]);
-  const [country, setCountry] = useState<string>("-");
+  const [countryData, setCountryData] = useState<ElectricityCountryData[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [isLocationSelected, setIsLocationSelected] = useState<boolean>(true);
-
-  const notLatin: string[] = ["Guyana",'Suriname','Falkland Islands']
+  
+  const notLatin: string[] = ["Guyana",'Suriname','Falkland Islands'];
   const middleEast: string[] = [ "Saudi Arabia","Yemen","Oman","United Arab Emirates","Qatar",
   "Bahrain","Kuwait","Iraq","Jordan","Syria","Lebanon","Israel","Palestine","Iran","Egypt","Turkey"];
 
@@ -79,7 +86,7 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
       }
     };
     handleLocationSelect();
-  }, [userInput,isSubmitClicked,setIsRequiredSet]);
+  }, [userInput, isSubmitClicked, setIsRequiredSet]);
 
   useEffect(() => {
     const fetchCountryData = async () => {
@@ -113,11 +120,11 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
           if(updateCountry.subregion.toLowerCase() === 'south america' && !notLatin.includes(updateCountry.name)){ //If country selected is in South America and in Latin// 
             updateCountry.region = 'latin and caribbean'
           }
+          else if(updateCountry.subregion.toLowerCase() === 'caribbean'){ 
+            updateCountry.region = 'latin and caribbean'
+          }
           else if(updateCountry.subregion.toLowerCase() === 'north america'){
             updateCountry.region = updateCountry.subregion.toLowerCase()
-          }
-          else{
-            updateCountry.region = 'global'
           }
         }
         else if(updateCountry.region.toLowerCase() === 'asia'){
@@ -130,16 +137,13 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
           if(middleEast.includes(updateCountry.name)){
             updateCountry.region = 'middle east'}
         }
-        else if(updateCountry.subregion.toLowerCase() === 'caribbean'){ 
-          updateCountry.region = 'latin and carribean'
-        }
         else{
           updateCountry.region = 'global'
         }
         setElectricityCountry(updateCountry)
         }
-      }
-  },[countryData, country])
+    }
+  }, [countryData, country, setElectricityCountry]);
 
   useEffect(() => {
     if (countryData.length > 0) {
@@ -147,10 +151,14 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
       if (updateCountry) {
         setLatitude(updateCountry.latlng[0]);
         setLongitude(updateCountry.latlng[1]);
+      } else {
+        setLatitude(null);
+        setLongitude(null);
+        setElectricityCountry({ name: '-', region: '-', subregion: '-', latlng: [] });
+        setBikeElectricityCountry(0);
       }
-      console.log(updateCountry?.region)
     }
-  }, [country, countryData]);
+  }, [country, countryData, setElectricityCountry]);
 
   useEffect(() => {
     const fetchWeatherData = async () => {
@@ -167,6 +175,10 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
         } finally {
           setLoading(false); 
         }
+      } else {
+        setWeatherData(null);
+        setTemperature(0);
+        setPressure(0);
       }
     };
     fetchWeatherData();
@@ -309,7 +321,7 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
           <div className="p-2 flex items-center">
             <span className='md:hidden mx-1'>/</span>Select Country
             <select
-              className="bg-black text-white p-1 m-2 md:p-2 md:mx-2 border w-[100px] md:max-w-[150px]  border-white rounded-md focus:border-green-500"
+              className="bg-black text-white p-1 m-2 md:p-2 md:mx-2 border w-[100px] md:max-w-[150px] border-white rounded-md focus:border-green-500"
               value={country}
               onChange={(e) => setCountry(e.target.value)}
             >
