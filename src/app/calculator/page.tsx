@@ -80,6 +80,7 @@ const Calculator: React.FC = () => {
   const [bikeElectricity, setBikeElectricity] = useState<number>(0)
   const [bikeElectricityCountry, setBikeElectricityCountry] = useState<number>(0)
   const [electricityCountryData, setElectricityCountryData] = useState<electricityCountryData[]>([])
+  const [isCountryRegion, setIsCountryRegion] = useState<boolean>(false)
   const defaultCountryData: ElectricityCountryData = {
     name: "-",
     region: "",
@@ -292,7 +293,12 @@ const Calculator: React.FC = () => {
         console.error(error)
       }
     }
-    matchElectricityCountry(electricityCountry.region)
+    if(isCountryRegion){
+      matchElectricityCountry(electricityCountry.name)
+    }
+    else{
+      matchElectricityCountry(electricityCountry.region)
+    }
   }, [electricityCountry, electricityCountryData])
 
 
@@ -567,6 +573,8 @@ const Calculator: React.FC = () => {
             setCountry={setCountry}
             bikeElectricityCountry={bikeElectricityCountry}
             setBikeElectricityCountry={setBikeElectricityCountry}
+            isCountryRegion={isCountryRegion}
+            setIsCountryRegion={setIsCountryRegion}
           />
           {!isRequiredSet &&
             <div className="text-red-500 text-center">
