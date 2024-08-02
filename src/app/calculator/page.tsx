@@ -81,6 +81,7 @@ const Calculator: React.FC = () => {
   const [bikeElectricityCountry, setBikeElectricityCountry] = useState<number>(0)
   const [electricityCountryData, setElectricityCountryData] = useState<electricityCountryData[]>([])
   const [isCountryRegion, setIsCountryRegion] = useState<boolean>(false)
+  const [countryData, setCountryData] = useState<ElectricityCountryData[]>([]);
   const defaultCountryData: ElectricityCountryData = {
     name: "-",
     region: "",
@@ -89,10 +90,12 @@ const Calculator: React.FC = () => {
   }
   const [electricityCountry, setElectricityCountry] = useState<ElectricityCountryData>(defaultCountryData)
   const [country, setCountry] = useState<string>("-")
+  const [bikeCountry,setBikeCountry] = useState<string>("-")
   const resultRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    console.log(electricityCountry.region)
+    if(isCountryRegion){console.log(electricityCountry.name)}
+    else{console.log(electricityCountry.region)}
   },[electricityCountry,electricityCountryData])
 
   useEffect(() => {
@@ -100,6 +103,26 @@ const Calculator: React.FC = () => {
       resultRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [isRequiredSet])
+
+  useEffect(() => {
+    const fetchCountryData = async () => {
+      try {
+        const response = await fetch(`https://restcountries.com/v3.1/all`);
+        const result = await response.json();
+        const filteredCountries = result.map((country: any) => ({
+          name: country.name.common,
+          subregion: country.subregion,
+          region: country.region,
+          latlng: country.latlng,
+        }));
+        filteredCountries.sort((a: any, b: any) => a.name.localeCompare(b.name));
+        setCountryData(filteredCountries);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+    fetchCountryData();
+  }, []);
 
   useEffect(() => {
     async function fetchElectricityCountryData() {
@@ -435,7 +458,6 @@ const Calculator: React.FC = () => {
     const updatedEngine = matchBike().Engine
     const updatedBattery = matchBike().Battery
     const updatedElectricity = matchBike().Electricity
-    const updatedElectricityCountry = bikeElectricityCountry
 
     // Update states with default values and impacts
     setSelectedBike(updatedBike);
@@ -546,6 +568,15 @@ const Calculator: React.FC = () => {
             selectedPower={selectedPower}
             handleMaterialSelection={handleMaterialSelection}
             selectedMaterial={selectedMaterial}
+            electricityCountry={electricityCountry} //object of country that user choose
+            setElectricityCountry={setElectricityCountry}
+            bikeCountry={bikeCountry} // country that user choose // have to adjust this
+            setBikeCountry={setBikeCountry}
+            bikeElectricityCountry={bikeElectricityCountry} // value of electricity in DB
+            setBikeElectricityCountry={setBikeElectricityCountry}
+            isCountryRegion={isCountryRegion} //if country name is in the DB
+            setIsCountryRegion={setIsCountryRegion}
+            countryData={countryData} //Data from API of country
           />
           <PhysicalInput
             selectedGender={selectedGender}
@@ -567,14 +598,15 @@ const Calculator: React.FC = () => {
             isSubmitClicked={isSubmitClicked}
             isRequiredSet={isRequiredSet}
             setIsRequiredSet={setIsRequiredSet}
-            electricityCountry={electricityCountry}
+            electricityCountry={electricityCountry} //object of country that user choose
             setElectricityCountry={setElectricityCountry}
-            country={country}
+            country={country} // country that user choose
             setCountry={setCountry}
-            bikeElectricityCountry={bikeElectricityCountry}
+            bikeElectricityCountry={bikeElectricityCountry} // value of electricity in DB
             setBikeElectricityCountry={setBikeElectricityCountry}
-            isCountryRegion={isCountryRegion}
+            isCountryRegion={isCountryRegion} //if country name is in the DB
             setIsCountryRegion={setIsCountryRegion}
+            countryData={countryData} //Data from API of country
           />
           {!isRequiredSet &&
             <div className="text-red-500 text-center">

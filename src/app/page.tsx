@@ -5,26 +5,6 @@ import { useEffect } from 'react';
 
 export default function Page() {
 
-
-  useEffect(() => {
-    const fetchCountryData = async () => {
-      try {
-        const response = await fetch(`https://restcountries.com/v3.1/all`);
-        const result = await response.json();
-        const filteredCountries = result.map((country: any) => ({
-          name: country.name.common,
-          region: country.region,
-          latlng: country.latlng,
-        }));
-        console.log(filteredCountries)
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-    fetchCountryData();
-  }, []);
-  
-
   return (
     <div>
       <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>

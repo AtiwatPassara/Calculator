@@ -34,6 +34,7 @@ interface PhysicalInputProps {
   setBikeElectricityCountry: (value: number) => void;
   isCountryRegion: boolean;
   setIsCountryRegion: (value: boolean) => void
+  countryData: ElectricityCountryData[]
 }
 
 const PhysicalInput: React.FC<PhysicalInputProps> = ({
@@ -64,65 +65,28 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
   setBikeElectricityCountry,
   isCountryRegion,
   setIsCountryRegion,
+  countryData
 }) => {
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
-  const [countryData, setCountryData] = useState<ElectricityCountryData[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [isLocationSelected, setIsLocationSelected] = useState<boolean>(true);
-  
+
   const notLatin: string[] = ["Guyana",'Suriname','Falkland Islands'];
   const middleEast: string[] = [ "Saudi Arabia","Yemen","Oman","United Arab Emirates","Qatar",
   "Bahrain","Kuwait","Iraq","Jordan","Syria","Lebanon","Israel","Palestine","Iran","Egypt","Turkey"];
   const availableCountry: string[] = ["Canada","Brazil","China","India","United States"];
 
   useEffect(() => {
-    const handleLocationSelect = async () => {
-      if(isSubmitClicked && userInput){
-          if(userInput.Physical.temperature !== 0){
-            setIsLocationSelected(true)
-            setIsRequiredSet(true)
-          }
-          else if(userInput.Physical.temperature === 0){
-            setIsLocationSelected(false)
-            setIsRequiredSet(false)
-          }
-      }
-    };
-    handleLocationSelect();
-  }, [userInput, isSubmitClicked, setIsRequiredSet]);
-
-  useEffect(() => {
-    const fetchCountryData = async () => {
-      try {
-        const response = await fetch(`https://restcountries.com/v3.1/all`);
-        const result = await response.json();
-        const filteredCountries = result.map((country: any) => ({
-          name: country.name.common,
-          subregion: country.subregion,
-          region: country.region,
-          latlng: country.latlng,
-        }));
-        filteredCountries.sort((a: any, b: any) => a.name.localeCompare(b.name));
-        setCountryData(filteredCountries);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-    fetchCountryData();
-  }, []);
-
-  useEffect(() => {
     if (countryData.length > 0) {
       const updateCountry = countryData.find((c) => c.name.toLowerCase() === country.toLowerCase());
-      
       if(updateCountry){
         if(availableCountry.includes(updateCountry.name)){
           setIsCountryRegion(true)
           setElectricityCountry(updateCountry)
         }
-        else{
+        else if(!availableCountry.includes(updateCountry.name) && updateCountry.name !== '-'){
           setIsCountryRegion(false)
           if(updateCountry.region.toLowerCase() === 'europe'){
           updateCountry.region = 'europe'
@@ -139,7 +103,6 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
               updateCountry.region = updateCountry.subregion.toLowerCase()
             }
           }
-
           else if(updateCountry.region.toLowerCase() === 'asia'){
             updateCountry.region = updateCountry.region.toLowerCase()
             if(middleEast.includes(updateCountry.name)){
@@ -155,8 +118,25 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
           }}
         setElectricityCountry(updateCountry)
       }
+      else{setElectricityCountry({ name: '-', region: '-', subregion: '-', latlng: [] });}
     }
   }, [countryData, country, setElectricityCountry]);
+
+  useEffect(() => {
+    const handleLocationSelect = async () => {
+      if(isSubmitClicked && userInput){
+          if(userInput.Physical.temperature !== 0){
+            setIsLocationSelected(true)
+            setIsRequiredSet(true)
+          }
+          else if(userInput.Physical.temperature === 0){
+            setIsLocationSelected(false)
+            setIsRequiredSet(false)
+          }
+      }
+    };
+    handleLocationSelect();
+  }, [userInput, isSubmitClicked, setIsRequiredSet]);
 
   useEffect(() => {
     if (countryData.length > 0) {
