@@ -45,66 +45,8 @@ const CyclingInput: React.FC<CyclingInputProps> = ({
   selectedPower,
   handleMaterialSelection,
   selectedMaterial,
-  electricityCountry,
-  setElectricityCountry,
-  bikeCountry,
-  setBikeCountry,
-  bikeElectricityCountry,
-  setBikeElectricityCountry,
-  isCountryRegion,
-  setIsCountryRegion,
-  countryData
 
 }) => {
-  const notLatin: string[] = ["Guyana",'Suriname','Falkland Islands'];
-  const middleEast: string[] = [ "Saudi Arabia","Yemen","Oman","United Arab Emirates","Qatar",
-  "Bahrain","Kuwait","Iraq","Jordan","Syria","Lebanon","Israel","Palestine","Iran","Egypt","Turkey"];
-  const availableCountry: string[] = ["Canada","Brazil","China","India","United States"];
-
-  useEffect(() => {
-    if (countryData.length > 0) {
-      const updateCountry = countryData.find((c) => c.name.toLowerCase() === bikeCountry.toLowerCase());
-      
-      if(updateCountry){
-        if(availableCountry.includes(updateCountry.name)){
-          setIsCountryRegion(true)
-          setElectricityCountry(updateCountry)
-        }
-        else if(!availableCountry.includes(updateCountry.name) && updateCountry.name !== '-'){
-          setIsCountryRegion(false)
-          if(updateCountry.region.toLowerCase() === 'europe'){
-          updateCountry.region = 'europe'
-          }
-          else if(updateCountry.region.toLowerCase() === 'americas'){
-            updateCountry.region = updateCountry.subregion.toLowerCase()
-              if(updateCountry.subregion.toLowerCase() === 'south america' && !notLatin.includes(updateCountry.name)){ //If country selected is in South America and in Latin// 
-                updateCountry.region = 'latin and caribbean'
-              }
-            else if(updateCountry.subregion.toLowerCase() === 'caribbean'){ 
-              updateCountry.region = 'latin and caribbean'
-            }
-            else if(updateCountry.subregion.toLowerCase() === 'north america'){
-              updateCountry.region = updateCountry.subregion.toLowerCase()
-            }
-          }
-          else if(updateCountry.region.toLowerCase() === 'asia'){
-            updateCountry.region = updateCountry.region.toLowerCase()
-            if(middleEast.includes(updateCountry.name)){
-              updateCountry.region = 'middle east'}
-          }
-          else if(updateCountry.region.toLowerCase() === 'africa'){
-            updateCountry.region = updateCountry.region.toLowerCase()
-            if(middleEast.includes(updateCountry.name)){
-              updateCountry.region = 'middle east'}
-          }
-          else{
-            updateCountry.region = 'global'
-          }}
-        setElectricityCountry(updateCountry)
-      }
-      else{setElectricityCountry({ name: '-', region: '-', subregion: '-', latlng: [] });}
-    }
-  }, [countryData, bikeCountry, setElectricityCountry]);
 
   const handleSpeedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
