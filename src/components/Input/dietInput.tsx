@@ -35,7 +35,7 @@ const DietInput: React.FC<DietInputProps> = ({
         <h2 className="text-lg font-bold mb-4">Diet Information</h2>
         <div className="flex flex-col md:flex-row justify-between">
           <div className="p-2">
-            Select Region
+            Region
             <select
               className="bg-black text-white p-1 mx-1 md:p-2 md:mx-2 border w-[100px] md:w-auto border-white rounded-md focus:border-orange-400"
               value={selectedRegion}

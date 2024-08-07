@@ -28,6 +28,8 @@ interface CyclingInputProps {
   isCountryRegion: boolean;//if country name is in the DB
   setIsCountryRegion: (value: boolean) => void
   countryData: ElectricityCountryData[]//Data from API of country
+  terrain: string
+  setTerrain: (value:string) => void
 }
 
 const CyclingInput: React.FC<CyclingInputProps> = ({
@@ -45,18 +47,22 @@ const CyclingInput: React.FC<CyclingInputProps> = ({
   selectedPower,
   handleMaterialSelection,
   selectedMaterial,
+  terrain,
+  setTerrain
 
 }) => {
-
   const handleSpeedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSelectedSpeed(Number(value));
   }
-
   const handleDurationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value =e.target.value;
     setSelectedDuration(Number(value));
   }
+  const TerrainOption  = [
+    { title: "Flat", value: "Flat" },
+    { title: "Hilly", value: "Hilly" },
+  ];
 
   return (
     <div>
@@ -76,21 +82,37 @@ const CyclingInput: React.FC<CyclingInputProps> = ({
             <span>{selectedBike ? `${selectedBike} Bike` : "No bike selected"}</span>
           </div>
         </div>
-        <div className='flex flex-col md:flex-row justify-between md:mt-5'>
-          <div className="flex items-center p-2">
-            Average Speed : 
-            <input
-              type="number"
-              className="bg-black text-white p-1 m-2 md:p-2 md:mx-2 border border-white rounded-md w-[60px] md:w-20 focus:border-orange-500 focus:outline-none"
-              onChange={handleSpeedChange}
-              value={selectedSpeed}
-              min={0}
-              max={999}
-            />
-              Km/hr
+        <div className='flex flex-col md:flex-col justify-between md:mt-5'>
+          <div className = 'flex flex-col md:flex-row justify-between'>
+            <div className="flex items-center p-2">
+              Average Speed: 
+              <input
+                type="number"
+                className="bg-black text-white p-1 m-2 md:p-2 md:mx-2 border border-white rounded-md w-[60px] md:w-20 focus:border-orange-500 focus:outline-none"
+                onChange={handleSpeedChange}
+                value={selectedSpeed}
+                min={0}
+                max={999}
+              />
+                Km/hr
+            </div>
+            <div className="flex items-center p-2">
+              Terrain
+              <select
+                className="bg-black text-white p-1 mx-1 md:p-2 md:mx-2 border w-[100px] md:w-auto border-white rounded-md focus:border-[#42ddf5]"
+                value={terrain}
+                onChange={(e) => setTerrain(e.target.value)}
+              >
+                {TerrainOption.map((option) => (
+                  <option value={option.value} key={option.title}>
+                    {option.title}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
           <div className="flex items-center p-2">
-            Duration : 
+            Duration:
             <input
               type="number"
               className="bg-black text-white p-1 m-2 md:p-2 md:mx-2 border border-white rounded-md w-[60px] md:w-20 focus:border-orange-500 focus:outline-none"

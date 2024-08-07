@@ -16,12 +16,12 @@ const ImpactDoughnutChart: React.FC<MyDoughnutChartProps> = ({ userInput }) => {
       {
         label: 'Impact',
         data: [
-          userInput?.Result.bikeImpact,
+          userInput?.Result.bikeManufacture,
           userInput?.Result.bikeMaintenance,
           userInput?.Result.bikeEol,
           userInput?.Result.bikeEngine,
           userInput?.Result.bikeBattery,
-          userInput?.Result.bikeElectricity,       
+          userInput?.Result.TotalElectricity,       
           userInput?.Diet.impact,
         ],
         backgroundColor: [

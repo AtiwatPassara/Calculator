@@ -34,7 +34,8 @@ interface PhysicalInputProps {
   setBikeElectricityCountry: (value: number) => void;
   isCountryRegion: boolean;
   setIsCountryRegion: (value: boolean) => void
-  countryData: ElectricityCountryData[]
+  countryData: ElectricityCountryData[];
+  isFormSubmitted: boolean;
 }
 
 const PhysicalInput: React.FC<PhysicalInputProps> = ({
@@ -65,13 +66,17 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
   setBikeElectricityCountry,
   isCountryRegion,
   setIsCountryRegion,
-  countryData
+  countryData,
+  isFormSubmitted
 }) => {
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
+  const [mapLatitude, setMapLatitude] = useState<number | null>(null);
+  const [mapLongitude, setMapLongitude] = useState<number | null>(null);
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [isLocationSelected, setIsLocationSelected] = useState<boolean>(true);
+  const [isUserLocation, setIsUserLocation] = useState<boolean>(false);
 
   const notLatin: string[] = ["Guyana",'Suriname','Falkland Islands'];
   const middleEast: string[] = [ "Saudi Arabia","Yemen","Oman","United Arab Emirates","Qatar",
@@ -81,58 +86,57 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
   useEffect(() => {
     if (countryData.length > 0) {
       const updateCountry = countryData.find((c) => c.name.toLowerCase() === country.toLowerCase());
-      if(updateCountry){
-        if(availableCountry.includes(updateCountry.name)){
-          setIsCountryRegion(true)
-          setElectricityCountry(updateCountry)
+      if (updateCountry) {
+        if (availableCountry.includes(updateCountry.name)) {
+          setIsCountryRegion(true);
+          setElectricityCountry(updateCountry);
+        } else if (!availableCountry.includes(updateCountry.name) && updateCountry.name !== '-') {
+          setIsCountryRegion(false);
+          if (updateCountry.region.toLowerCase() === 'europe') {
+            updateCountry.region = 'europe';
+          } else if (updateCountry.region.toLowerCase() === 'americas') {
+            updateCountry.region = updateCountry.subregion.toLowerCase();
+            if (updateCountry.subregion.toLowerCase() === 'south america' && !notLatin.includes(updateCountry.name)) {
+              updateCountry.region = 'latin and caribbean';
+            } else if (updateCountry.subregion.toLowerCase() === 'caribbean') {
+              updateCountry.region = 'latin and caribbean';
+            } else if (updateCountry.subregion.toLowerCase() === 'north america') {
+              updateCountry.region = updateCountry.subregion.toLowerCase();
+            }
+          } else if (updateCountry.region.toLowerCase() === 'asia') {
+            updateCountry.region = updateCountry.region.toLowerCase();
+            if (middleEast.includes(updateCountry.name)) {
+              updateCountry.region = 'middle east';
+            }
+          } else if (updateCountry.region.toLowerCase() === 'africa') {
+            updateCountry.region = updateCountry.region.toLowerCase();
+            if (middleEast.includes(updateCountry.name)) {
+              updateCountry.region = 'middle east';
+            }
+          } else {
+            updateCountry.region = 'global';
+          }
         }
-        else if(!availableCountry.includes(updateCountry.name) && updateCountry.name !== '-'){
-          setIsCountryRegion(false)
-          if(updateCountry.region.toLowerCase() === 'europe'){
-          updateCountry.region = 'europe'
-          }
-          else if(updateCountry.region.toLowerCase() === 'americas'){
-            updateCountry.region = updateCountry.subregion.toLowerCase()
-              if(updateCountry.subregion.toLowerCase() === 'south america' && !notLatin.includes(updateCountry.name)){ //If country selected is in South America and in Latin// 
-                updateCountry.region = 'latin and caribbean'
-              }
-            else if(updateCountry.subregion.toLowerCase() === 'caribbean'){ 
-              updateCountry.region = 'latin and caribbean'
-            }
-            else if(updateCountry.subregion.toLowerCase() === 'north america'){
-              updateCountry.region = updateCountry.subregion.toLowerCase()
-            }
-          }
-          else if(updateCountry.region.toLowerCase() === 'asia'){
-            updateCountry.region = updateCountry.region.toLowerCase()
-            if(middleEast.includes(updateCountry.name)){
-              updateCountry.region = 'middle east'}
-          }
-          else if(updateCountry.region.toLowerCase() === 'africa'){
-            updateCountry.region = updateCountry.region.toLowerCase()
-            if(middleEast.includes(updateCountry.name)){
-              updateCountry.region = 'middle east'}
-          }
-          else{
-            updateCountry.region = 'global'
-          }}
-        setElectricityCountry(updateCountry)
+        setElectricityCountry(updateCountry);
+      } else {
+        setElectricityCountry({ name: '-', region: '-', subregion: '-', latlng: [] });
       }
-      else{setElectricityCountry({ name: '-', region: '-', subregion: '-', latlng: [] });}
     }
   }, [countryData, country, setElectricityCountry]);
 
   useEffect(() => {
     const handleLocationSelect = async () => {
-      if(isSubmitClicked && userInput){
-          if(userInput.Physical.temperature !== 0){
-            setIsLocationSelected(true)
-            setIsRequiredSet(true)
-          }
-          else if(userInput.Physical.temperature === 0){
-            setIsLocationSelected(false)
-            setIsRequiredSet(false)
-          }
+      if (isSubmitClicked && userInput) {
+        if (userInput.Physical.temperature !== 0) {
+          setIsLocationSelected(true);
+          setIsRequiredSet(true);
+        } else if (userInput.Physical.temperature === 0) {
+          setIsLocationSelected(false);
+          setIsRequiredSet(false);
+        }
+      } else {
+        setIsLocationSelected(false);
+        setIsRequiredSet(false);
       }
     };
     handleLocationSelect();
@@ -142,8 +146,12 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
     if (countryData.length > 0) {
       const updateCountry = countryData.find((c) => c.name.toLowerCase() === country.toLowerCase());
       if (updateCountry) {
-        setLatitude(updateCountry.latlng[0]);
-        setLongitude(updateCountry.latlng[1]);
+        if (isUserLocation) {
+          // Do not update latitude and longitude if user location is used
+        } else {
+          setLatitude(updateCountry.latlng[0]);
+          setLongitude(updateCountry.latlng[1]);
+        }
       } else {
         setLatitude(null);
         setLongitude(null);
@@ -151,22 +159,22 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
         setBikeElectricityCountry(0);
       }
     }
-  }, [country, countryData, setElectricityCountry]);
+  }, [country, countryData, setElectricityCountry, isUserLocation]);
 
   useEffect(() => {
     const fetchWeatherData = async () => {
       if (latitude !== null && longitude !== null) {
-        setLoading(true); 
+        setLoading(true);
         try {
           const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&units=metric&appid=46424be8ea5885c20fbde4a9795aa9ec`);
           const data: WeatherData = await response.json();
           setWeatherData(data);
-          setTemperature(data.main.temp); 
+          setTemperature(data.main.temp);
           setPressure(data.main.pressure);
         } catch (error) {
           console.error('Error fetching data:', error);
         } finally {
-          setLoading(false); 
+          setLoading(false);
         }
       } else {
         setWeatherData(null);
@@ -177,17 +185,52 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
     fetchWeatherData();
   }, [latitude, longitude, setTemperature, setPressure]);
 
+  useEffect(() => {
+    const matchLatlngToCountry = async () => {
+      if (mapLatitude !== null && mapLongitude !== null) {
+        try {
+          const response = await fetch(`https://api.opencagedata.com/geocode/v1/json?q=${mapLatitude}%2C${mapLongitude}&key=c69fda939c1245c8926f9a22130f348a`);
+          const data = await response.json();
+          const country = data.results[0]?.components?.country;
+          if (country) {
+            setCountry(country);
+          }
+        } catch (error) {
+          console.error('Error fetching country:', error);
+        }
+      }
+    };
+
+    matchLatlngToCountry();
+  }, [mapLatitude, mapLongitude, setCountry]);
+
   const getUserLocation = () => {
     if (navigator.geolocation) {
-      setLoading(true); 
+      setLoading(true);
       navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setLatitude(position.coords.latitude);
-          setLongitude(position.coords.longitude);
+        async (position) => {
+          const { latitude, longitude } = position.coords;
+          setLatitude(latitude);
+          setLongitude(longitude);
+          setMapLatitude(latitude);
+          setMapLongitude(longitude);
+          setIsUserLocation(true);
+          setLoading(false); // Ensure loading is set to false after updating the position
+          try {
+            const response = await fetch(`https://api.opencagedata.com/geocode/v1/json?q=${latitude}%2C${longitude}&key=c69fda939c1245c8926f9a22130f348a`);
+            const data = await response.json();
+            const country = data.results[0]?.components?.country;
+            if (country) {
+              setCountry(country);
+            }
+          } catch (error) {
+            console.error('Error fetching country:', error);
+          }
         },
         (error) => {
           console.error('Error fetching location:', error);
           setLoading(false);
+          setIsUserLocation(false);
         }
       );
     } else {
@@ -232,13 +275,13 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
   };
 
   return (
-    <div className="p-2 border rounded m-1 md:m-0">
+    <div className="flex flex-col justify-start p-2 border rounded m-1 md:m-0">
       <h2 className="text-lg font-bold mb-4">Physical Information</h2>
       <div className="flex flex-col md:flex-row justify-between">
         <div className="p-2">
           Select Gender
           <select
-            className="bg-black text-white p-1 m-2 md:p-2 md:mx-2 border border-white rounded-md focus:border-green-500"
+            className="bg-black text-white p-1 m-2 md:p-2 md:mx-2 border border-white rounded-md"
             value={selectedGender}
             onChange={(e) => setSelectedGender(e.target.value)}
           >
@@ -252,7 +295,7 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
         <div className="p-2 flex items-center">
           Fitness Level
           <select
-            className="bg-black text-white p-1 m-2 md:p-2 md:mx-2 border border-white rounded-md w-20 focus:border-[#42ddf5] focus:outline-none"
+            className="bg-black text-white p-1 m-2 md:p-2 md:mx-2 border border-white rounded-md w-20"
             value={selectedFitness}
             onChange={(e) => setSelectedFitness(Number(e.target.value))}
           >
@@ -262,7 +305,7 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
               </option>
             ))}
           </select>
-          <button onClick={handleOpenTableModal} className="transition-all hover:scale-110 duration-200 ease-in-out">
+          <button onClick={handleOpenTableModal}>
             <IoIosInformationCircleOutline className="text-xl" style={{ opacity: 0.7 }} />
           </button>
         </div>
@@ -272,7 +315,7 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
           Age
           <input
             type="number"
-            className="bg-black text-white p-1 m-2 md:p-2 md:mx-2 border border-white rounded-md w-20 focus:border-red-500 focus:outline-none"
+            className="bg-black text-white p-1 m-2 md:p-2 md:mx-2 border border-white rounded-md w-20"
             value={selectedAge}
             onChange={handleAgeChange}
             min={0}
@@ -283,7 +326,7 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
           Weight
           <input
             type="number"
-            className="bg-black text-white p-1 m-2 md:p-2 md:mx-2 border border-white rounded-md w-20 focus:border-orange-500 focus:outline-none"
+            className="bg-black text-white p-1 m-2 md:p-2 md:mx-2 border border-white rounded-md w-20"
             value={selectedWeight}
             onChange={handleWeightChange}
             min={0}
@@ -291,62 +334,63 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
           />
           Kg
         </div>
+      </div>   
+      <div className="flex flex-col md:flex-row md:mt-5 justify-start">
         <div className="p-2">
           Height
           <input
             type="number"
-            className="bg-black text-white p-1 m-2 md:p-2 md:mx-2 border border-white rounded-md w-20 focus:border-red-500 focus:outline-none"
+            className="bg-black text-white p-1 m-2 md:p-2 md:mx-2 border border-white rounded-md w-20"
             value={selectedHeight}
             onChange={handleHeightChange}
             min={0}
             max={999}
           />
           Cm
-        </div>       
-      </div>
-      
-        <div className={`flex flex-col md:flex-row justify-between md:mt-5 ${!isLocationSelected ? 'border border-red-500 rounded p-2' : 'border border-gray-400 rounded p-2'}`}>
-          <div className="p-2 flex items-center">
-            <span className="text-red-500 text-[15px] mr-1">*</span> Location :{" "}
-            <button onClick={getUserLocation} className="border rounded p-2 focus:ring focus:border-green-500 ml-1 hover:border-green-500 hover:text-green-300 transition-all hover:scale-110 duration-300 ease-in-out">Get Location</button>
-          </div>
-          <span className="md:flex items-center hidden">/</span>
-          <div className="p-2 flex items-center">
-            <span className='md:hidden mx-1'>/</span>Select Country
-            <select
-              className="bg-black text-white p-1 m-2 md:p-2 md:mx-2 border w-[100px] md:max-w-[150px] border-white rounded-md focus:border-green-500"
-              value={country}
-              onChange={(e) => setCountry(e.target.value)}
-            >
-              <option value="-" key="-">-</option>
-              {countryData.map((option) => (
-                <option value={option.name} key={option.name}>
-                  {option.name}
-                </option>
-              ))}
-            </select>
-          </div>
+        </div> 
+      </div>   
+      <div className={`flex flex-col md:flex-row justify-between md:mt-5 ${isFormSubmitted && !isLocationSelected ? 'border border-red-500 rounded p-2' : 'border border-gray-400 rounded p-2'}`}>
+        <div className="p-2 flex items-center">
+          <span className="text-red-500 text-[15px] mr-1">*</span> Location
+          <button onClick={() => { getUserLocation(); setIsUserLocation(true); }} className="border rounded p-2 ml-1">Get Location</button>
         </div>
-        <div className="flex flex-col md:flex-row justify-between md:mt-5">
-          <div className="p-2 flex items-center">
-            <span>Outside Temperature :</span>
-            {loading ? (
-              <AiOutlineLoading3Quarters className="animate-spin ml-2" size={24} />
-            ) : (
-              weatherData && weatherData.main && (
-                <p className="ml-2">{weatherData.main.temp}{" "}°C</p>
-              )
-            )}
-          </div>
-          <div className="p-2 flex items-center">
-            <span>Atmospheric Pressure :</span>
-            {loading ? (
-              <AiOutlineLoading3Quarters className="animate-spin ml-2" size={24} />
-            ) : (
-              weatherData && weatherData.main && (
-                <p className="ml-2">{weatherData.main.pressure}{" "}hPa</p>
-              )
-            )}
+        <span className="md:flex items-center hidden">or</span>
+        <div className="p-2 flex items-center">
+          <span className='md:hidden mx-1'>or</span>Country
+          <select
+            className="bg-black text-white p-1 m-2 md:p-2 md:mx-2 border w-[100px] md:max-w-[150px] border-white rounded-md"
+            value={country}
+            onChange={(e) => { setCountry(e.target.value); setIsUserLocation(false); }}
+          >
+            <option value="-" key="-">-</option>
+            {countryData.map((option) => (
+              <option value={option.name} key={option.name}>
+                {option.name}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+      <div className="flex flex-col md:flex-col justify-between md:mt-5">
+        <div className="p-2 flex items-center">
+          <span>Outside Temperature :</span>
+          {loading ? (
+            <AiOutlineLoading3Quarters className="animate-spin ml-2" size={24} />
+          ) : (
+            weatherData && weatherData.main && (
+              <p className="ml-2">{weatherData.main.temp}{" "}°C</p>
+            )
+          )}
+        </div>
+        <div className="p-2 flex items-center">
+          <span>Atmospheric Pressure :</span>
+          {loading ? (
+            <AiOutlineLoading3Quarters className="animate-spin ml-2" size={24} />
+          ) : (
+            weatherData && weatherData.main && (
+              <p className="ml-2">{weatherData.main.pressure}{" "}hPa</p>
+            )
+          )}
         </div>
       </div>
       <FitnessTable 

@@ -10,21 +10,21 @@ interface ImpactBarChartProps {
 Chart.register(Tooltip, Legend, Title, CategoryScale, LinearScale, BarElement, BarController);
 
 const ImpactBarChart: React.FC<ImpactBarChartProps> = ({ userInput }) => {
-  const labels = ['Bike', 'Bicycle', 'Car', 'Bus'];
+  const labels = ['Walk', 'Bicycle', 'Car', 'Bus'];
   const data = {
     labels: labels,
     datasets: [
       {
         label: 'Diet',
-        data: [122, 233, 344, 455],
+        data: [122, userInput?.CalculatedResult.DietImpact, 344, 455],
         backgroundColor: 'rgba(0, 200, 0, 0.2)',
         borderColor: 'rgba(0, 200, 0, 1)',
         borderWidth: 1,
         stack: 'Stack 0',
       },
       {
-        label: 'Physical',
-        data: [122, 233, 344, 455],
+        label: 'Transport Emissions',
+        data: [122, userInput?.CalculatedResult.BikeImpact, 344, 455],
         backgroundColor: 'rgba(255, 200, 0, 0.2)',
         borderColor: 'rgba(255, 200, 0, 1)',
         borderWidth: 1,

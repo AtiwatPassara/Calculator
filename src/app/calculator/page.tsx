@@ -4,10 +4,11 @@ import DietInput from "@/components/Input/dietInput";
 import CyclingInput from "@/components/Input/cyclingInput";
 import PhysicalInput from "@/components/Input/physicalInput";
 import Output from "@/components/output/output";
-import { calculateCaloriesSpend } from "@/components/calculation/calories"
+import { calculateCaloriesSpend } from "@/components/calculation/calories";
 import { classicTestData, cargoTestData } from "../type/bikeTestData";
 import { UserSelection } from "../type/userSelection";
 import { ElectricityCountryData } from "../type/countryData";
+import { calculatedResult } from "../type/calculationResult";
 
 export interface electricityCountryData {
   id: number,
@@ -42,6 +43,8 @@ export interface cargoBikeData {
 }
 
 const Calculator: React.FC = () => {
+  const [isFormSubmitted,setIsFormSubmitted] = useState<boolean>(false)
+  const [terrain, setTerrain] = useState<string>("Flat");
   const [selectedGender, setSelectedGender] = useState<string>("-");
   const [selectedRegion, setSelectedRegion] = useState<string>("-");
   const [selectedEating, setSelectedEating] = useState<string>("-");
@@ -55,11 +58,11 @@ const Calculator: React.FC = () => {
   const [showTableModal, setShowTableModal] = useState<boolean>(false);
   const [eatingData, setEatingData] = useState<eatingData[]>([]);
   const [selectedImpact, setSelectedImpact] = useState<number>(0);
-  const [classicBikeData, setClassicBikeData] = useState<classicBikeData[]>([])
-  const [cargoBikeData, setCargoBikeData] = useState<cargoBikeData[]>([])
-  const [bikeImpact, setBikeImpact] = useState<number>(0)
+  const [classicBikeData, setClassicBikeData] = useState<classicBikeData[]>([]);
+  const [cargoBikeData, setCargoBikeData] = useState<cargoBikeData[]>([]);
+  const [bikeImpact, setBikeImpact] = useState<number>(0);
   const [fitnessImpact, setFitnessImpact] = useState<number>(0);
-  const [physicalData, setPhysicalData] = useState<physicalData[]>([])
+  const [physicalData, setPhysicalData] = useState<physicalData[]>([]);
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [userInput, setUserInput] = useState<UserSelection | null>(null);
   const [selectedSpeed, setSelectedSpeed] = useState<number>(0);
@@ -71,38 +74,38 @@ const Calculator: React.FC = () => {
   const [kcalSpend, setKcalSpend] = useState<number>(0);
   const [isSubmitClicked, setIsSubmitClicked] = useState<boolean>(false);
   const [isRequiredSet, setIsRequiredSet] = useState<boolean>(false);
-  const [classicTestData, setClassicTestData] = useState<classicTestData[]>([])
-  const [cargoTestData, setCargoTestData] = useState<cargoTestData[]>([])
-  const [bikeMaintenance, setBikeMaintenance] = useState<number>(0)
-  const [bikeEol, setBikeEol] = useState<number>(0)
-  const [bikeEngine, setBikeEngine] = useState<number>(0)
-  const [bikeBattery, setBikeBattery] = useState<number>(0)
-  const [bikeElectricity, setBikeElectricity] = useState<number>(0)
-  const [bikeElectricityCountry, setBikeElectricityCountry] = useState<number>(0)
-  const [electricityCountryData, setElectricityCountryData] = useState<electricityCountryData[]>([])
-  const [isCountryRegion, setIsCountryRegion] = useState<boolean>(false)
+  const [classicTestData, setClassicTestData] = useState<classicTestData[]>([]);
+  const [cargoTestData, setCargoTestData] = useState<cargoTestData[]>([]);
+  const [bikeMaintenance, setBikeMaintenance] = useState<number>(0);
+  const [bikeEol, setBikeEol] = useState<number>(0);
+  const [bikeEngine, setBikeEngine] = useState<number>(0);
+  const [bikeBattery, setBikeBattery] = useState<number>(0);
+  const [bikeElectricity, setBikeElectricity] = useState<number>(0);
+  const [bikeElectricityCountry, setBikeElectricityCountry] = useState<number>(0);
+  const [electricityCountryData, setElectricityCountryData] = useState<electricityCountryData[]>([]);
+  const [isCountryRegion, setIsCountryRegion] = useState<boolean>(false);
   const [countryData, setCountryData] = useState<ElectricityCountryData[]>([]);
   const defaultCountryData: ElectricityCountryData = {
     name: "-",
     region: "",
     subregion: "",
     latlng: []
-  }
-  const [electricityCountry, setElectricityCountry] = useState<ElectricityCountryData>(defaultCountryData)
-  const [country, setCountry] = useState<string>("-")
-  const [bikeCountry,setBikeCountry] = useState<string>("-")
+  };
+  const [electricityCountry, setElectricityCountry] = useState<ElectricityCountryData>(defaultCountryData);
+  const [country, setCountry] = useState<string>("-");
+  const [bikeCountry, setBikeCountry] = useState<string>("-");
   const resultRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if(isCountryRegion){console.log(electricityCountry.name)}
-    else{console.log(electricityCountry.region)}
-  },[electricityCountry,electricityCountryData])
+    if (isCountryRegion) { console.log(electricityCountry.name) }
+    else { console.log(electricityCountry.region) }
+  }, [electricityCountry, electricityCountryData]);
 
   useEffect(() => {
     if (resultRef.current) {
       resultRef.current.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [isRequiredSet])
+  }, [isRequiredSet]);
 
   useEffect(() => {
     const fetchCountryData = async () => {
@@ -316,19 +319,17 @@ const Calculator: React.FC = () => {
         console.error(error)
       }
     }
-    if(isCountryRegion){
+    if (isCountryRegion) {
       matchElectricityCountry(electricityCountry.name)
     }
-    else{
+    else {
       matchElectricityCountry(electricityCountry.region)
     }
   }, [electricityCountry, electricityCountryData])
 
-
   const handleMaterialSelection = (material: string) => {
     setSelectedMaterial(material);
   }
-
 
   const handlePowerSelection = (power: string) => {
     setSelectedPower(power);
@@ -359,45 +360,50 @@ const Calculator: React.FC = () => {
   };
 
   const handleSubmit = () => {
-
-    let updatedBike = selectedBike ?? "Classic";
-    let updatedRegion = selectedRegion === "-" ? "North America" : selectedRegion;
-    let updatedEating = selectedEating === "-" ? "Omnivore" : selectedEating;
-    let updatedAge = selectedAge === 0 ? 30 : selectedAge;
-    let updatedWeight = selectedWeight === 0 ? 70 : selectedWeight;
-    let updatedFitness = selectedFitness === 0 ? 3 : selectedFitness;
-    let updatedGender = selectedGender === "-" ? "male" : selectedGender;
+    const updatedBike = selectedBike ?? "Classic";
+    const updatedRegion = selectedRegion === "-" ? "North America" : selectedRegion;
+    const updatedEating = selectedEating === "-" ? "Omnivore" : selectedEating;
+    const updatedAge = selectedAge === 0 ? 30 : selectedAge;
+    const updatedWeight = selectedWeight === 0 ? 70 : selectedWeight;
+    const updatedFitness = selectedFitness === 0 ? 3 : selectedFitness;
+    const updatedGender = selectedGender === "-" ? "male" : selectedGender;
     let updatedGenderValue = selectedGenderValue;
-    let updatedSpeed = selectedSpeed === 0 ? 15 : selectedSpeed;
-    let updatedHeight = selectedHeight === 0 ? 170 : selectedHeight;
-    let updatedDuration = selectedDuration === 0 ? 30 : selectedDuration;
+    const updatedSpeed = selectedSpeed === 0 ? 15 : selectedSpeed;
+    const updatedHeight = selectedHeight === 0 ? 170 : selectedHeight;
+    const updatedDuration = selectedDuration === 0 ? 30 : selectedDuration;
     let updatedMaterial = selectedMaterial === '-' ? "Aluminium" : selectedMaterial;
-    let updatedPower = selectedPower === '-' ? 'Mechanical' : selectedPower;
-
+    const updatedPower = selectedPower === '-' ? 'Mechanical' : selectedPower;
+  
     if (updatedGender === 'male') {
       updatedGenderValue = 1;
-    }
-    else if (updatedGender === 'female') {
+    } else if (updatedGender === 'female') {
       updatedGenderValue = 0;
     }
-
+  
     if (updatedBike === "Cargo") {
       updatedMaterial = '-'
     }
-
+  
+    if (country === '-') {
+      setIsRequiredSet(false);
+      setFetchError('Please enter a valid location.');
+      setIsFormSubmitted(true); // Set form submission state
+      return;
+    }
+  
     const matchDiet = () => {
       if (!eatingData) { return 0; }
       try {
-        const [match] = eatingData.filter(data => data.Region === updatedRegion && data.Habit === updatedEating);
+        const match = eatingData.find(data => data.Region === updatedRegion && data.Habit === updatedEating);
         return match ? match.Impact : 0;
       } catch (error) {
         console.error(error);
         return 0;
       }
     }
-
+  
     const updatedDietImpact = matchDiet();
-
+  
     const matchPhysical = () => {
       if (!physicalData) { return 0; }
       try {
@@ -408,9 +414,9 @@ const Calculator: React.FC = () => {
         return 0;
       }
     }
-
+  
     const updatedPhysical = matchPhysical();
-
+  
     const matchBike = (): classicTestData | cargoTestData => {
       const noMatchClassicBike: classicTestData = {
         id: 0,
@@ -433,7 +439,7 @@ const Calculator: React.FC = () => {
         Battery: 0,
         Electricity: 0
       };
-
+  
       if (!classicTestData || !cargoTestData) {
         return updatedBike === 'Classic' ? noMatchClassicBike : noMatchCargoBike;
       }
@@ -451,36 +457,16 @@ const Calculator: React.FC = () => {
         return updatedBike === 'Classic' ? noMatchClassicBike : noMatchCargoBike;
       }
     }
-
-    const updatedBikeImpact = matchBike().Manufacture
-    const updatedMaintenance = matchBike().Maintenance
-    const updatedEol = matchBike().Eol
-    const updatedEngine = matchBike().Engine
-    const updatedBattery = matchBike().Battery
-    const updatedElectricity = matchBike().Electricity
-
-    // Update states with default values and impacts
-    setSelectedBike(updatedBike);
-    setSelectedRegion(updatedRegion);
-    setSelectedEating(updatedEating);
-    setSelectedAge(updatedAge);
-    setSelectedWeight(updatedWeight);
-    setSelectedFitness(updatedFitness);
-    setSelectedGender(updatedGender);
-    setSelectedGenderValue(updatedGenderValue);
-    setSelectedSpeed(updatedSpeed);
-    setSelectedHeight(updatedHeight);
-    setSelectedDuration(updatedDuration);
-    setSelectedMaterial(updatedMaterial);
-    setSelectedPower(updatedPower);
-    setBikeImpact(updatedBikeImpact);  // Update bike impact immediately
-    setBikeMaintenance(updatedMaintenance);
-    setBikeEol(updatedEol)
-    setBikeEngine(updatedEngine);
-    setBikeBattery(updatedBattery);
-    setBikeElectricityCountry(updatedElectricity);
-
-    const createUserSelection = (kcalSpend: number): UserSelection => {
+  
+    const bikeMatch = matchBike();
+    const updatedBikeImpact = bikeMatch.Manufacture;
+    const updatedMaintenance = bikeMatch.Maintenance;
+    const updatedEol = bikeMatch.Eol;
+    const updatedEngine = bikeMatch.Engine;
+    const updatedBattery = bikeMatch.Battery;
+    const updatedElectricity = bikeMatch.Electricity;
+  
+    const createUserSelection = (calculatedImpact: calculatedResult): UserSelection => {
       return {
         Physical: {
           gender: updatedGender,
@@ -500,6 +486,7 @@ const Calculator: React.FC = () => {
           speed: updatedSpeed,
           duration: updatedDuration,
           bikeImpact: updatedBikeImpact,
+          terrain: terrain
         },
         Diet: {
           region: updatedRegion,
@@ -507,9 +494,8 @@ const Calculator: React.FC = () => {
           impact: updatedDietImpact,
         },
         Result: {
-          kcalSpend: kcalSpend,
           dietImpact: updatedDietImpact,
-          bikeImpact: updatedBikeImpact,
+          bikeManufacture: updatedBikeImpact,
           bikeMaintenance: updatedMaintenance,
           bikeEol: updatedEol,
           bikeEngine: updatedEngine,
@@ -523,105 +509,143 @@ const Calculator: React.FC = () => {
           region: electricityCountry.region,
           subregion: electricityCountry.subregion,
           latlng: electricityCountry.latlng,
+        },
+        CalculatedResult: {
+          BCS: calculatedImpact.BCS,
+          ECS: calculatedImpact.ECS,
+          DietImpact: calculatedImpact.DietImpact,
+          BikeImpact: calculatedImpact.BikeImpact,
+          TotalImpact: calculatedImpact.TotalImpact,
         }
       }
     };
-
-    const initialUserSelection = createUserSelection(0)
-    const caloriesSpend = calculateCaloriesSpend(initialUserSelection)
-    const calculatedUserSelection = createUserSelection(caloriesSpend)
-
-    // Update the userInput state
+  
+    const defaultCalculatedImpact: calculatedResult = {
+      BCS: 0,
+      ECS: 0,
+      DietImpact: 0,
+      BikeImpact: 0,
+      TotalImpact: 0,
+    };
+  
+    const initialUserSelection = createUserSelection(defaultCalculatedImpact);
+    const caloriesSpend = calculateCaloriesSpend(initialUserSelection);
+    const calculatedUserSelection = createUserSelection(caloriesSpend);
+  
     setUserInput(calculatedUserSelection);
-
-    // Log the userSelection object
-    console.log(calculatedUserSelection);
-    console.log(caloriesSpend)
     setIsSubmitClicked(true);
+    setIsFormSubmitted(true); // Set form submission state
+    setIsRequiredSet(true); // Mark the required fields as set
+    setSelectedGender(updatedGender);
+    setSelectedRegion(updatedRegion);
+    setSelectedEating(updatedEating);
+    setSelectedBike(updatedBike);
+    setSelectedAge(updatedAge);
+    setSelectedWeight(updatedWeight);
+    setSelectedFitness(updatedFitness);
+    setSelectedSpeed(updatedSpeed);
+    setSelectedHeight(updatedHeight);
+    setSelectedDuration(updatedDuration);
+    setSelectedMaterial(updatedMaterial);
+    setSelectedPower(updatedPower);
+    console.log(calculatedUserSelection);
   };
+  
 
   return (
     <div className="flex justify-center items-center min-h-screen p-4">
-      <div className="flex flex-col items-center md:w-full">
-        <span className="text-2xl md:text-3xl m-5 font-bold text-center">Provide Your Details</span>
-        <div className="flex flex-col justify-center gap-1 m-1 md:gap-8 md:m-9 border p-6 border-gray-500 w-screen sm:max-w-screen sm:w-max">
-          <DietInput
-            selectedRegion={selectedRegion}
-            setSelectedRegion={setSelectedRegion}
-            selectedEating={selectedEating}
-            setSelectedEating={setSelectedEating}
-            eating={eatingData}
-          />
-          <CyclingInput
-            selectedBike={selectedBike}
-            setSelectedBike={setSelectedBike}
-            showModal={showModal}
-            handleOpenModal={handleOpenModal}
-            handleCloseModal={handleCloseModal}
-            handleBikeSelection={handleBikeSelection}
-            handleBikeSubmit={handleBikeSubmit}
-            setSelectedSpeed={setSelectedSpeed}
-            selectedSpeed={selectedSpeed}
-            setSelectedDuration={setSelectedDuration}
-            selectedDuration={selectedDuration}
-            handlePowerSelection={handlePowerSelection}
-            selectedPower={selectedPower}
-            handleMaterialSelection={handleMaterialSelection}
-            selectedMaterial={selectedMaterial}
-            electricityCountry={electricityCountry} //object of country that user choose
-            setElectricityCountry={setElectricityCountry}
-            bikeCountry={bikeCountry} // country that user choose // have to adjust this
-            setBikeCountry={setBikeCountry}
-            bikeElectricityCountry={bikeElectricityCountry} // value of electricity in DB
-            setBikeElectricityCountry={setBikeElectricityCountry}
-            isCountryRegion={isCountryRegion} //if country name is in the DB
-            setIsCountryRegion={setIsCountryRegion}
-            countryData={countryData} //Data from API of country
-          />
-          <PhysicalInput
-            selectedGender={selectedGender}
-            setSelectedGender={setSelectedGender}
-            selectedAge={selectedAge}
-            setSelectedAge={setSelectedAge}
-            selectedWeight={selectedWeight}
-            setSelectedWeight={setSelectedWeight}
-            selectedFitness={selectedFitness}
-            setSelectedFitness={setSelectedFitness}
-            setTemperature={setTemperature}
-            setPressure={setPressure}
-            handleCloseTableModal={handleCloseTableModal}
-            handleOpenTableModal={handleOpenTableModal}
-            showTableModal={showTableModal}
-            selectedHeight={selectedHeight}
-            setSelectedHeight={setSelectedHeight}
-            userInput={userInput}
-            isSubmitClicked={isSubmitClicked}
-            isRequiredSet={isRequiredSet}
-            setIsRequiredSet={setIsRequiredSet}
-            electricityCountry={electricityCountry} //object of country that user choose
-            setElectricityCountry={setElectricityCountry}
-            country={country} // country that user choose
-            setCountry={setCountry}
-            bikeElectricityCountry={bikeElectricityCountry} // value of electricity in DB
-            setBikeElectricityCountry={setBikeElectricityCountry}
-            isCountryRegion={isCountryRegion} //if country name is in the DB
-            setIsCountryRegion={setIsCountryRegion}
-            countryData={countryData} //Data from API of country
-          />
-          {!isRequiredSet &&
-            <div className="text-red-500 text-center">
-              Please Enter Required Field
-            </div>}
-          <div className="flex justify-center">
-            <button onClick={() => handleSubmit()} className='border rounded py-2 px-4 md:m-0 mt-4 hover:border-green-500 duration-200 focus:border-2 focus:ring'>Submit</button>
+    <div className="flex flex-col items-center md:w-full">
+      <span className="text-2xl md:text-3xl m-5 font-bold text-center">Provide Your Details</span>
+      <div className="flex flex-col justify-center gap-1 m-1 md:gap-8 md:m-9 border p-6 border-gray-500 w-screen sm:max-w-screen sm:w-max">
+        <div className="flex flex-col xl:flex-row justify-center gap-4 xl:gap-4">
+          <div className="flex flex-col justify-start gap-4 xl:gap-6 w-full xl:w-1/2 min-h-full flex-grow">
+            <DietInput
+              selectedRegion={selectedRegion}
+              setSelectedRegion={setSelectedRegion}
+              selectedEating={selectedEating}
+              setSelectedEating={setSelectedEating}
+              eating={eatingData}
+            />
+            <CyclingInput
+              selectedBike={selectedBike}
+              setSelectedBike={setSelectedBike}
+              showModal={showModal}
+              handleOpenModal={handleOpenModal}
+              handleCloseModal={handleCloseModal}
+              handleBikeSelection={handleBikeSelection}
+              handleBikeSubmit={handleBikeSubmit}
+              setSelectedSpeed={setSelectedSpeed}
+              selectedSpeed={selectedSpeed}
+              setSelectedDuration={setSelectedDuration}
+              selectedDuration={selectedDuration}
+              handlePowerSelection={handlePowerSelection}
+              selectedPower={selectedPower}
+              handleMaterialSelection={handleMaterialSelection}
+              selectedMaterial={selectedMaterial}
+              electricityCountry={electricityCountry}
+              setElectricityCountry={setElectricityCountry}
+              bikeCountry={bikeCountry}
+              setBikeCountry={setBikeCountry}
+              bikeElectricityCountry={bikeElectricityCountry}
+              setBikeElectricityCountry={setBikeElectricityCountry}
+              isCountryRegion={isCountryRegion}
+              setIsCountryRegion={setIsCountryRegion}
+              countryData={countryData}
+              terrain={terrain}
+              setTerrain={setTerrain}
+            />
+          </div>
+          <div className="flex flex-col justify-start gap-4 xl:gap-6 w-full xl:w-1/2 min-h-full flex-grow">
+            <PhysicalInput
+                selectedGender={selectedGender}
+                setSelectedGender={setSelectedGender}
+                selectedAge={selectedAge}
+                setSelectedAge={setSelectedAge}
+                selectedWeight={selectedWeight}
+                setSelectedWeight={setSelectedWeight}
+                selectedFitness={selectedFitness}
+                setSelectedFitness={setSelectedFitness}
+                setTemperature={setTemperature}
+                setPressure={setPressure}
+                handleCloseTableModal={handleCloseTableModal}
+                handleOpenTableModal={handleOpenTableModal}
+                showTableModal={showTableModal}
+                selectedHeight={selectedHeight}
+                setSelectedHeight={setSelectedHeight}
+                userInput={userInput}
+                isSubmitClicked={isSubmitClicked}
+                isRequiredSet={isRequiredSet}
+                setIsRequiredSet={setIsRequiredSet}
+                electricityCountry={electricityCountry}
+                setElectricityCountry={setElectricityCountry}
+                country={country}
+                setCountry={setCountry}
+                bikeElectricityCountry={bikeElectricityCountry}
+                setBikeElectricityCountry={setBikeElectricityCountry}
+                isCountryRegion={isCountryRegion}
+                setIsCountryRegion={setIsCountryRegion}
+                countryData={countryData} 
+                isFormSubmitted={isFormSubmitted}            />
           </div>
         </div>
-        {isRequiredSet && <div className="w-full" ref={resultRef} >
-          <Output
-            userInput={userInput} />
-        </div>}
+        {!isRequiredSet && (
+          <div className="text-red-500 text-center">
+            Please Enter Required Field
+          </div>
+        )}
+        <div className="flex justify-center">
+          <button onClick={handleSubmit} className="border rounded py-2 px-4 md:m-0 mt-4 hover:border-green-500 duration-200 focus:border-2 focus:ring">
+            Submit
+          </button>
+        </div>
       </div>
+      {isSubmitClicked && isRequiredSet && (
+  <div className="w-full" ref={resultRef}>
+    <Output userInput={userInput} />
+  </div>
+)}
     </div>
+  </div>
   );
 };
 

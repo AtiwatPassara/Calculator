@@ -3,7 +3,7 @@ import { ElectricityCountryData } from "./countryData";
 export interface Result {
     kcalSpend: number,
     dietImpact: number,
-    bikeImpact: number,
+    bikeManufacture: number,
     bikeMaintenance: number,
     bikeEol: number,
     bikeEngine: number,
@@ -32,6 +32,7 @@ export interface Result {
     speed: number,
     duration: number,
     bikeImpact: number,
+    terrain: string,
   }
   
   export interface Diet{

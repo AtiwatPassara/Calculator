@@ -26,7 +26,7 @@ const OutputChart: React.FC<OutputProps> = ({ userInput }) => {
             <div className="flex justify-center m-4 text-lg md:text-xl">
               Excess calories spent to bike :&nbsp;
               <span className="font-bold">
-                {roundedDecimal(userInput.Result.kcalSpend, 1)}&nbsp;Kcal/Km
+                {roundedDecimal(userInput.CalculatedResult.ECS, 1)}&nbsp;Kcal/Km
               </span>
             </div>
             <div className="flex flex-col">
