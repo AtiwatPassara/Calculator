@@ -3,9 +3,13 @@ import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { IoIosClose } from "react-icons/io";
 
-const selectMaterial = [
-  { title: "-", value: "-" },
+const selectClassicMaterial = [
   { title: "Bamboo", value: "Bamboo" },
+  { title: "Aluminium", value: "Aluminium" },
+];
+
+const selectSportMaterial = [
+  { title: "Steel", value: "Steel" },
   { title: "Carbon", value: "Carbon" },
   { title: "Aluminium", value: "Aluminium" },
 ];
@@ -98,12 +102,17 @@ const BikeModal: React.FC<BikeModalProps> = ({
               {/* Conditional class application for text color */}
               <span className={`${isDisabled ? 'text-[#aaaaaa]' : 'text-white'}`}>Select Material</span>
               <select
-                className="bg-black text-white p-2 border border-white rounded-md focus:border-green-500 m-2"
+                className="bg-black text-white p-2 border border-white rounded-md focus:border-green-500 m-2 w-[100px]"
                 onChange={(e) => handleMaterialSelection(e.target.value)}
                 value={selectedMaterial}
                 disabled={isDisabled}
-              >
-                {selectMaterial.map((option) => (
+              > <option title="-" value="-">-</option>
+                {selectedBike==="Classic" && selectClassicMaterial.map((option) => (
+                  <option value={option.value} key={option.value}>
+                    {option.title}
+                  </option>
+                ))}
+                {selectedBike==="Sport" && selectSportMaterial.map((option) => (
                   <option value={option.value} key={option.value}>
                     {option.title}
                   </option>
