@@ -37,7 +37,7 @@ const DietInput: React.FC<DietInputProps> = ({
           <div className="p-2">
             Region
             <select
-              className="bg-black text-white p-1 mx-1 md:p-2 md:mx-2 border w-[100px] md:w-auto border-white rounded-md focus:border-orange-400"
+              className="bg-black text-white p-1 mx-1 md:p-2 md:mx-2 border w-[100px] md:w-[120px]  border-white rounded-md focus:border-orange-400"
               value={selectedRegion}
               onChange={(e) => setSelectedRegion(e.target.value)}
             >
@@ -51,7 +51,7 @@ const DietInput: React.FC<DietInputProps> = ({
           <div className="p-2 mt-3 md:mt-0">
             Eating Habits
             <select
-              className="bg-black text-white p-1 mx-1 md:p-2 md:mx-2 border w-[100px] md:w-auto border-white rounded-md focus:border-[#42ddf5]"
+              className="bg-black text-white p-1 mx-1 md:p-2 md:mx-2 border w-[100px] md:w-[120px] border-white rounded-md focus:border-[#42ddf5]"
               value={selectedEating}
               onChange={(e) => setSelectedEating(e.target.value)}
               required

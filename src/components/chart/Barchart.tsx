@@ -46,7 +46,7 @@ const ImpactBarChart: React.FC<ImpactBarChartProps> = ({ userInput }) => {
     maintainAspectRatio: false,
     layout: {
       padding: {
-        top: 20,
+        top: 30,
       },
     },
     plugins: {
@@ -62,6 +62,9 @@ const ImpactBarChart: React.FC<ImpactBarChartProps> = ({ userInput }) => {
         color: 'white',
         font: {
           size: 20,
+        },
+        padding: {
+          bottom: 30,
         },
       },
       tooltip: {

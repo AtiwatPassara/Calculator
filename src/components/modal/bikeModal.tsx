@@ -44,7 +44,7 @@ const BikeModal: React.FC<BikeModalProps> = ({
 
   // Simplified useEffect to directly set isDisabled based on selectedBike
   useEffect(() => {
-    if (selectedBike === "Classic") {
+    if (selectedBike === "Classic" || selectedBike === "Sport") {
       setIsDisabled(false);
     } else {
       setIsDisabled(true);
@@ -71,6 +71,16 @@ const BikeModal: React.FC<BikeModalProps> = ({
                 </div>
                 <div className={`transition-all duration-300 ${selectedBike === "Classic" ? "text-black" : "text-white"} absolute bottom-2`}>
                   Classic
+                </div>
+              </div>
+            </button>
+            <button onClick={() => { handleBikeSelection("Sport"); }}>
+              <div className={`transition-all duration-300 relative w-60 h-40 md:w-80 md:h-64 border p-5 rounded-md ${selectedBike === "Sport" ? "bg-white" : "bg-black"} hover:border-yellow-500 flex items-center justify-center`}>
+                <div style={{ maxWidth: '200px', maxHeight: '200px', width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Image src="/asset/classic.png" alt="Classic" width={200} height={200} objectFit="contain" />
+                </div>
+                <div className={`transition-all duration-300 ${selectedBike === "Sport" ? "text-black" : "text-white"} absolute bottom-2`}>
+                  Sport
                 </div>
               </div>
             </button>

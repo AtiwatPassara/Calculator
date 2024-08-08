@@ -51,6 +51,11 @@ const ImpactDoughnutChart: React.FC<MyDoughnutChartProps> = ({ userInput }) => {
   const options = {
     responsive: true,
     maintainAspectRatio: false,
+    layout: {
+      padding: {
+        top: 30,
+      },
+    },
     plugins: {
       legend: {
         position: 'top' as const,
@@ -64,6 +69,9 @@ const ImpactDoughnutChart: React.FC<MyDoughnutChartProps> = ({ userInput }) => {
         color: 'white',
         font: {
           size: 20,
+        },
+        padding: {
+          bottom: 30,
         },
       },
       tooltip: {

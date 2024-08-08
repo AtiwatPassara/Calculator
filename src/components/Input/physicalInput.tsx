@@ -277,7 +277,7 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
   return (
     <div className="flex flex-col justify-start p-2 border rounded m-1 md:m-0">
       <h2 className="text-lg font-bold mb-4">Physical Information</h2>
-      <div className="flex flex-col md:flex-row justify-between">
+      <div className="flex flex-col md:flex-row justify-between w-max">
         <div className="p-2">
           Select Gender
           <select

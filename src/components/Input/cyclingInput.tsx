@@ -111,6 +111,9 @@ const CyclingInput: React.FC<CyclingInputProps> = ({
               </select>
             </div>
           </div>
+        </div>
+        <div className='flex flex-col md:flex-col justify-between md:mt-5'>
+          <div className = 'flex flex-col md:flex-row justify-between'>
           <div className="flex items-center p-2">
             Duration:
             <input
@@ -122,6 +125,7 @@ const CyclingInput: React.FC<CyclingInputProps> = ({
               value={selectedDuration}
             />
               Minute
+          </div>
           </div>
         </div>
       </div>
