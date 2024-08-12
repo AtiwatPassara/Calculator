@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 import { IoIosClose } from "react-icons/io";
 
 const selectClassicMaterial = [
@@ -43,7 +43,6 @@ const BikeModal: React.FC<BikeModalProps> = ({
   selectedMaterial,
   selectedPower,
 }) => {
-  
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
 
   // Simplified useEffect to directly set isDisabled based on selectedBike
@@ -67,7 +66,7 @@ const BikeModal: React.FC<BikeModalProps> = ({
         </div>
         <div className="flex flex-col items-center mt-5">
           <p className="text-center text-xl border-b-2 pb-2 text-white border-red-500">Select your bike</p>
-          <div className="h-full flex flex-col md:flex-row justify-center items-center mt-5 p-5 gap-5 rounded-md">
+          <div className="h-full flex flex-wrap md:flex-row justify-center items-center mt-5 p-5 gap-5 rounded-md">
             <button onClick={() => { handleBikeSelection("Classic"); }}>
               <div className={`transition-all duration-300 relative w-60 h-40 md:w-80 md:h-64 border p-5 rounded-md ${selectedBike === "Classic" ? "bg-white" : "bg-black"} hover:border-yellow-500 flex items-center justify-center`}>
                 <div style={{ maxWidth: '200px', maxHeight: '200px', width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -81,7 +80,7 @@ const BikeModal: React.FC<BikeModalProps> = ({
             <button onClick={() => { handleBikeSelection("Sport"); }}>
               <div className={`transition-all duration-300 relative w-60 h-40 md:w-80 md:h-64 border p-5 rounded-md ${selectedBike === "Sport" ? "bg-white" : "bg-black"} hover:border-yellow-500 flex items-center justify-center`}>
                 <div style={{ maxWidth: '200px', maxHeight: '200px', width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Image src="/asset/classic.png" alt="Classic" width={200} height={200} objectFit="contain" />
+                  <Image src="/asset/Sport.png" alt="Sport" width={200} height={200} objectFit="contain" />
                 </div>
                 <div className={`transition-all duration-300 ${selectedBike === "Sport" ? "text-black" : "text-white"} absolute bottom-2`}>
                   Sport

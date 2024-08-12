@@ -1,6 +1,6 @@
 const Loading : React.FC = () => {
     return <div>
-                 Loading
+                 Loading...
            </div>
                
 }

@@ -1,7 +1,6 @@
 "use client"
-import Image from 'next/image';
+import Image from "next/legacy/image";
 import Link from 'next/link';
-import { useEffect } from 'react';
 
 export default function Page() {
 
@@ -28,8 +27,20 @@ export default function Page() {
                 </button>
               </div>
             </div>
-            <div className="relative w-full lg:w-[39rem] h-[25rem] lg:ml-10"> 
-              <Image src="/asset/bike.gif" alt="Bike" fill style={{ objectFit: 'contain' }} />
+            <div className="relative w-full lg:w-[39rem] h-auto lg:ml-10">
+              <Image
+                src="/asset/bike.gif"
+                alt="Bike"
+                sizes="(max-width: 1024px) 100vw, 39rem"
+                width={500}
+                height={317}
+                layout="responsive"
+                priority={true}
+                style={{
+                  width: '100%',
+                  height: 'auto',
+                }}
+              />
             </div>
           </div>
       </div>

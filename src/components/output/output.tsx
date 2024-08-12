@@ -23,19 +23,19 @@ const OutputChart: React.FC<OutputProps> = ({ userInput }) => {
           <hr className="m-4" />
           <span className="flex text-3xl font-bold justify-center">Result</span>
           <div className="flex flex-col">
-            <div className="flex justify-start m-4 text-xl font-bold md:text-2xl text-green-300">
+            <div className="flex justify-start md:justify-center m-4 text-xl font-bold md:text-2xl text-green-300">
              CF of Biking:&nbsp;
               <span className="font-bold">
                 {roundedDecimal(userInput.CalculatedResult.TotalImpact, 1)}&nbsp;<span className="text-xl md:text-xl">gCO<sub>2</sub>e/Km</span>
               </span>
             </div>
-            <div className="flex justify-start m-4 text-lg md:text-base">
+            <div className="flex justify-start md:justify-center m-4 text-lg md:text-base">
               Excess calories spent:&nbsp;
               <span className="font-bold">
                 {roundedDecimal(userInput.CalculatedResult.ECS, 1)}&nbsp;Kcal/Km
               </span>
             </div>
-            <div className="flex justify-start m-4 text-lg md:text-base">
+            <div className="flex justify-start md:justify-center m-4 text-lg md:text-base">
               Base calories spent:&nbsp;
               <span className="font-bold">
                 {roundedDecimal(userInput.CalculatedResult.BCS, 1)}&nbsp;Kcal/Km
