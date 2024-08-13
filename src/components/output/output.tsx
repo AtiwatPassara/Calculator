@@ -38,7 +38,7 @@ const OutputChart: React.FC<OutputProps> = ({ userInput }) => {
             <div className="flex justify-start md:justify-center m-4 text-lg md:text-base">
               Base calories spent:&nbsp;
               <span className="font-bold">
-                {roundedDecimal(userInput.CalculatedResult.BCS, 1)}&nbsp;Kcal/Km
+                {roundedDecimal(userInput.CalculatedResult.BCS, 1)}&nbsp;Kcal/Day
               </span>
             </div>
             <div className="flex flex-col lg:flex-row">

@@ -1,4 +1,4 @@
-export interface classicTestData {
+export interface classicBikeData {
     id: number;
     Material: string;
     PowerType: string;
@@ -10,7 +10,7 @@ export interface classicTestData {
     Electricity: number;
   }
   
-export interface cargoTestData {
+export interface cargoBikeData {
     id: number;
     PowerType: string;
     Manufacture: number; 

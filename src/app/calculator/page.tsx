@@ -5,7 +5,7 @@ import CyclingInput from "@/components/Input/cyclingInput";
 import PhysicalInput from "@/components/Input/physicalInput";
 import Output from "@/components/output/output";
 import { calculateCaloriesSpend } from "@/components/calculation/calories";
-import { classicTestData, cargoTestData, sportBikeData } from "../type/bikeTestData";
+import { classicBikeData, cargoBikeData, sportBikeData } from "../type/bikeTestData";
 import { UserSelection } from "../type/userSelection";
 import { ElectricityCountryData } from "../type/countryData";
 import { calculatedResult } from "../type/calculationResult";
@@ -29,19 +29,6 @@ export interface eatingData {
   Impact: number;
 }
 
-export interface classicBikeData {
-  id: number;
-  Material: string;
-  PowerType: string;
-  Impact: number;
-}
-
-export interface cargoBikeData {
-  id: number;
-  PowerType: string;
-  Impact: number;
-}
-
 const Calculator: React.FC = () => {
   const [isFormSubmitted,setIsFormSubmitted] = useState<boolean>(false)
   const [terrain, setTerrain] = useState<string>("Flat");
@@ -58,8 +45,6 @@ const Calculator: React.FC = () => {
   const [showTableModal, setShowTableModal] = useState<boolean>(false);
   const [eatingData, setEatingData] = useState<eatingData[]>([]);
   const [selectedImpact, setSelectedImpact] = useState<number>(0);
-  const [classicBikeData, setClassicBikeData] = useState<classicBikeData[]>([]);
-  const [cargoBikeData, setCargoBikeData] = useState<cargoBikeData[]>([]);
   const [bikeImpact, setBikeImpact] = useState<number>(0);
   const [fitnessImpact, setFitnessImpact] = useState<number>(0);
   const [physicalData, setPhysicalData] = useState<physicalData[]>([]);
@@ -74,9 +59,9 @@ const Calculator: React.FC = () => {
   const [kcalSpend, setKcalSpend] = useState<number>(0);
   const [isSubmitClicked, setIsSubmitClicked] = useState<boolean>(false);
   const [isRequiredSet, setIsRequiredSet] = useState<boolean>(false);
-  const [classicTestData, setClassicTestData] = useState<classicTestData[]>([]);
+  const [classicBikeData, setClassicBikeData] = useState<classicBikeData[]>([]);
   const [sportBikeData, setSportBikeData] = useState<sportBikeData[]>([]);
-  const [cargoTestData, setCargoTestData] = useState<cargoTestData[]>([]);
+  const [cargoBikeData, setCargoBikeData] = useState<cargoBikeData[]>([]);
   const [bikeMaintenance, setBikeMaintenance] = useState<number>(0);
   const [bikeEol, setBikeEol] = useState<number>(0);
   const [bikeEngine, setBikeEngine] = useState<number>(0);
@@ -140,14 +125,14 @@ const Calculator: React.FC = () => {
       }
     }
 
-    async function fetchClassicTestData() {
+    async function fetchClassicBikeData() {
       try {
-        const res = await fetch('api/classicTestData');
+        const res = await fetch('api/classicBikeData');
         if (!res.ok) {
           throw new Error('Error fetching data');
         }
-        const result: classicTestData[] = await res.json();
-        setClassicTestData(result);
+        const result: classicBikeData[] = await res.json();
+        setClassicBikeData(result);
       }
       catch (error) {
         if (error instanceof Error) {
@@ -176,14 +161,14 @@ const Calculator: React.FC = () => {
       }
     }
 
-    async function fetchCargoTestData() {
+    async function fetchCargoBikeData() {
       try {
-        const res = await fetch('api/cargoTestData');
+        const res = await fetch('api/cargoBikeData');
         if (!res.ok) {
           throw new Error('Error fetching data');
         }
-        const result: cargoTestData[] = await res.json();
-        setCargoTestData(result);
+        const result: cargoBikeData[] = await res.json();
+        setCargoBikeData(result);
       }
       catch (error) {
         if (error instanceof Error) {
@@ -229,8 +214,8 @@ const Calculator: React.FC = () => {
     }
     fetchSportBiketData()
     fetchElectricityCountryData()
-    fetchClassicTestData();
-    fetchCargoTestData();
+    fetchClassicBikeData();
+    fetchCargoBikeData();
     fetchRegionData();
     fetchPhysicalData();
   }, []);
@@ -256,10 +241,10 @@ const Calculator: React.FC = () => {
 
   useEffect(() => {
     const matchBike = (selectedBike: string | null) => {
-      if (!classicTestData || !cargoTestData || !sportBikeData) { return }
+      if (!classicBikeData || !cargoBikeData || !sportBikeData) { return }
       try {
         if (selectedBike === "Classic") {
-          const [match] = classicTestData.filter(data => data.Material === selectedMaterial && data.PowerType === selectedPower)
+          const [match] = classicBikeData.filter(data => data.Material === selectedMaterial && data.PowerType === selectedPower)
           if (match) {
             setBikeImpact(match.Manufacture)
             setBikeMaintenance(match.Maintenance)
@@ -273,7 +258,7 @@ const Calculator: React.FC = () => {
           }
         }
         else if (selectedBike === "Cargo") {
-          const [match] = cargoTestData.filter(data => data.PowerType === selectedPower)
+          const [match] = cargoBikeData.filter(data => data.PowerType === selectedPower)
           if (match) {
             setBikeImpact(match.Manufacture)
             setBikeMaintenance(match.Maintenance)
@@ -447,8 +432,8 @@ const Calculator: React.FC = () => {
   
     const updatedPhysical = matchPhysical();
   
-    const matchBike = (): classicTestData | cargoTestData | sportBikeData => {
-      const noMatchClassicBike: classicTestData = {
+    const matchBike = (): classicBikeData | cargoBikeData | sportBikeData => {
+      const noMatchClassicBike: classicBikeData = {
         id: 0,
         Material: "",
         PowerType: "",
@@ -459,7 +444,7 @@ const Calculator: React.FC = () => {
         Battery: 0,
         Electricity: 0
       };
-      const noMatchCargoBike: cargoTestData = {
+      const noMatchCargoBike: cargoBikeData = {
         id: 0,
         PowerType: "",
         Manufacture: 0,
@@ -470,15 +455,15 @@ const Calculator: React.FC = () => {
         Electricity: 0
       };
 
-      if (!classicTestData || !cargoTestData) {
+      if (!classicBikeData || !cargoBikeData) {
         return updatedBike === 'Classic' ? noMatchClassicBike : noMatchCargoBike;
       }
       try {
         if (updatedBike === "Classic") {
-          const match = classicTestData.find(data => data.Material === updatedMaterial && data.PowerType === updatedPower);
+          const match = classicBikeData.find(data => data.Material === updatedMaterial && data.PowerType === updatedPower);
           return match ? match : noMatchClassicBike;
         } else if (updatedBike === "Cargo") {
-          const match = cargoTestData.find(data => data.PowerType === updatedPower);
+          const match = cargoBikeData.find(data => data.PowerType === updatedPower);
           return match ? match : noMatchCargoBike;
         } else if (updatedBike === "Sport") {
           const match = sportBikeData.find(data => data.Material === updatedMaterial && data.PowerType === updatedPower);
