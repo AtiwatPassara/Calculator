@@ -1,7 +1,7 @@
+import { calculatedResult } from "./calculationResult";
 import { ElectricityCountryData } from "./countryData";
 
 export interface Result {
-    kcalSpend: number,
     dietImpact: number,
     bikeManufacture: number,
     bikeMaintenance: number,
@@ -10,7 +10,8 @@ export interface Result {
     bikeBattery: number,
     bikeElectricity: number,
     bikeElectricityCountry: number,
-    TotalElectricity: number
+    TotalElectricity: number,
+    kcalSpend: number;
   }
   
   export interface Physical{
@@ -47,5 +48,6 @@ export interface Result {
     Diet : Diet,
     Result : Result,
     Country: ElectricityCountryData
+    CalculatedResult : calculatedResult
   }
 

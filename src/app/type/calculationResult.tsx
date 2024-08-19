@@ -1,5 +1,6 @@
 export interface calculatedResult {
-    ESC: number;
+    BCS: number;
+    ECS: number;
     DietImpact: number;
     BikeImpact: number; 
     TotalImpact: number;

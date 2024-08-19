@@ -122,7 +122,7 @@ const PhysicalInput: React.FC<PhysicalInputProps> = ({
         setElectricityCountry({ name: '-', region: '-', subregion: '-', latlng: [] });
       }
     }
-  }, [countryData, country, setElectricityCountry]);
+  }, [countryData, country, setElectricityCountry,setIsCountryRegion,setBikeElectricityCountry]);
 
   useEffect(() => {
     const handleLocationSelect = async () => {

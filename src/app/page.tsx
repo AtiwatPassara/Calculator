@@ -33,7 +33,7 @@ export default function Page() {
                 alt="Bike"
                 sizes="(max-width: 1024px) 100vw, 39rem"
                 width={500}
-                height={317}
+                height={500}
                 layout="responsive"
                 priority={true}
                 style={{

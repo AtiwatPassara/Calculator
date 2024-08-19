@@ -1,13 +1,33 @@
+# Stage 1: Build the application
+FROM node:20.11.1 AS builder
+
+WORKDIR /app
+
+# Copy the package.json and package-lock.json (if available)
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy the rest of the application code
+COPY . .
+
+# Build the Next.js application
+RUN npm run build
+
+# Stage 2: Run the application
 FROM node:20.11.1
 
 WORKDIR /app
 
-COPY package*.json ./
+# Copy the build output from the builder stage
+COPY --from=builder /app ./
 
-RUN npm install
+# Install production dependencies
+RUN npm ci --only=production
 
-COPY . .
-
+# Expose the port
 EXPOSE 3000
 
-CMD ["npm", "run", "dev"]
+# Start the application
+CMD ["npm", "run", "start"]

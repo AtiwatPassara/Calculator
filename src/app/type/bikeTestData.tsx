@@ -33,3 +33,10 @@ export interface sportBikeData {
     Battery: number;
     Electricity: number;
 }
+
+export interface transportsData {
+  id: number;
+  country: string;
+  mode: string;
+  impact: number;
+}

@@ -11,7 +11,7 @@ Chart.register(ArcElement, Tooltip, Legend, Title);
 
 const ImpactDoughnutChart: React.FC<MyDoughnutChartProps> = ({ userInput }) => {
   const data = {
-    labels: ['Manufacture', 'Maintenance', 'EOL', 'Engine', 'Battery', 'Electricity', 'Food'],
+    labels: ['Manufacture', 'Maintenance', 'End of life', 'Engine', 'Battery', 'Electricity', 'Food'],
     datasets: [
       {
         label: 'Impact',
@@ -78,6 +78,17 @@ const ImpactDoughnutChart: React.FC<MyDoughnutChartProps> = ({ userInput }) => {
         bodyColor: 'white', // Set tooltip text color to white
         titleColor: 'white', // Set tooltip title color to white
         footerColor: 'white', // Set tooltip footer color to white
+        callbacks: {
+          label: function(context: { label: string; raw: any; }) {
+            let label = context.label || '';
+            if (label) {
+              label += ': ';
+            }
+            label += context.raw;
+            label += ' gCO2eq/pkm'; 
+            return label;
+          }
+        }
       },
     },
   };

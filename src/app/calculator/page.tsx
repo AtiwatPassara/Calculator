@@ -5,7 +5,7 @@ import CyclingInput from "@/components/Input/cyclingInput";
 import PhysicalInput from "@/components/Input/physicalInput";
 import Output from "@/components/output/output";
 import { calculateCaloriesSpend } from "@/components/calculation/calories";
-import { classicBikeData, cargoBikeData, sportBikeData } from "../type/bikeTestData";
+import { classicBikeData, cargoBikeData, sportBikeData, transportsData } from "../type/bikeTestData";
 import { UserSelection } from "../type/userSelection";
 import { ElectricityCountryData } from "../type/countryData";
 import { calculatedResult } from "../type/calculationResult";
@@ -71,6 +71,7 @@ const Calculator: React.FC = () => {
   const [electricityCountryData, setElectricityCountryData] = useState<electricityCountryData[]>([]);
   const [isCountryRegion, setIsCountryRegion] = useState<boolean>(false);
   const [countryData, setCountryData] = useState<ElectricityCountryData[]>([]);
+  const [transportsData, setTransportsData] = useState<transportsData[]>([])
   const defaultCountryData: ElectricityCountryData = {
     name: "-",
     region: "",
@@ -109,6 +110,22 @@ const Calculator: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    async function fetchTransportsData() {
+      try {
+        const res = await fetch('api/transportsData');
+        if (!res.ok) { throw new Error('Error fetching data'); }
+        const result: transportsData[] = await res.json();
+        setTransportsData(result);
+      }
+      catch (error) {
+        if (error instanceof Error) {
+          setFetchError(error.message);
+        } else {
+          setFetchError('An unknown error occurred');
+        }
+      }
+    }
+
     async function fetchElectricityCountryData() {
       try {
         const res = await fetch('api/electricityData');
@@ -212,8 +229,9 @@ const Calculator: React.FC = () => {
         }
       }
     }
-    fetchSportBiketData()
-    fetchElectricityCountryData()
+    fetchTransportsData();
+    fetchSportBiketData();
+    fetchElectricityCountryData();
     fetchClassicBikeData();
     fetchCargoBikeData();
     fetchRegionData();
@@ -237,7 +255,7 @@ const Calculator: React.FC = () => {
       }
     }
     matchDiet(selectedRegion, selectedEating)
-  }, [selectedRegion, selectedEating, eatingData])
+  }, [selectedRegion, selectedEating, eatingData,isCountryRegion])
 
   useEffect(() => {
     const matchBike = (selectedBike: string | null) => {
@@ -292,7 +310,7 @@ const Calculator: React.FC = () => {
       }
     }
     matchBike(selectedBike)
-  }, [selectedBike, classicBikeData, cargoBikeData, selectedMaterial, selectedPower])
+  }, [selectedBike, classicBikeData, cargoBikeData, selectedMaterial, selectedPower,sportBikeData])
 
   useEffect(() => {
     const matchPhysical = (selectedFitness: number | null) => {
@@ -319,7 +337,7 @@ const Calculator: React.FC = () => {
       try {
         const [match] = electricityCountryData.filter(data => data.region.toLowerCase() === Region.toLowerCase())
         if (match) {
-          setBikeElectricityCountry(match.electricity)
+          setBikeElectricityCountry(match.electricity*1000)//to covert unit from kgCo2eq/kwh to gCo2eq/kwh
         }
         else {
           setBikeElectricityCountry(0)
@@ -348,7 +366,7 @@ const Calculator: React.FC = () => {
   useEffect(() => {
     setSelectedMaterial("-");
     setSelectedPower("-")
-  }, [selectedBike, setSelectedBike])
+  }, [selectedBike, setSelectedBike,isCountryRegion])
 
   const handleOpenModal = () => {
     setShowModal(true);
@@ -477,6 +495,7 @@ const Calculator: React.FC = () => {
     }
   
     const bikeMatch = matchBike();
+    const updatedKcalSpend = kcalSpend;
     const updatedBikeImpact = bikeMatch.Manufacture;
     const updatedMaintenance = bikeMatch.Maintenance;
     const updatedEol = bikeMatch.Eol;
@@ -504,7 +523,7 @@ const Calculator: React.FC = () => {
           speed: updatedSpeed,
           duration: updatedDuration,
           bikeImpact: updatedBikeImpact,
-          terrain: terrain
+          terrain: terrain,
         },
         Diet: {
           region: updatedRegion,
@@ -520,7 +539,8 @@ const Calculator: React.FC = () => {
           bikeBattery: updatedBattery,
           bikeElectricity: updatedElectricity,
           bikeElectricityCountry: bikeElectricityCountry,
-          TotalElectricity: updatedElectricity * bikeElectricityCountry
+          TotalElectricity: updatedElectricity * bikeElectricityCountry,
+          kcalSpend: updatedKcalSpend,
         },
         Country: {
           name: electricityCountry.name,
@@ -534,9 +554,10 @@ const Calculator: React.FC = () => {
           DietImpact: calculatedImpact.DietImpact,
           BikeImpact: calculatedImpact.BikeImpact,
           TotalImpact: calculatedImpact.TotalImpact,
-        }
-      }
+        },
+      };
     };
+    
   
     const defaultCalculatedImpact: calculatedResult = {
       BCS: 0,
@@ -573,8 +594,8 @@ const Calculator: React.FC = () => {
   return (
     <div className="flex justify-center items-center min-h-screen p-4">
     <div className="flex flex-col items-center md:w-full">
-      <span className="text-2xl md:text-3xl m-5 font-bold text-center">Provide Your Details</span>
-      <div className="flex flex-col justify-center gap-1 m-1 md:gap-8 md:m-9 border p-6 border-gray-500 w-screen sm:max-w-screen sm:w-max">
+      <div className="flex flex-col justify-center gap-1 md:gap-8 border p-6 border-gray-500 w-screen sm:max-w-screen sm:w-max">
+      <span className="text-2xl md:text-3xl font-bold text-center">Provide Your Details</span>
         <div className="flex flex-col xl:flex-row justify-center gap-4 xl:gap-4">
           <div className="flex flex-col justify-start gap-4 xl:gap-6 w-full xl:w-1/2 min-h-full flex-grow">
             <DietInput
@@ -659,7 +680,7 @@ const Calculator: React.FC = () => {
       </div>
       {isSubmitClicked && isRequiredSet && (
   <div className="w-full" ref={resultRef}>
-    <Output userInput={userInput} />
+    <Output userInput={userInput} transportsData={transportsData} />
   </div>
 )}
     </div>
