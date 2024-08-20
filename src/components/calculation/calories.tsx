@@ -1,4 +1,3 @@
-import { Result } from "postcss";
 import { UserSelection } from "../../app/type/userSelection";
 import { calculatedResult } from "@/app/type/calculationResult";
 

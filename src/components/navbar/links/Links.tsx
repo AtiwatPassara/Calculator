@@ -15,8 +15,8 @@ const Links: React.FC = () => {
       path: "/about",
     },
     {
-      title: "Reference",
-      path: "/reference",
+      title: "CIRAIG",
+      path: "/ciraig",
     },
     {
       title: "Calculator",

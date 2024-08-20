@@ -66,15 +66,15 @@ const OutputChart: React.FC<OutputProps> = ({ userInput,transportsData }) => {
             <ul className="list-disc pl-5 m-4 space-y-4">
               <li>
                 Ecoinvent Centre. (2024). <em>Ecoinvent database version 3.10</em>. Ecoinvent Association. Retrieved from 
-                <a href="https://www.ecoinvent.org" target="_blank" rel="noopener noreferrer">https://www.ecoinvent.org</a>
+                <a href="https://www.ecoinvent.org" target="_blank" rel="noopener noreferrer" className="text-orange-400 hover:font-bold transition-all duration-300"> https://www.ecoinvent.org</a>
               </li>
               <li>
                 de Bortoli, A. (2021). Environmental performance of shared micromobility and personal alternatives using integrated modal LCA. <em>Transportation Research Part D: Transport and Environment</em>. 
-                <a href="https://doi.org/10.1016/j.trd.2021.102743" target="_blank" rel="noopener noreferrer">https://doi.org/10.1016/j.trd.2021.102743</a>
+                <a href="https://doi.org/10.1016/j.trd.2021.102743" target="_blank" rel="noopener noreferrer" className="text-orange-400 hover:font-bold transition-all duration-300"> https://doi.org/10.1016/j.trd.2021.102743</a>
               </li>
               <li>
                 de Bortoli, A., & Féraille, A. (2024). Banning short-haul flights and investing in high-speed railways for a sustainable future? <em>Transportation Research Part D: Transport and Environment</em>. 
-                <a href="https://doi.org/10.1016/j.trd.2023.103987" target="_blank" rel="noopener noreferrer">https://doi.org/10.1016/j.trd.2023.103987</a>
+                <a href="https://doi.org/10.1016/j.trd.2023.103987" target="_blank" rel="noopener noreferrer" className="text-orange-400 hover:font-bold transition-all duration-300"> https://doi.org/10.1016/j.trd.2023.103987</a>
               </li>
             </ul>
           </div>

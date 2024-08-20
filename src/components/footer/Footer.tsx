@@ -6,7 +6,7 @@ const Footer : React.FC = () => {
                         <Image src="/asset/CIRAIG_NVID_logo_Horiz_White_EN.png" alt="footerLogo" width={300} height={110} priority={true}/>    
                 </div>
                 <div className="">
-                        product
+                        social media
                 </div>
                 <div className="">
                         website
