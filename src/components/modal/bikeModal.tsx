@@ -1,0 +1,145 @@
+'use client';
+import React, { useEffect, useState } from 'react';
+import Image from 'next/legacy/image';
+import { IoIosClose } from "react-icons/io";
+
+const selectClassicMaterial = [
+  { title: "Bamboo", value: "Bamboo" },
+  { title: "Aluminium", value: "Aluminium" },
+];
+
+const selectSportMaterial = [
+  { title: "Steel", value: "Steel" },
+  { title: "Carbon", value: "Carbon" },
+  { title: "Aluminium", value: "Aluminium" },
+];
+
+const selectType = [
+  { title: "-", value: "-" },
+  { title: "Mechanical", value: "Mechanical" },
+  { title: "Electric", value: "Electric"},
+];
+
+interface BikeModalProps {
+  showModal: boolean;
+  handleClose: () => void;
+  selectedBike: string | null;
+  handleBikeSelection: (bikeType: string) => void;
+  handleBikeSubmit: () => void;
+  handleMaterialSelection: (material: string) => void;
+  handlePowerSelection: (power: string) => void;
+  selectedMaterial: string;
+  selectedPower: string;
+}
+
+const BikeModal: React.FC<BikeModalProps> = ({
+  showModal,
+  handleClose,
+  selectedBike,
+  handleBikeSelection,
+  handleBikeSubmit,
+  handleMaterialSelection,
+  handlePowerSelection,
+  selectedMaterial,
+  selectedPower,
+}) => {
+  const [isDisabled, setIsDisabled] = useState<boolean>(true);
+
+  // Simplified useEffect to directly set isDisabled based on selectedBike
+  useEffect(() => {
+    if (selectedBike === "Classic" || selectedBike === "Sport") {
+      setIsDisabled(false);
+    } else {
+      setIsDisabled(true);
+    }
+  }, [selectedBike]);
+
+  if (!showModal) return null;
+
+  return (
+    <div className="fixed left-0 top-0 w-full h-full bg-black bg-opacity-50 z-50 overflow-auto backdrop-blur flex justify-center items-center">
+      <div className="bg-black m-auto p-8 md:w-[900px] w-screen h-auto rounded-md shadow-lg border border-gray-500">
+        <div className="flex justify-end">
+          <button type="button" className="text-white p-2 rounded" onClick={handleClose} aria-label="Close Modal">
+            <IoIosClose size={25} />
+          </button>
+        </div>
+        <div className="flex flex-col items-center mt-5">
+          <p className="text-center text-xl border-b-2 pb-2 text-white border-red-500">Select your bike</p>
+          <div className="h-full flex flex-wrap md:flex-row justify-center items-center mt-5 p-5 gap-5 rounded-md">
+            <button onClick={() => { handleBikeSelection("Classic"); }}>
+              <div className={`transition-all duration-300 relative w-60 h-40 md:w-80 md:h-64 border p-5 rounded-md ${selectedBike === "Classic" ? "bg-white" : "bg-black"} hover:border-yellow-500 flex items-center justify-center`}>
+                <div style={{ maxWidth: '200px', maxHeight: '200px', width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Image src="/asset/classic.png" alt="Classic" width={200} height={200} objectFit="contain" />
+                </div>
+                <div className={`transition-all duration-300 ${selectedBike === "Classic" ? "text-black" : "text-white"} absolute bottom-2`}>
+                  Classic
+                </div>
+              </div>
+            </button>
+            <button onClick={() => { handleBikeSelection("Sport"); }}>
+              <div className={`transition-all duration-300 relative w-60 h-40 md:w-80 md:h-64 border p-5 rounded-md ${selectedBike === "Sport" ? "bg-white" : "bg-black"} hover:border-yellow-500 flex items-center justify-center`}>
+                <div style={{ maxWidth: '200px', maxHeight: '200px', width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Image src="/asset/Sport.png" alt="Sport" width={200} height={200} objectFit="contain" />
+                </div>
+                <div className={`transition-all duration-300 ${selectedBike === "Sport" ? "text-black" : "text-white"} absolute bottom-2`}>
+                  Sport
+                </div>
+              </div>
+            </button>
+            <button onClick={() => { handleBikeSelection("Cargo"); }}>
+              <div className={`transition-all duration-300 relative w-60 h-40 md:w-80 md:h-64 border p-5 rounded-md ${selectedBike === "Cargo" ? "bg-white" : "bg-black"} hover:border-yellow-500 flex items-center justify-center`}>
+                <div style={{ maxWidth: '260px', maxHeight: '200px', width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Image src="/asset/cargobike.png" alt="Cargo" width={260} height={200} objectFit="contain" />
+                </div>
+                <div className={`transition-all duration-300 ${selectedBike === "Cargo" ? "text-black" : "text-white"} absolute bottom-2`}>Cargo</div>
+              </div>
+            </button>
+          </div>
+          <div className="flex flex-col md:flex-row justify-center gap-3 md:mt-5">
+            <div className='flex items-center md:p-2 rounded-md'>
+              {/* Conditional class application for text color */}
+              <span className={`${isDisabled ? 'text-[#aaaaaa]' : 'text-white'}`}>Select Material</span>
+              <select
+                className="bg-black text-white p-2 border border-white rounded-md focus:border-green-500 m-2 w-[100px]"
+                onChange={(e) => handleMaterialSelection(e.target.value)}
+                value={selectedMaterial}
+                disabled={isDisabled}
+              > <option title="-" value="-">-</option>
+                {selectedBike==="Classic" && selectClassicMaterial.map((option) => (
+                  <option value={option.value} key={option.value}>
+                    {option.title}
+                  </option>
+                ))}
+                {selectedBike==="Sport" && selectSportMaterial.map((option) => (
+                  <option value={option.value} key={option.value}>
+                    {option.title}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className='flex items-center p-2 rounded-md'>
+              <span className="text-white">Select Type</span>
+              <select
+                className="bg-black text-white p-2 border border-white rounded-md focus:border-green-500 m-2"
+                onChange={(e) => handlePowerSelection(e.target.value)}
+                value={selectedPower}
+              >
+                {selectType.map((option) => (
+                  <option value={option.value} key={option.value}>
+                    {option.title}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+          <button className="mt-6 bg-black p-2 rounded border-white border hover:border-green-500 hover:text-green-400 duration-300 ease-in-out text-white" onClick={handleBikeSubmit}>
+            Choose the bike
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default BikeModal;
